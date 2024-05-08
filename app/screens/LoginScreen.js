@@ -8,25 +8,7 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = () => {
         // Implement login logic here
         // For simplicity, let's just navigate to the LocationScreen
-        navigation.navigate('SignUp');
-    };
-
-    const handleFacebookLogin = () => {
-        // Implement Facebook login logic
-        // After successful login, navigate to the LocationScreen
-        navigation.navigate('Location');
-    };
-
-    const handleInstagramLogin = () => {
-        // Implement Instagram login logic
-        // After successful login, navigate to the LocationScreen
-        navigation.navigate('Location');
-    };
-
-    const handleGoogleLogin = () => {
-        // Implement Google login logic
-        // After successful login, navigate to the LocationScreen
-        navigation.navigate('Location');
+        navigation.navigate('BigCategories');
     };
 
     const handleSignUp = () => {
@@ -55,17 +37,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.orText}>Don't have a User?</Text>
             <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
                 <Text style={styles.buttonText}>Sign Up</Text>
-            </TouchableOpacity>
-            
-            {/* <TouchableOpacity style={styles.button} onPress={handleFacebookLogin}>
-                <Text style={styles.buttonText}>Login with Facebook</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleInstagramLogin}>
-                <Text style={styles.buttonText}>Login with Instagram</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleGoogleLogin}>
-                <Text style={styles.buttonText}>Login with Gmail</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>   
         </View>
     );
 };
@@ -90,15 +62,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 20,
     },
-    // button: {
-    //     width: '80%',
-    //     height: 50,
-    //     backgroundColor: '#007AFF',
-    //     justifyContent: 'center',
-    //     alignItems: 'center',
-    //     borderRadius: 10,
-    //     marginBottom: 20,
-    // },
     loginButton: {
         width: '30%',
         height: 50,

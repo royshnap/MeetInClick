@@ -20,23 +20,12 @@ const SignUpScreen = ({ navigation }) => {
             password,
             confirmPassword,
         });
-    };
-
-    const handleFacebookSignUp = () => {
-        // Implement Facebook sign up logic
-    };
-
-    const handleInstagramSignUp = () => {
-        // Implement Instagram sign up logic
-    };
-
-    const handleGoogleSignUp = () => {
-        // Implement Google sign up logic
+        navigation.navigate('BigCategories');
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Sign Up</Text>
+            <Text style={styles.title}>Welcome To MeetInClick </Text>
             <TextInput
                 style={styles.input}
                 placeholder="First Name"
@@ -80,13 +69,13 @@ const SignUpScreen = ({ navigation }) => {
                 <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
             <Text style={styles.orText}>or Sign Up with</Text>
-            <TouchableOpacity style={styles.socialButton} onPress={handleFacebookSignUp}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Facebook</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={handleInstagramSignUp}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Instagram</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={handleGoogleSignUp}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Gmail</Text>
             </TouchableOpacity>
         </View>
