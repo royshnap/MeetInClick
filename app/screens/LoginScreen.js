@@ -8,7 +8,7 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = () => {
         // Implement login logic here
         // For simplicity, let's just navigate to the LocationScreen
-        navigation.navigate('Location');
+        navigation.navigate('SignUp');
     };
 
     const handleFacebookLogin = () => {
@@ -27,6 +27,10 @@ const LoginScreen = ({ navigation }) => {
         // Implement Google login logic
         // After successful login, navigate to the LocationScreen
         navigation.navigate('Location');
+    };
+
+    const handleSignUp = () => {
+        navigation.navigate('SignUp');
     };
 
     return (
@@ -48,8 +52,12 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <Text style={styles.orText}>or</Text>
-            <TouchableOpacity style={styles.button} onPress={handleFacebookLogin}>
+            <Text style={styles.orText}>Don't have a User?</Text>
+            <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+            
+            {/* <TouchableOpacity style={styles.button} onPress={handleFacebookLogin}>
                 <Text style={styles.buttonText}>Login with Facebook</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleInstagramLogin}>
@@ -57,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleGoogleLogin}>
                 <Text style={styles.buttonText}>Login with Gmail</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 };
@@ -82,19 +90,28 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 20,
     },
-    button: {
-        width: '80%',
-        height: 50,
-        backgroundColor: '#007AFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        marginBottom: 20,
-    },
+    // button: {
+    //     width: '80%',
+    //     height: 50,
+    //     backgroundColor: '#007AFF',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     borderRadius: 10,
+    //     marginBottom: 20,
+    // },
     loginButton: {
         width: '30%',
         height: 50,
         backgroundColor: '#4CAF50', // Green color
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    signUpButton: {
+        width: '30%',
+        height: 50,
+        backgroundColor: '#007AFF', 
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
