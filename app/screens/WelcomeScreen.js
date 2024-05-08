@@ -1,25 +1,25 @@
 import React from 'react';
 import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-import colors from '../config/colors';
 
-function WelcomeScreen(props) {
+function WelcomeScreen({ navigation }) {
     const handleLoginPress = () => {
-        Alert.alert('Alert', 'been clicked!');
+        navigation.navigate('Login');
     };
 
     return (
         <ImageBackground 
             style={styles.background}
-           // source={require('../assets/meet.jpg')}
+            // source={require('../assets/meet.jpg')}
         >
             <View style={styles.logoContainer}>
-                <Image style={styles.logo} source={require("../assets/meetinclickLogo.png")}/>
+                <Image style={styles.logo} source={require("../assets/logoBrown.png")}/>
                 <Text>
-                    <Text style={{ color: 'red' }}>NOT</Text> a dating app
+                    <Text style={{ color: 'red', fontSize: 30 }}>NOT</Text> 
+                    <Text style={{ fontSize: 25 }}> a dating app</Text>
                 </Text>
             </View>
             <TouchableOpacity style={styles.loginButton} onPress={handleLoginPress}>
-                <Text style={styles.loginText}>Login</Text>
+                <Text style={styles.loginText}>Start</Text>
             </TouchableOpacity>
         </ImageBackground>
     );
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     loginButton: {
         width: 120, // Adjust the width as needed
         height: 40, // Adjust the height as needed
-        backgroundColor: 'blue',
+        backgroundColor: '#007AFF',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20, // Adjust the borderRadius to make it more rounded
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     logo: {
-        width: 100,
-        height: 100, 
+        width: 300, // Change the width to make the logo bigger
+        height: 200, // Change the height to make the logo bigger
     },
     logoContainer: {
         position: "absolute",
