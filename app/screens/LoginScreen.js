@@ -8,14 +8,14 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = () => {
         // Implement login logic here
         // For simplicity, let's just navigate to the LocationScreen
-        navigation.navigate('BigCategories');
+        navigation.navigate('MainCategories');
     };
 
     const handleSignUp = () => {
         navigation.navigate('SignUp');
     };
 
-    return (
+    return ( 
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
             <TextInput

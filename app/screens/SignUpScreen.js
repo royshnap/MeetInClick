@@ -20,7 +20,7 @@ const SignUpScreen = ({ navigation }) => {
             password,
             confirmPassword,
         });
-        navigation.navigate('BigCategories');
+        navigation.navigate('MainCategories');
     };
 
     return (
@@ -68,7 +68,7 @@ const SignUpScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={handleSignUp}>
                 <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
-            <Text style={styles.orText}>or Sign Up with</Text>
+            {/* <Text style={styles.orText}>or Sign Up with</Text>
             <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Facebook</Text>
             </TouchableOpacity>
@@ -77,7 +77,7 @@ const SignUpScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Gmail</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 };
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#FFE12A',
     },
     title: {
         fontSize: 24,

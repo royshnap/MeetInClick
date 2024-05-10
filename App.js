@@ -5,19 +5,24 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import LocationScreen from './app/screens/LocationScreen';
 import SignUpScreen from './app/screens/SignUpScreen';
-import BigCategoriesScreen from './app/screens/BigCategories';
+// import MainCategoriesScreen from './app/screens/MainCategoriesScreen';
+import SubCategoriesScreen from './app/screens/SubCategoriesScreen';
+import MainCategoriesScreen from './app/screens/MainCategoriesScreen';
+import MainScreen from './app/screens/MainScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome">
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Navigator initialRouteName="Main">
+        {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Location" component={LocationScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="BigCategories" component={BigCategoriesScreen} />
+        <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
+        <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
+        <Stack.Screen name="Main" component={MainScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

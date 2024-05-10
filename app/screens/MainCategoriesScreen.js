@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
-const BigCategoriesScreen = ({ navigation }) => {
+const MainCategoriesScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
 
     const handleChooseCategory = (category) => {
@@ -10,10 +10,14 @@ const BigCategoriesScreen = ({ navigation }) => {
 
     const handleChooseButton = () => {
         if (selectedCategory) {
-            Alert.alert(`You chose ${selectedCategory}`, '', [
-                { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
-                { text: 'OK', onPress: () => navigation.navigate('Location', { category: selectedCategory }) },
-            ]);
+            if (selectedCategory === 'Conversation') {
+                navigation.navigate('SubCategories'); // Navigate to SubCategories screen for 'Conversation'
+            } else {
+                Alert.alert(`You chose ${selectedCategory}`, '', [
+                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
+                    { text: 'OK', onPress: () => navigation.navigate('Location', { category: selectedCategory }) },
+                ]);
+            }
         } else {
             Alert.alert('Please select a category');
         }
@@ -88,4 +92,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default BigCategoriesScreen;
+export default MainCategoriesScreen;
