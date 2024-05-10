@@ -12,7 +12,7 @@ const SubCategoriesScreen = () => {
         "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
         "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
         "Education", "Funny", "Achievements", "Languages", "Pets", "Science", "Dreams",
-        "Traditions", "Concerts", "Inspiration", "Charity", "Finance", "Vacations", "Quotes",
+        "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
         "Fitness", "Adventure", "Creativity"
     ];
 
