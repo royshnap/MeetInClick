@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
+import { useNavigation } from '@react-navigation/native';
 
 const Location = () => {
+    const navigation = useNavigation();
     const [distance, setDistance] = useState(10); // Initial distance is set to 10 meters
-
     const handleShowDistance = () => {
-        alert(`Selected distance: ${distance} meters`);
+        // alert(`Selected distance: ${distance} meters`), 
+        // { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', };
+
+        Alert.alert(
+            `Selected distance: ${distance} meters`,
+            '',
+            [
+                { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
+                { text: 'Ok', onPress: () => console.log('Ok pressed'), style: 'cancel', },
+                // {text: 'OK',onPress: () => navigation.navigate('Main')} // need to change navigation
+            ]
+        );
     };
 
     return (

@@ -31,10 +31,8 @@ const SubCategoriesScreen = () => {
                 `You chose the topic: ${selectedCategory}`,
                 '',
                 [
-                    {
-                        text: 'OK',
-                        onPress: () => navigation.navigate('Location', { category: selectedCategory })
-                    }
+                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
+                    {text: 'OK',onPress: () => navigation.navigate('Location', { category: selectedCategory })}
                 ]
             );
         } else {

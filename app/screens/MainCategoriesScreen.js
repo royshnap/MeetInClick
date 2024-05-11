@@ -11,7 +11,10 @@ const MainCategoriesScreen = ({ navigation }) => {
     const handleChooseButton = () => {
         if (selectedCategory) {
             if (selectedCategory === 'Conversation') {
-                navigation.navigate('SubCategories'); // Navigate to SubCategories screen for 'Conversation'
+                Alert.alert(`You chose ${selectedCategory}`, '', [
+                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
+                    { text: 'OK', onPress: () => navigation.navigate('SubCategories', { category: selectedCategory }) },
+                ]);
             } else {
                 Alert.alert(`You chose ${selectedCategory}`, '', [
                     { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },

@@ -1,8 +1,5 @@
-//import React from 'react';
 import React, { useState } from 'react';
 import { Image,TextInput, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
-
-// const Stack = createStackNavigator();
 
 const MainScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
