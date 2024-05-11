@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const SignUpScreen = ({ navigation }) => {
     const [firstName, setFirstName] = useState('');
@@ -9,7 +10,9 @@ const SignUpScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSignUp = () => {
+    const {user, register, loading,error,setError} = useAuth()
+
+    const handleSignUp = async () => {
         // Implement sign up logic here
         // For simplicity, let's just log the form data for now
         console.log('Sign Up Data:', {
@@ -20,8 +23,31 @@ const SignUpScreen = ({ navigation }) => {
             password,
             confirmPassword,
         });
-        navigation.navigate('MainCategories');
+        await register({
+            firstName,
+            lastName,
+            email,
+            username,
+            password
+        })
     };
+    useEffect(() => {
+        if(error)
+            if(typeof error === 'string')
+                Alert.alert(error)
+            else
+                Alert.alert(error.message)
+    },[error])
+
+    
+useEffect(() => {
+    setError(undefined)
+},[])
+    useEffect(() => {
+        if(user) { // user logged in
+          navigation.navigate('MainCategories');
+       }
+      }, [user])
 
     return (
         <View style={styles.container}>

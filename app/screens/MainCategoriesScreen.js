@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
 
 const MainCategoriesScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
+    const { signOutUser } = useAuth(); // Get the signOutUser function from the useAuth hook
 
     const handleChooseCategory = (category) => {
         setSelectedCategory(category);
@@ -26,6 +28,11 @@ const MainCategoriesScreen = ({ navigation }) => {
         }
     };
 
+    const handleSignOut = () => {
+        signOutUser(); // Call the signOutUser function when the sign-out button is pressed
+        navigation.navigate('Main'); // Navigate to the Main screen after signing out
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>What would u like to do?</Text>
@@ -46,6 +53,9 @@ const MainCategoriesScreen = ({ navigation }) => {
             </ScrollView>
             <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
                 <Text style={styles.chooseButtonText}>Select</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+                <Text style={styles.signOutButtonText}>Sign Out</Text>
             </TouchableOpacity>
         </View>
     );
@@ -87,8 +97,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 30,
+        marginBottom: 20,
     },
     chooseButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    signOutButton: {
+        backgroundColor: 'red',
+        borderRadius: 10,
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+    },
+    signOutButtonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',

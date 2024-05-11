@@ -1,17 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image,TextInput, ImageBackground, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 const MainScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLoginPress = () => {
-    navigation.navigate('MainCategories');
+  const {user, login, error, setError} = useAuth()
+
+  const handleLoginPress = async () => {
+    try {
+      await login(email, password);
+    } catch (e) {
+      // Handle error, e.g., by setting an error state or logging
+      console.error(e); // or display an alert, etc.
+    }
   };
 
   const handleSignUpPress = () => {
     navigation.navigate('SignUp');
   };
+  
+  useEffect(() => {
+    if(user) { // user logged in
+      navigation.navigate('MainCategories');
+    }
+  }, [user])
+
+  useEffect(() => {
+    if(error)
+        if(typeof error === 'string')
+            Alert.alert(error)
+        else
+            Alert.alert(error.message)
+          
+},[error])
+
+useEffect(() => {
+  // Possible adjustment: Clear error on unmount to avoid stale state issues
+  return () => {
+    setError(undefined);
+  };
+}, []);
 
   return (
     <View style={styles.container}>
@@ -19,9 +49,9 @@ const MainScreen = ({ navigation }) => {
       {/* <Text style={styles.whatRuUpToText}>What r u up to?</Text> */}
       <TextInput
         style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Email address"
+        value={email}
+        onChangeText={setEmail}
       />
       <TextInput
         style={styles.input}f
@@ -43,7 +73,7 @@ const MainScreen = ({ navigation }) => {
             <Text style={styles.orText}>Don't have a User?</Text>
             <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
                 <Text style={styles.buttonText}>Sign Up</Text>
-            </TouchableOpacity>   
+      </TouchableOpacity>   
       {/* <Button title="Log In" onPress={handleLoginPress} style={styles.button} />
       <Button title="Sign Up" onPress={handleSignUpPress} style={styles.button} />
       <StatusBar style="auto" /> */}

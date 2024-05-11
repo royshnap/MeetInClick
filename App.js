@@ -6,19 +6,26 @@ import SignUpScreen from './app/screens/SignUpScreen';
 import SubCategoriesScreen from './app/screens/SubCategoriesScreen';
 import MainCategoriesScreen from './app/screens/MainCategoriesScreen';
 import MainScreen from './app/screens/MainScreen';
+import { AuthContextProvider } from './app/context/AuthContext';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
+      <AuthContextProvider>
       <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Location" component={LocationScreen} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
         <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
+
+        <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
+        
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Main" component={MainScreen} />
+
+        
       </Stack.Navigator>
+      </AuthContextProvider>
     </NavigationContainer>
   );
 }
