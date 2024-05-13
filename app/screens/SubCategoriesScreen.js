@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useConversationTopicMatches } from '../context/ConversationContext';
 
-const SubCategoriesScreen = () => {
-    const navigation = useNavigation();
+const SubCategoriesScreen = ({navigation}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isCategorySelected, setIsCategorySelected] = useState(false);
+
+    const {
+        listUsersByConversationTopic, loading,error, conversationTopicResults
+    } = useConversationTopicMatches()
+
+
     const categories = [
         "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
         "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
@@ -25,16 +31,17 @@ const SubCategoriesScreen = () => {
         setIsCategorySelected(true);
     };
 
-    const handleSelectButton = () => {
+    const handleSelectButton =async  () => {
+
+
         if (isCategorySelected) {
-            Alert.alert(
-                `You chose the topic: ${selectedCategory}`,
-                '',
-                [
-                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
-                    {text: 'OK',onPress: () => navigation.navigate('Location', { category: selectedCategory })}
-                ]
-            );
+            const hasResults =  await listUsersByConversationTopic(selectedCategory)
+                     if(hasResults) {
+                          navigation.navigate('ConversationMatches')
+                     }
+                     else {
+                        Alert.alert(`No matches for topic ${selectedCategory}`);
+                     }
         } else {
             Alert.alert('Please select a topic.');
         }

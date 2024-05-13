@@ -35,6 +35,9 @@ const MainCategoriesScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
+                <Text style={styles.signOutButtonText}>Sign Out</Text>
+            </TouchableOpacity>
             <Text style={styles.title}>What would u like to do?</Text>
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
                 <TouchableOpacity onPress={() => handleChooseCategory('Conversation')}>
@@ -53,9 +56,6 @@ const MainCategoriesScreen = ({ navigation }) => {
             </ScrollView>
             <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
                 <Text style={styles.chooseButtonText}>Select</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-                <Text style={styles.signOutButtonText}>Sign Out</Text>
             </TouchableOpacity>
         </View>
     );
@@ -105,15 +105,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     signOutButton: {
-        backgroundColor: 'red',
-        borderRadius: 10,
-        paddingVertical: 15,
-        paddingHorizontal: 30,
+        position: 'absolute',
+        top: 10,
+        right: 10,
     },
     signOutButtonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
+        color: 'blue',
+        fontSize: 16,
     },
 });
 

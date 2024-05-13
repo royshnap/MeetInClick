@@ -23,7 +23,7 @@ const MainScreen = ({ navigation }) => {
   
   useEffect(() => {
     if(user) { // user logged in
-      navigation.navigate('MainCategories');
+      navigation.replace('MainCategories');
     }
   }, [user])
 
@@ -64,14 +64,14 @@ useEffect(() => {
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
             <Text style={styles.orText}>or Login with</Text>
-            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Facebook</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
+            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
                 <Text style={styles.buttonText}>Sign Up with Gmail</Text>
             </TouchableOpacity>
             <Text style={styles.orText}>Don't have a User?</Text>
-            <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
+            <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
                 <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>   
       {/* <Button title="Log In" onPress={handleLoginPress} style={styles.button} />
@@ -80,22 +80,6 @@ useEffect(() => {
     </View>
   );
 };
-
-// const App = () => {
-//   return (
-//     <NavigationContainer>
-//       <Stack.Navigator>
-//         <Stack.Screen name="Home" component={HomeScreen} />
-//         <Stack.Screen name="SignUpDetails" component={SignUpDetailsScreen} />
-//         <Stack.Screen name="MainCategoriesScreen" component={MainCategoriesScreen} />
-//         <Stack.Screen name="Location" component={LocationScreen} />
-
-
-//         {/* Add your Login and SignUp screens here */}
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// };
 
 const styles = StyleSheet.create({
   container: {
