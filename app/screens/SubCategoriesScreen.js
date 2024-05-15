@@ -3,14 +3,14 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } 
 import { useNavigation } from '@react-navigation/native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
 
-const SubCategoriesScreen = ({navigation}) => {
+const SubCategoriesScreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isCategorySelected, setIsCategorySelected] = useState(false);
 
     const {
-        listUsersByConversationTopic, loading,error, conversationTopicResults
-    } = useConversationTopicMatches()
+        listUsersByConversationTopic, loading, error, conversationTopicResults
+    } = useConversationTopicMatches();
 
 
     const categories = [
@@ -31,17 +31,14 @@ const SubCategoriesScreen = ({navigation}) => {
         setIsCategorySelected(true);
     };
 
-    const handleSelectButton =async  () => {
-
-
+    const handleSelectButton = async () => {
         if (isCategorySelected) {
-            const hasResults =  await listUsersByConversationTopic(selectedCategory)
-                     if(hasResults) {
-                          navigation.navigate('ConversationMatches')
-                     }
-                     else {
-                        Alert.alert(`No matches for topic ${selectedCategory}`);
-                     }
+            const hasResults = await listUsersByConversationTopic(selectedCategory);
+            if (hasResults) {
+                navigation.navigate('ConversationMatches');
+            } else {
+                Alert.alert(`No matches for topic ${selectedCategory}`);
+            }
         } else {
             Alert.alert('Please select a topic.');
         }
@@ -53,6 +50,7 @@ const SubCategoriesScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.headline}>What would u like to talk about?</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Search category..."
@@ -79,6 +77,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 20,
+    },
+    headline: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
     },
     input: {
         height: 40,
