@@ -10,48 +10,50 @@ const SignUpScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const {user, register, loading,error,setError} = useAuth()
+    const { user, register, loading, error, setError } = useAuth();
 
     const handleSignUp = async () => {
-        // Implement sign up logic here
-        // For simplicity, let's just log the form data for now
-        console.log('Sign Up Data:', {
-            firstName,
-            lastName,
-            email,
-            username,
-            password,
-            confirmPassword,
-        });
-        await register({
-            firstName,
-            lastName,
-            email,
-            username,
-            password
-        })
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match');
+            return;
+        }
+        
+        try {
+            await register({
+                firstName,
+                lastName,
+                email,
+                username,
+                password,
+            });
+        } catch (e) {
+            console.error(e); // Handle error, e.g., by setting an error state or logging
+        }
     };
-    useEffect(() => {
-        if(error)
-            if(typeof error === 'string')
-                Alert.alert(error)
-            else
-                Alert.alert(error.message)
-    },[error])
 
-    
-useEffect(() => {
-    setError(undefined)
-},[])
     useEffect(() => {
-        if(user) { // user logged in
-          navigation.navigate('MainCategories');
-       }
-      }, [user])
+        if (error) {
+            if (typeof error === 'string') {
+                Alert.alert(error);
+            } else {
+                Alert.alert(error.message);
+            }
+        }
+    }, [error]);
+
+    useEffect(() => {
+        setError(undefined);
+    }, []);
+
+    useEffect(() => {
+        if (user) { // user logged in
+            navigation.navigate('MainCategories');
+        }
+    }, [user]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Welcome To MeetInClick </Text>
+            <Text style={styles.title}>Welcome To MeetInClick</Text>
             <TextInput
                 style={styles.input}
                 placeholder="First Name"
@@ -94,16 +96,6 @@ useEffect(() => {
             <TouchableOpacity style={styles.button} onPress={handleSignUp}>
                 <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
-            {/* <Text style={styles.orText}>or Sign Up with</Text>
-            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
-                <Text style={styles.buttonText}>Sign Up with Facebook</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
-                <Text style={styles.buttonText}>Sign Up with Instagram</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('BigCategories')}>
-                <Text style={styles.buttonText}>Sign Up with Gmail</Text>
-            </TouchableOpacity> */}
         </View>
     );
 };
@@ -138,24 +130,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
     },
-    socialButton: {
-        width: '80%',
-        height: 50,
-        backgroundColor: '#3b5998', // Facebook blue color
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        marginBottom: 20,
-    },
     buttonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    orText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 10,
     },
 });
 

@@ -28,9 +28,14 @@ const MainCategoriesScreen = ({ navigation }) => {
         }
     };
 
-    const handleSignOut = () => {
-        signOutUser(); // Call the signOutUser function when the sign-out button is pressed
-        navigation.navigate('Main'); // Navigate to the Main screen after signing out
+    const handleSignOut = async () => {
+        try {
+            await signOutUser(); // Await the sign-out process
+            navigation.navigate('Main'); // Navigate to the Main screen after signing out
+        } catch (error) {
+            console.error('Error signing out:', error);
+            Alert.alert('Error signing out. Please try again.');
+        }
     };
 
     return (
@@ -64,10 +69,11 @@ const MainCategoriesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         alignItems: 'center',
+        paddingTop: 50, // Added padding to ensure content doesn't overlap with the absolute positioned button
     },
     title: {
+        marginTop: 20, // Added margin to position the title under the sign-out button
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
@@ -114,5 +120,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
 
 export default MainCategoriesScreen;

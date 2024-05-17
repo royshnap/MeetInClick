@@ -27,7 +27,7 @@ export default function App() {
         <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
         
         <Stack.Screen name="SignUp" component={SignUpScreen} />
-        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
           
       </Stack.Navigator>
       </ConversationContextProvider>
