@@ -5,13 +5,11 @@ import { useConversationTopicMatches } from '../context/ConversationContext';
 
 const SubCategoriesScreen = ({ navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [isCategorySelected, setIsCategorySelected] = useState(false);
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     const {
-        listUsersByConversationTopic, loading, error, conversationTopicResults
+        listUsersByConversationTopics, loading, error, conversationTopicResults
     } = useConversationTopicMatches();
-
 
     const categories = [
         "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
@@ -27,20 +25,25 @@ const SubCategoriesScreen = ({ navigation }) => {
     };
 
     const handleSelectCategory = (category) => {
-        setSelectedCategory(category);
-        setIsCategorySelected(true);
+        if (selectedCategories.includes(category)) {
+            setSelectedCategories(selectedCategories.filter(c => c !== category));
+        } else if (selectedCategories.length < 3) {
+            setSelectedCategories([...selectedCategories, category]);
+        } else {
+            Alert.alert('You can select up to 3 topics.');
+        }
     };
 
     const handleSelectButton = async () => {
-        if (isCategorySelected) {
-            const hasResults = await listUsersByConversationTopic(selectedCategory);
+        if (selectedCategories.length > 0) {
+            const hasResults = await listUsersByConversationTopics(selectedCategories);
             if (hasResults) {
                 navigation.navigate('ConversationMatches');
             } else {
-                Alert.alert(`No matches for topic ${selectedCategory}`);
+                Alert.alert('No matches found for the selected topics.');
             }
         } else {
-            Alert.alert('Please select a topic.');
+            Alert.alert('Please select at least one topic.');
         }
     };
 
@@ -50,7 +53,7 @@ const SubCategoriesScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headline}>What would u like to talk about?</Text>
+            <Text style={styles.headline}>What would you like to talk about?</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Search category..."
@@ -61,7 +64,7 @@ const SubCategoriesScreen = ({ navigation }) => {
                 data={filteredCategories}
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => handleSelectCategory(item)}>
-                        <Text style={[styles.category, selectedCategory === item && styles.selectedCategory]}>{item}</Text>
+                        <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{item}</Text>
                     </TouchableOpacity>
                 )}
                 keyExtractor={(item) => item}
@@ -108,6 +111,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         marginTop: 20,
+        alignSelf: 'center',
     },
     buttonText: {
         color: 'white',

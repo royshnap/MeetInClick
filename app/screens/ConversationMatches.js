@@ -24,7 +24,7 @@ const ConversationMatches = () => {
     return (
         <View style={styles.container}>
             {conversationTopicResults.length === 0 && (
-                <Text style={styles.noMatchesText}>No matches found for the topic: {user?.conversationTopic}</Text>
+                <Text style={styles.noMatchesText}>No matches found for the selected topics.</Text>
             )}
             {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>Matches:</Text>}
             <FlatList
