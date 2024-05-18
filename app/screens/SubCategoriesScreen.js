@@ -15,10 +15,10 @@ const SubCategoriesScreen = ({ navigation }) => {
         "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
         "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
         "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
-        "Education", "Funny", "Achievements", "Languages", "Pets", "Science", "Dreams",
+        "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
         "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
         "Fitness", "Adventure", "Creativity"
-    ];
+    ].sort((a, b) => a.localeCompare(b)); //alphabetically sort
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -54,6 +54,7 @@ const SubCategoriesScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.headline}>What would you like to talk about?</Text>
+            <Text style={styles.subtitle}>Choose up to 3 topics</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Search category..."
@@ -84,6 +85,11 @@ const styles = StyleSheet.create({
     headline: {
         fontSize: 24,
         fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    subtitle: {
+        fontSize: 18,
+        color: 'gray',
         marginBottom: 20,
     },
     input: {

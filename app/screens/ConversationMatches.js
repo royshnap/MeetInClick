@@ -3,21 +3,35 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react
 import { useConversationTopicMatches } from '../context/ConversationContext';
 import { useAuth } from '../context/AuthContext';
 
-const MatchItem = ({ otherUser }) => {
-    const handlePress = () => {
-        Alert.alert(`You want to meet with: ${otherUser.username}`);
+const MatchItem = ({ otherUser,navigation }) => {
+
+    const { startConversation } = useConversationTopicMatches();
+
+    const handlePress = async () => {
+        try {
+        const conversationId = await startConversation(otherUser.id)
+        if(conversationId)
+            navigation.navigate(`Conversation`, {cid: conversationId})
+        else    
+                Alert.alert(`There was a problem starting conversation with ${otherUser.username}`)
+    }catch(e) {
+        Alert.alert(e.message)
+    }
     };
 
     return (
-        <TouchableOpacity onPress={handlePress}>
             <View style={styles.matchItem}>
                 <Text style={styles.matchText}>User name: {otherUser.username}</Text>
+                <TouchableOpacity onPress = { handlePress }>
+                    <Text>
+                        Start conversation
+                    </Text>
+                </TouchableOpacity>
             </View>
-        </TouchableOpacity>
     );
 };
 
-const ConversationMatches = () => {
+const ConversationMatches = ({navigation}) => {
     const { conversationTopicResults } = useConversationTopicMatches();
     const { user } = useAuth();
 
@@ -29,7 +43,7 @@ const ConversationMatches = () => {
             {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>Matches:</Text>}
             <FlatList
                 data={conversationTopicResults}
-                renderItem={({ item: otherUser }) => <MatchItem otherUser={otherUser} />}
+                renderItem={({ item: otherUser }) => <MatchItem otherUser={otherUser} navigation={navigation}/>}
                 keyExtractor={item => item.id}
             />
         </View>

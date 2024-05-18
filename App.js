@@ -9,9 +9,15 @@ import MainScreen from './app/screens/MainScreen';
 import { AuthContextProvider } from './app/context/AuthContext';
 import { ConversationContextProvider } from './app/context/ConversationContext';
 import ConversationMatches from './app/screens/ConversationMatches';
+import { View } from 'react-native';
+import Conversation from './app/screens/Conversation';
 
 const Stack = createStackNavigator();
 
+
+const Conversations = () => {
+  return <View><Text>TODO: Implement conversation list</Text></View>
+}
 export default function App() {
   return (
     <NavigationContainer>
@@ -25,7 +31,9 @@ export default function App() {
            <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
 
         <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
-        
+        <Stack.Screen name="Conversation" component={Conversation} />
+        <Stack.Screen name="Conversations" component={Conversations} />
+
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
           
