@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
 
 const SubCategoriesScreen = ({ navigation }) => {
@@ -18,7 +17,7 @@ const SubCategoriesScreen = ({ navigation }) => {
         "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
         "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
         "Fitness", "Adventure", "Creativity"
-    ].sort((a, b) => a.localeCompare(b)); //alphabetically sort
+    ].sort((a, b) => a.localeCompare(b)); // alphabetically sort
 
     const handleSearch = (query) => {
         setSearchQuery(query);
@@ -127,3 +126,5 @@ const styles = StyleSheet.create({
 });
 
 export default SubCategoriesScreen;
+
+

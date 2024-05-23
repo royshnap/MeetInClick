@@ -129,7 +129,7 @@ export const ConversationContextProvider = ({ children }) => {
         return false;
     };
 
-    const sendMessageToConversation = async (content) => {
+    const sendMessageToConversation = async (cid,content) => {
         if(!activeConversation) return
         const now = Date.now()
 
@@ -138,7 +138,7 @@ export const ConversationContextProvider = ({ children }) => {
             date: now,
             sender: user.id
         }]
-        const dbRef= ref(Firebase.Database, `conversations/${cid_1}`)
+        const dbRef= ref(Firebase.Database, `conversations/${cid}`)
         await set(dbRef, {...activeConversation, messages})
     }
     
@@ -161,7 +161,7 @@ export const ConversationContextProvider = ({ children }) => {
 };
 
 
-export const useActiveConversation = ({route}) => {
+export const useActiveConversation = ({route, navigation}) => { //added navigation
     const {listenConversation, activeConversation,sendMessageToConversation} = useConversationTopicMatches()
     const [conversationLoading, setConversationLoading] = useState(true)
     const [conversationLoadingError, setConversationLoadingError] = useState()
