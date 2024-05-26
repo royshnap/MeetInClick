@@ -6,70 +6,76 @@ import { onValue, ref, set } from "firebase/database";
 const AuthContext = React.createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState(undefined);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [user, setUser] = useState(undefined); // State to manage the authenticated user
+    const [loading, setLoading] = useState(false); // State to manage loading status
+    const [error, setError] = useState(false); // State to manage error status
 
+    // Function to register a new user
     const register = async (user) => {
-        setLoading(true);
-        setError(undefined);
+        setLoading(true); // Set loading state to true
+        setError(undefined); // Reset error state
         try {
+            // Create user with email and password
             const authResult = await createUserWithEmailAndPassword(Firebase.Auth, user.email, user.password);
-            user.id = authResult.user.uid;
-            delete user["password"];
-            const usersRef = ref(Firebase.Database, `users/${user.id}`);
-            set(usersRef, user);
-            setUser(user);
+            user.id = authResult.user.uid; // Set user ID from authentication result
+            delete user["password"]; // Remove password from user object
+            const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
+            set(usersRef, user); // Save user data in the database
+            setUser(user); // Set user state
         } catch (e) {
-            setError(e);
+            setError(e); // Set error state if there's an error
         } finally {
-            setLoading(false);
+            setLoading(false); // Set loading state to false
         }
     };
 
+    // Function to log in an existing user
     const login = async (email, password) => {
-        setLoading(true);
-        setError(undefined);
+        setLoading(true); // Set loading state to true
+        setError(undefined); // Reset error state
         try {
-            await signInWithEmailAndPassword(Firebase.Auth, email, password);
+            await signInWithEmailAndPassword(Firebase.Auth, email, password); // Sign in with email and password
         } catch (e) {
-            setError(e);
+            setError(e); // Set error state if there's an error
         } finally {
-            setLoading(false);
+            setLoading(false); // Set loading state to false
         }
     };
 
+    // Function to sign out the current user
     const signOutUser = async () => {
         try {
-            await signOut(Firebase.Auth);
-            setUser(null);
+            await signOut(Firebase.Auth); // Sign out the user
+            setUser(null); // Reset user state to null
         } catch (e) {
-            setError(e);
+            setError(e); // Set error state if there's an error
         }
     };
 
+    // Effect to handle authentication state changes
     useEffect(() => {
-        let userDocListener = undefined;
+        let userDocListener = undefined; // Listener for user data changes
         const unsub = onAuthStateChanged(Firebase.Auth, (userState) => {
             if (userState) {
-                const usersRef = ref(Firebase.Database, `users/${userState.uid}`);
+                const usersRef = ref(Firebase.Database, `users/${userState.uid}`); // Reference to user's data in the database
                 userDocListener = onValue(usersRef, (doc) => {
-                    const userASJson = doc.val();
-                    setUser(userASJson);
+                    const userASJson = doc.val(); // Get user data as JSON
+                    setUser(userASJson); // Set user state
                 });
             } else {
-                setUser(undefined);
+                setUser(undefined); // Reset user state if not authenticated
             }
         });
 
         return () => {
-            unsub();
+            unsub(); // Unsubscribe from authentication state changes
             if (userDocListener) {
-                userDocListener();
+                userDocListener(); // Unsubscribe from user data changes
             }
         };
     }, []);
 
+    // Provide authentication context to children components
     return (
         <AuthContext.Provider value={{ user, loading, error, register, login, signOutUser, setError }}>
             {children}
@@ -77,6 +83,7 @@ export const AuthContextProvider = ({ children }) => {
     );
 };
 
+// Hook to use authentication context
 export const useAuth = () => {
     const context = React.useContext(AuthContext);
     if (!context) {

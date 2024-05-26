@@ -1,5 +1,4 @@
 import { ref, query, orderByChild, equalTo, get, update, set, onValue } from "firebase/database";
-
 import Firebase from "../config/firebase";
 import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
@@ -9,32 +8,34 @@ import { mapFirebaseResults, mapFirebaseResultsDict } from "../../utils";
 const ConversationContext = React.createContext(null);
 
 export const ConversationContextProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Hook to get the current authenticated user
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(undefined);
-  const [requests, setRequests] = useState({
+  const [loading, setLoading] = useState(false); // State to manage loading status
+  const [error, setError] = useState(undefined); // State to manage error status
+  const [requests, setRequests] = useState({ // State to manage conversation requests
     pending: {},
     approved: {},
     declined: {},
   });
-  const [conversationTopicResults, setConversationTopicResults] = useState([]);
-  const [conversations, setConversations] = useState(undefined);
-  const [activeConversation, setActiveConversation] = useState(undefined);
+  const [conversationTopicResults, setConversationTopicResults] = useState([]); // State to manage conversation topic results
+  const [conversations, setConversations] = useState(undefined); // State to manage all conversations
+  const [activeConversation, setActiveConversation] = useState(undefined); // State to manage the active conversation
 
+  // Function to get all conversations of the user
   const getAllConversations = async (refresh = false) => {
     if (!refresh && conversations) {
-      return; // No need to refresh existing conversations..
+      return; // No need to refresh existing conversations
     }
     setLoading(true);
     try {
       const dbRef = ref(Firebase.Database, `conversations`);
       const allUsersMap = await get(ref(Firebase.Database, "users")).then(mapFirebaseResultsDict);
 
-      const [result_1, result_2] = Promise.all(
+      const [result_1, result_2] = await Promise.all([
         get(query(dbRef, orderByChild("user_1"), equalTo(user.id))).then(mapFirebaseResults),
         get(query(dbRef, orderByChild("user_2"), equalTo(user.id))).then(mapFirebaseResults)
-      );
+      ]);
+
       const conversations = [...result_1, ...result_2];
 
       for (var conversation of conversations) {
@@ -48,12 +49,13 @@ export const ConversationContextProvider = ({ children }) => {
       }
       setConversations(conversations);
     } catch (e) {
-      setError(e);
+      setError(e); // Set error state if there's an error
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading state to false
     }
   };
 
+  // Effect to listen for authentication state changes and requests
   useEffect(() => {
     let unsubscribe = undefined;
     if (user) {
@@ -66,6 +68,7 @@ export const ConversationContextProvider = ({ children }) => {
     };
   }, [user]);
 
+  // Function to listen for changes in a specific conversation
   const listenConversation = (cid, onLoad) => {
     return onValue(
       ref(Firebase.Database, `conversations/${cid}`),
@@ -80,12 +83,13 @@ export const ConversationContextProvider = ({ children }) => {
     );
   };
 
+  // Function to start a new conversation
   const startConversation = async (otherUserId, requestId_1, requestId_2) => {
     setLoading(true);
     try {
-      if(!isApproved(otherUserId)) {
-        await approveConversationRequest(requestId_1)
-        await approveConversationRequest(requestId_2)
+      if (!isApproved(otherUserId)) {
+        await approveConversationRequest(requestId_1);
+        await approveConversationRequest(requestId_2);
       }
         
       const cid_1 = `${user.id}_${otherUserId}`;
@@ -97,10 +101,8 @@ export const ConversationContextProvider = ({ children }) => {
       const existing_2 = await get(dbRefU2);
 
       if (existing_1.exists() || existing_2.exists()) {
-        // conversation is already present for those 2 users
         setLoading(false);
-        if (existing_1.exists()) return cid_1;
-        else return cid_2;
+        return existing_1.exists() ? cid_1 : cid_2;
       }
 
       await set(dbRefU1, {
@@ -111,13 +113,14 @@ export const ConversationContextProvider = ({ children }) => {
       });
       return cid_1;
     } catch (e) {
-      setError(error);
+      setError(e); // Set error state if there's an error
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading state to false
     }
     return null;
   };
 
+  // Function to send a conversation request
   const sendConversationRequest = async (otherUserId) => {
     setLoading(true);
     try {
@@ -130,8 +133,6 @@ export const ConversationContextProvider = ({ children }) => {
       const existing_2 = await get(dbRefU2);
 
       if (existing_1.exists() || existing_2.exists()) {
-        // request is already present for those 2 users
-        // approve it
         setLoading(false);
         if (existing_1.exists()) {
           await update(dbRefU1, { status: "approved" });
@@ -150,13 +151,14 @@ export const ConversationContextProvider = ({ children }) => {
       });
       return cid_1;
     } catch (e) {
-      setError(error);
+      setError(e); // Set error state if there's an error
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading state to false
     }
     return null;
   };
 
+  // Function to listen for conversation requests
   const listenRequests = () => {
     const dbRefU1 = ref(Firebase.Database, `requests`);
     const unsub = onValue(dbRefU1, (val) => {
@@ -180,16 +182,19 @@ export const ConversationContextProvider = ({ children }) => {
     return unsub;
   };
 
+  // Function to decline a conversation request
   const declineConversationRequest = async (requestId) => {
     const dbRefU1 = ref(Firebase.Database, `requests/${requestId}`);
     await update(dbRefU1, { status: "declined" });
   };
 
+  // Function to approve a conversation request
   const approveConversationRequest = async (requestId) => {
     const dbRefU1 = ref(Firebase.Database, `requests/${requestId}`);
     await update(dbRefU1, { status: "approved" });
   };
 
+  // Function to list users by their conversation topics
   const listUsersByConversationTopics = async (topics) => {
     const currentUserRef = ref(Firebase.Database, `users/${user.id}`);
     await update(currentUserRef, { conversationTopics: topics });
@@ -230,6 +235,7 @@ export const ConversationContextProvider = ({ children }) => {
     return false;
   };
 
+  // Function to send a message in a conversation
   const sendMessageToConversation = async (cid, content) => {
     if (!activeConversation) return;
     const now = Date.now();
@@ -246,6 +252,7 @@ export const ConversationContextProvider = ({ children }) => {
     await set(dbRef, { ...activeConversation, messages });
   };
 
+  // Function to check if a conversation request is approved
   const isApproved = (otherUserId) => {
     const cid_1 = `${otherUserId}_${user.id}`;
     const cid_2 = `${user.id}_${otherUserId}`;
@@ -253,6 +260,8 @@ export const ConversationContextProvider = ({ children }) => {
     const request_2 = requests.approved[cid_2];
     return request_1 || request_2;
   };
+
+  // Function to check if a conversation request is declined
   const isDeclined = (otherUserId) => {
     const cid_1 = `${otherUserId}_${user.id}`;
     const cid_2 = `${user.id}_${otherUserId}`;
@@ -260,6 +269,8 @@ export const ConversationContextProvider = ({ children }) => {
     const request_2 = requests.declined[cid_2];
     return request_1 || request_2;
   };
+
+  // Function to check if a conversation request is pending
   const isPending = (otherUserId) => {
     const cid_1 = `${otherUserId}_${user.id}`;
     const cid_2 = `${user.id}_${otherUserId}`;
@@ -298,24 +309,24 @@ export const ConversationContextProvider = ({ children }) => {
   );
 };
 
+// Hook to use the active conversation
 export const useActiveConversation = ({ route, navigation }) => {
-  //added navigation
   const { listenConversation, activeConversation, sendMessageToConversation } =
     useConversationTopicMatches();
   const [conversationLoading, setConversationLoading] = useState(true);
   const [conversationLoadingError, setConversationLoadingError] = useState();
 
+  // Effect to listen for changes in the active conversation
   useEffect(() => {
     const cid = route.params?.cid;
     let unsub = undefined;
     if (cid) {
       unsub = listenConversation(cid, (e) => {
-        // this function executes whenver there are changes in conversation
         setConversationLoading(false);
         setConversationLoadingError(e);
       });
     } else {
-      Alert.aelrt;
+      Alert.alert("No conversation ID provided");
     }
     return () => {
       if (unsub) unsub();
@@ -329,16 +340,19 @@ export const useActiveConversation = ({ route, navigation }) => {
   };
 };
 
+// Hook to get all conversations of the user
 export const useAllConversations = () => {
   const { user } = useAuth();
   const { getAllConversations, conversations } = useConversationTopicMatches();
 
+  // Effect to get all conversations when user changes
   useEffect(() => {
     if (user) getAllConversations();
   }, [user]);
   return conversations;
 };
 
+// Hook to use conversation topic matches
 export const useConversationTopicMatches = () => {
   const context = React.useContext(ConversationContext);
   if (!context) {

@@ -3,12 +3,12 @@ import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } 
 import { useConversationTopicMatches } from '../context/ConversationContext';
 
 const SubCategoriesScreen = ({ navigation }) => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [searchQuery, setSearchQuery] = useState(''); // State for managing the search query input
+    const [selectedCategories, setSelectedCategories] = useState([]); // State for managing the selected categories
 
     const {
         listUsersByConversationTopics, loading, error, conversationTopicResults
-    } = useConversationTopicMatches();
+    } = useConversationTopicMatches(); // Hook to manage conversation topic matches
 
     const categories = [
         "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
@@ -17,35 +17,39 @@ const SubCategoriesScreen = ({ navigation }) => {
         "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
         "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
         "Fitness", "Adventure", "Creativity"
-    ].sort((a, b) => a.localeCompare(b)); // alphabetically sort
+    ].sort((a, b) => a.localeCompare(b)); // Alphabetically sort the categories
 
+    // Function to handle changes in the search input
     const handleSearch = (query) => {
         setSearchQuery(query);
     };
 
+    // Function to handle category selection/deselection
     const handleSelectCategory = (category) => {
         if (selectedCategories.includes(category)) {
-            setSelectedCategories(selectedCategories.filter(c => c !== category));
+            setSelectedCategories(selectedCategories.filter(c => c !== category)); // Deselect category
         } else if (selectedCategories.length < 3) {
-            setSelectedCategories([...selectedCategories, category]);
+            setSelectedCategories([...selectedCategories, category]); // Select category if less than 3
         } else {
-            Alert.alert('You can select up to 3 topics.');
+            Alert.alert('You can select up to 3 topics.'); // Alert if more than 3 selected
         }
     };
 
+    // Function to handle the select button press
     const handleSelectButton = async () => {
         if (selectedCategories.length > 0) {
-            const hasResults = await listUsersByConversationTopics(selectedCategories);
+            const hasResults = await listUsersByConversationTopics(selectedCategories); // Fetch users by selected topics
             if (hasResults) {
-                navigation.navigate('ConversationMatches');
+                navigation.navigate('ConversationMatches'); // Navigate to matches if results found
             } else {
-                Alert.alert('No matches found for the selected topics.');
+                Alert.alert('No matches found for the selected topics.'); // Alert if no matches found
             }
         } else {
-            Alert.alert('Please select at least one topic.');
+            Alert.alert('Please select at least one topic.'); // Alert if no topics selected
         }
     };
 
+    // Filter categories based on the search query
     const filteredCategories = categories.filter(category =>
         category.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -58,16 +62,16 @@ const SubCategoriesScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Search category..."
                 value={searchQuery}
-                onChangeText={handleSearch}
+                onChangeText={handleSearch} // Handle text input changes
             />
             <FlatList
-                data={filteredCategories}
+                data={filteredCategories} // Display filtered categories
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => handleSelectCategory(item)}>
                         <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{item}</Text>
                     </TouchableOpacity>
                 )}
-                keyExtractor={(item) => item}
+                keyExtractor={(item) => item} // Unique key for each category
             />
             <TouchableOpacity style={styles.selectButton} onPress={handleSelectButton}>
                 <Text style={styles.buttonText}>Select</Text>
@@ -126,5 +130,3 @@ const styles = StyleSheet.create({
 });
 
 export default SubCategoriesScreen;
-
-
