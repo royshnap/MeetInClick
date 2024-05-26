@@ -1,14 +1,18 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useActiveConversation } from "../context/ConversationContext";
 import { TextInput, View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Link } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { FlatList } from "react-native-gesture-handler";
+import { ref, get } from "firebase/database";
+import Firebase from "../config/firebase";
 
 // Component to render each message item
-const MessageItem = ({ otherUser, message }) => {
+const MessageItem = ({ message, currentUser, otherUser }) => {
+  const sender = message.sender === currentUser.id ? currentUser.username : otherUser?.username || "Unknown";
   return (
     <View style={styles.messageItem}>
+      <Text style={styles.senderText}>{sender}</Text>
       <Text style={styles.messageText}>{message.content}</Text>
     </View>
   );
@@ -29,13 +33,22 @@ const Conversation = ({ route, navigation }) => {
 
   const [messageContent, setMessageContent] = useState(""); // State for managing the message content
   const { user } = useAuth(); // Hook to get the current authenticated user
+  const [otherUser, setOtherUser] = useState(null); // State to store the other user
 
-  // Memoized other user in the conversation
-  const otherUser = useMemo(() => {
-    if (!activeConversation) return null;
-    if (activeConversation.user_1.id === user.id) return activeConversation.user_2;
-    return activeConversation.user_1;
-  }, [user, activeConversation]);
+  useEffect(() => {
+    const fetchOtherUser = async () => {
+      if (activeConversation) {
+        const otherUserId = activeConversation.user_1 === user.id ? activeConversation.user_2 : activeConversation.user_1;
+        const userRef = ref(Firebase.Database, `users/${otherUserId}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          setOtherUser(snapshot.val());
+        }
+      }
+    };
+
+    fetchOtherUser();
+  }, [activeConversation, user.id]);
 
   // Function to send a message
   const sendMessage = () => {
@@ -49,7 +62,7 @@ const Conversation = ({ route, navigation }) => {
   if (conversationLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Conversation loading..</Text>
+        <Text style={styles.loadingText}>Conversation loading...</Text>
       </View>
     );
   }
@@ -74,9 +87,9 @@ const Conversation = ({ route, navigation }) => {
       <FlatList
         data={activeConversation.messages} // Data for FlatList: messages in the active conversation
         renderItem={({ item: message }) => (
-          <MessageItem otherUser={otherUser} key={message.id} message={message} /> // Render each message item
+          <MessageItem otherUser={otherUser} currentUser={user} message={message} /> // Render each message item
         )}
-        keyExtractor={(item) => item.id} // Unique key for each message
+        keyExtractor={(item) => item.date.toString()} // Unique key for each message
       />
       <TextInput
         placeholder="Enter message"
@@ -140,6 +153,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  senderText: {
+    fontSize: 14,
+    color: "#666666",
+    fontWeight: "bold",
+    marginBottom: 5,
   },
   messageText: {
     fontSize: 16,
