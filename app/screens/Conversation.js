@@ -1,11 +1,14 @@
 import { useMemo, useState, useEffect } from "react";
 import { useActiveConversation } from "../context/ConversationContext";
-import { TextInput, View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { TextInput, View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { Link } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 import { FlatList } from "react-native-gesture-handler";
 import { ref, get } from "firebase/database";
 import Firebase from "../config/firebase";
+
+// Define the maximum number of characters
+const MAX_CHARACTERS = 100;
 
 // Component to render each message item
 const MessageItem = ({ message, currentUser, otherUser }) => {
@@ -32,6 +35,7 @@ const Conversation = ({ route, navigation }) => {
   } = useActiveConversation({ route, navigation });
 
   const [messageContent, setMessageContent] = useState(""); // State for managing the message content
+  const [totalCharacters, setTotalCharacters] = useState(0); // State to track total characters sent by user
   const { user } = useAuth(); // Hook to get the current authenticated user
   const [otherUser, setOtherUser] = useState(null); // State to store the other user
 
@@ -50,9 +54,21 @@ const Conversation = ({ route, navigation }) => {
     fetchOtherUser();
   }, [activeConversation, user.id]);
 
+  useEffect(() => {
+    if (activeConversation && activeConversation.messages) {
+      const total = activeConversation.messages
+        .filter(message => message.sender === user.id)
+        .reduce((acc, message) => acc + message.content.replace(/\s+/g, '').length, 0); // Remove white spaces
+      setTotalCharacters(total);
+    }
+  }, [activeConversation, user.id]);
+
   // Function to send a message
   const sendMessage = () => {
-    if (messageContent) {
+    const trimmedMessageContent = messageContent.replace(/\s+/g, ''); // Remove white spaces
+    if (trimmedMessageContent.length + totalCharacters > MAX_CHARACTERS) {
+      Alert.alert("Character limit exceeded", `You can only send a total of ${MAX_CHARACTERS} characters.`);
+    } else {
       sendMessageToConversation(conversationId, messageContent);
       setMessageContent(""); // Clear the message input
     }
@@ -83,9 +99,11 @@ const Conversation = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       {otherUser && <Text style={styles.headerText}>Conversation with {otherUser.username}</Text>}
-
+      <Text style={styles.subtitle}>
+        You have up to {MAX_CHARACTERS} characters to set a place to meet
+      </Text>
       <FlatList
-        data={activeConversation.messages} // Data for FlatList: messages in the active conversation
+        data={activeConversation.messages || []} // Data for FlatList: messages in the active conversation
         renderItem={({ item: message }) => (
           <MessageItem otherUser={otherUser} currentUser={user} message={message} /> // Render each message item
         )}
@@ -95,11 +113,15 @@ const Conversation = ({ route, navigation }) => {
         placeholder="Enter message"
         value={messageContent}
         onChangeText={setMessageContent} // Handle text input changes
+        maxLength={MAX_CHARACTERS - totalCharacters + messageContent.replace(/\s+/g, '').length} // Limit input length based on remaining characters, excluding white spaces
         style={styles.input}
       />
       <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
         <Text style={styles.sendButtonText}>Send</Text>
       </TouchableOpacity>
+      <Text style={styles.characterCount}>
+        {totalCharacters}/{MAX_CHARACTERS} characters used 
+      </Text>
     </View>
   );
 };
@@ -136,8 +158,14 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 10,
     color: "#2196F3",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777777",
+    marginBottom: 20,
     textAlign: "center",
   },
   messageItem: {
@@ -182,6 +210,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  characterCount: {
+    textAlign: "center",
+    color: "#333333",
+    marginTop: 10,
   },
 });
 
