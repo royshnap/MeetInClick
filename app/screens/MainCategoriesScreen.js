@@ -12,17 +12,7 @@ const MainCategoriesScreen = ({ navigation }) => {
 
     const handleChooseButton = () => {
         if (selectedCategory) {
-            if (selectedCategory === 'Conversation') {
-                Alert.alert(`You chose ${selectedCategory}`, '', [
-                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
-                    { text: 'OK', onPress: () => navigation.navigate('SubCategories', { category: selectedCategory }) },
-                ]);
-            } else {
-                Alert.alert(`You chose ${selectedCategory}`, '', [
-                    { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
-                    { text: 'OK', onPress: () => navigation.navigate('Location', { category: selectedCategory }) },
-                ]);
-            }
+            navigation.navigate('SubCategories', { category: selectedCategory });
         } else {
             Alert.alert('Please select a category');
         }

@@ -2,22 +2,44 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
 
-const SubCategoriesScreen = ({ navigation }) => {
-    const [searchQuery, setSearchQuery] = useState(''); // State for managing the search query input
-    const [selectedCategories, setSelectedCategories] = useState([]); // State for managing the selected categories
+
+const SubCategoriesScreen = ({ route, navigation }) => {
+    const { category } = route.params; // Get the main category from the route parameters
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     const {
         listUsersByConversationTopics, loading, error, conversationTopicResults
     } = useConversationTopicMatches(); // Hook to manage conversation topic matches
 
-    const categories = [
-        "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
-        "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
-        "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
-        "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
-        "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
-        "Fitness", "Adventure", "Creativity"
-    ].sort((a, b) => a.localeCompare(b)); // Alphabetically sort the categories
+    const categoriesMap = {
+        Conversation: [
+            "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
+            "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
+            "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
+            "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
+            "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
+            "Fitness", "Adventure", "Creativity"
+        ],
+        "Sport Activity": [
+            "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
+            "Hiking", "Soccer", "Basketball", "Tennis", "Badminton", "Cricket",
+            "Baseball", "Rugby", "Table Tennis", "Volleyball", "Skiing", "Snowboarding",
+            "Skating", "Martial Arts", "Boxing", "Climbing", "Golf", "Horse Riding"
+        ],
+        Travel: [
+            "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
+            "Cruise", "Backpacking", "Luxury", "Camping", "Solo Travel", "Family Travel",
+            "Romantic Getaway", "Business Travel", "Group Travel", "Eco Travel", "Wildlife",
+            "Urban Exploration", "Food and Drink", "Festival Travel"
+        ],
+        Clubbing: [
+            "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
+            "Karaoke", "Lounge Bars", "Rooftop Bars", "Beach Clubs", "Pool Parties",
+            "Cocktail Bars", "Discos", "After Hours Clubs", "Jazz Clubs", "Comedy Clubs"
+        ]
+    };
+    const categories = categoriesMap[category] || [];
 
     // Function to handle changes in the search input
     const handleSearch = (query) => {
@@ -28,10 +50,10 @@ const SubCategoriesScreen = ({ navigation }) => {
     const handleSelectCategory = (category) => {
         if (selectedCategories.includes(category)) {
             setSelectedCategories(selectedCategories.filter(c => c !== category)); // Deselect category
-        } else if (selectedCategories.length < 3) {
+        } else if (selectedCategories.length < 5) {
             setSelectedCategories([...selectedCategories, category]); // Select category if less than 3
         } else {
-            Alert.alert('You can select up to 3 topics.'); // Alert if more than 3 selected
+            Alert.alert('You can select up to 5 topics.'); // Alert if more than 3 selected
         }
     };
 
