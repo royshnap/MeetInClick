@@ -105,12 +105,16 @@ const SubCategoriesScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: '#FFE12A',
+        paddingTop: 20,
     },
     headline: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: '#333',
     },
     subtitle: {
         fontSize: 18,
@@ -118,31 +122,41 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
+        width: '80%',
+        height: 35,
         borderWidth: 1,
+        borderColor: 'gray',
         borderRadius: 10,
         marginBottom: 20,
         paddingHorizontal: 10,
     },
     category: {
-        fontSize: 18,
+        backgroundColor: 'white',
+        borderRadius: 15,
         marginBottom: 10,
+        paddingVertical: 20,
+        paddingHorizontal: 40,
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
     },
     selectedCategory: {
         backgroundColor: 'lightblue',
-        borderRadius: 5,
-        paddingHorizontal: 5,
     },
     selectButton: {
         width: '80%',
         height: 50,
-        backgroundColor: '#007AFF',
+        backgroundColor: '#2EE411',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
         marginTop: 20,
-        alignSelf: 'center',
     },
     buttonText: {
         color: 'white',
@@ -150,5 +164,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
+
 
 export default SubCategoriesScreen;

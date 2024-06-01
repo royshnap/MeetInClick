@@ -59,14 +59,16 @@ const MainCategoriesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        paddingTop: 50, // Added padding to ensure content doesn't overlap with the absolute positioned button
+        backgroundColor: '#FFE12A',
+        paddingTop: 20,
     },
     title: {
-        marginTop: 20, // Added margin to position the title under the sign-out button
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        color: '#333',
     },
     scrollView: {
         width: '80%',
@@ -76,20 +78,27 @@ const styles = StyleSheet.create({
     },
     category: {
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderRadius: 15,
         marginBottom: 10,
         paddingVertical: 20,
         paddingHorizontal: 40,
         color: 'black',
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
+        textAlign: 'center',
+        width: '100%',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
     },
     selectedCategory: {
-        backgroundColor: 'lightblue', // Changed highlight color to light blue
+        backgroundColor: 'lightblue',
     },
     chooseButton: {
-        marginTop: 60, // Increased the margin top to make it higher
-        backgroundColor: '#007AFF',
+        marginTop: 60,
+        backgroundColor: '#2EE411',
         borderRadius: 10,
         paddingVertical: 15,
         paddingHorizontal: 30,
@@ -106,7 +115,7 @@ const styles = StyleSheet.create({
         right: 10,
     },
     signOutButtonText: {
-        color: 'blue',
+        color: '#07D7EF',
         fontSize: 16,
     },
 });
