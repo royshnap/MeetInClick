@@ -20,24 +20,24 @@ const SubCategoriesScreen = ({ route, navigation }) => {
             "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
             "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
             "Fitness", "Adventure", "Creativity"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         "Sport Activity": [
             "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
             "Hiking", "Soccer", "Basketball", "Tennis", "Badminton", "Cricket",
             "Baseball", "Rugby", "Table Tennis", "Volleyball", "Skiing", "Snowboarding",
             "Skating", "Martial Arts", "Boxing", "Climbing", "Golf", "Horse Riding"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         Travel: [
             "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
             "Cruise", "Backpacking", "Luxury", "Camping", "Solo Travel", "Family Travel",
             "Romantic Getaway", "Business Travel", "Group Travel", "Eco Travel", "Wildlife",
             "Urban Exploration", "Food and Drink", "Festival Travel"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         Clubbing: [
             "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
             "Karaoke", "Lounge Bars", "Rooftop Bars", "Beach Clubs", "Pool Parties",
             "Cocktail Bars", "Discos", "After Hours Clubs", "Jazz Clubs", "Comedy Clubs"
-        ]
+        ].sort((a, b) => a.localeCompare(b))
     };
     const categories = categoriesMap[category] || [];
 
@@ -61,11 +61,11 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     const handleSelectButton = async () => {
         if (selectedCategories.length > 0) {
             const hasResults = await listUsersByConversationTopics(selectedCategories); // Fetch users by selected topics
-            if (hasResults) {
+            // if (hasResults) {
                 navigation.navigate('ConversationMatches'); // Navigate to matches if results found
-            } else {
-                Alert.alert('No matches found for the selected topics.'); // Alert if no matches found
-            }
+            // } else {
+            //     Alert.alert('No matches found for the selected topics.'); // Alert if no matches found
+            // }
         } else {
             Alert.alert('Please select at least one topic.'); // Alert if no topics selected
         }
@@ -79,7 +79,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.headline}>What would you like to talk about?</Text>
-            <Text style={styles.subtitle}>Choose up to 3 topics</Text>
+            <Text style={styles.subtitle}>Choose up to 5 topics</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Search category..."
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#FFE12A',
+        // backgroundColor: '#FFE12A',
         paddingTop: 20,
     },
     headline: {

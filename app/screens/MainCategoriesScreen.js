@@ -33,19 +33,19 @@ const MainCategoriesScreen = ({ navigation }) => {
             <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
                 <Text style={styles.signOutButtonText}>Sign Out</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>What would u like to do?</Text>
+            <Text style={styles.title}>What would you like to do?</Text>
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-                <TouchableOpacity onPress={() => handleChooseCategory('Conversation')}>
-                    <Text style={[styles.category, selectedCategory === 'Conversation' && styles.selectedCategory]}>Conversation</Text>
+                <TouchableOpacity style={styles.categoryButton} onPress={() => handleChooseCategory('Conversation')}>
+                    <Text style={[styles.categoryText, selectedCategory === 'Conversation' && styles.selectedCategoryText]}>Conversation</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleChooseCategory('Sport Activity')}>
-                    <Text style={[styles.category, selectedCategory === 'Sport Activity' && styles.selectedCategory]}>Sport Activity</Text>
+                <TouchableOpacity style={styles.categoryButton} onPress={() => handleChooseCategory('Sport Activity')}>
+                    <Text style={[styles.categoryText, selectedCategory === 'Sport Activity' && styles.selectedCategoryText]}>Sport Activity</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleChooseCategory('Travel')}>
-                    <Text style={[styles.category, selectedCategory === 'Travel' && styles.selectedCategory]}>Travel</Text>
+                <TouchableOpacity style={styles.categoryButton} onPress={() => handleChooseCategory('Travel')}>
+                    <Text style={[styles.categoryText, selectedCategory === 'Travel' && styles.selectedCategoryText]}>Travel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleChooseCategory('Clubbing')}>
-                    <Text style={[styles.category, selectedCategory === 'Clubbing' && styles.selectedCategory]}>Clubbing</Text>
+                <TouchableOpacity style={styles.categoryButton} onPress={() => handleChooseCategory('Clubbing')}>
+                    <Text style={[styles.categoryText, selectedCategory === 'Clubbing' && styles.selectedCategoryText]}>Clubbing</Text>
                 </TouchableOpacity>
                 {/* Add more categories here */}
             </ScrollView>
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#FFE12A',
         paddingTop: 20,
     },
     title: {
@@ -71,29 +70,34 @@ const styles = StyleSheet.create({
         color: '#333',
     },
     scrollView: {
-        width: '80%',
+        width: '100%',
     },
     contentContainer: {
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
-    category: {
+    categoryButton: {
+        width: '100%',
+        maxWidth: 300,
         backgroundColor: 'white',
         borderRadius: 15,
         marginBottom: 10,
         paddingVertical: 20,
         paddingHorizontal: 40,
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        width: '100%',
+        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
     },
-    selectedCategory: {
+    categoryText: {
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    selectedCategoryText: {
         backgroundColor: 'lightblue',
     },
     chooseButton: {
@@ -103,6 +107,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         paddingHorizontal: 30,
         marginBottom: 20,
+        alignItems: 'center',
     },
     chooseButtonText: {
         color: 'white',
@@ -119,6 +124,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-
 
 export default MainCategoriesScreen;
