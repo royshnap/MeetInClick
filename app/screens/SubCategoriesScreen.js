@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
 
-
 const SubCategoriesScreen = ({ route, navigation }) => {
-    const { category } = route.params; // Get the main category from the route parameters
+    const { category, title } = route.params; // Get the main category and title from the route parameters
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -14,7 +13,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
 
     const categoriesMap = {
         Conversation: [
-            "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
+            "AAATest", "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
             "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
             "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
             "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
@@ -22,19 +21,19 @@ const SubCategoriesScreen = ({ route, navigation }) => {
             "Fitness", "Adventure", "Creativity"
         ].sort((a, b) => a.localeCompare(b)),
         "Sport Activity": [
-            "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
+            "AAATest", "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
             "Hiking", "Soccer", "Basketball", "Tennis", "Badminton", "Cricket",
             "Baseball", "Rugby", "Table Tennis", "Volleyball", "Skiing", "Snowboarding",
             "Skating", "Martial Arts", "Boxing", "Climbing", "Golf", "Horse Riding"
         ].sort((a, b) => a.localeCompare(b)),
         Travel: [
-            "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
+            "AAATest", "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
             "Cruise", "Backpacking", "Luxury", "Camping", "Solo Travel", "Family Travel",
             "Romantic Getaway", "Business Travel", "Group Travel", "Eco Travel", "Wildlife",
             "Urban Exploration", "Food and Drink", "Festival Travel"
         ].sort((a, b) => a.localeCompare(b)),
         Clubbing: [
-            "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
+            "AAATest", "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
             "Karaoke", "Lounge Bars", "Rooftop Bars", "Beach Clubs", "Pool Parties",
             "Cocktail Bars", "Discos", "After Hours Clubs", "Jazz Clubs", "Comedy Clubs"
         ].sort((a, b) => a.localeCompare(b))
@@ -51,9 +50,9 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         if (selectedCategories.includes(category)) {
             setSelectedCategories(selectedCategories.filter(c => c !== category)); // Deselect category
         } else if (selectedCategories.length < 5) {
-            setSelectedCategories([...selectedCategories, category]); // Select category if less than 3
+            setSelectedCategories([...selectedCategories, category]); // Select category if less than 5
         } else {
-            Alert.alert('You can select up to 5 topics.'); // Alert if more than 3 selected
+            Alert.alert('You can select up to 5 topics.'); // Alert if more than 5 selected
         }
     };
 
@@ -62,7 +61,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         if (selectedCategories.length > 0) {
             const hasResults = await listUsersByConversationTopics(selectedCategories); // Fetch users by selected topics
             // if (hasResults) {
-                navigation.navigate('ConversationMatches'); // Navigate to matches if results found
+                navigation.navigate('Location'); // Navigate to matches if results found
             // } else {
             //     Alert.alert('No matches found for the selected topics.'); // Alert if no matches found
             // }
@@ -78,7 +77,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headline}>What would you like to talk about?</Text>
+            <Text style={styles.headline}>{title}</Text>
             <Text style={styles.subtitle}>Choose up to 5 topics</Text>
             <TextInput
                 style={styles.input}
@@ -164,6 +163,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
 
 export default SubCategoriesScreen;

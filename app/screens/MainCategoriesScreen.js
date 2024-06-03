@@ -10,9 +10,25 @@ const MainCategoriesScreen = ({ navigation }) => {
         setSelectedCategory(category);
     };
 
+    const getTitleForCategory = (category) => {
+        switch (category) {
+            case 'Conversation':
+                return 'What would you like to talk about?';
+            case 'Sport Activity':
+                return 'What sport would you like to do?';
+            case 'Travel':
+                return 'Where would you like to travel?';
+            case 'Clubbing':
+                return 'What is your dance style?';
+            default:
+                return 'Choose a category';
+        }
+    };
+
     const handleChooseButton = () => {
         if (selectedCategory) {
-            navigation.navigate('SubCategories', { category: selectedCategory });
+            const title = getTitleForCategory(selectedCategory);
+            navigation.navigate('SubCategories', { category: selectedCategory, title });
         } else {
             Alert.alert('Please select a category');
         }
