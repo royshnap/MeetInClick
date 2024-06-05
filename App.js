@@ -11,6 +11,7 @@ import { AuthContextProvider } from "./app/context/AuthContext";
 import { ConversationContextProvider } from "./app/context/ConversationContext";
 import ConversationMatches from "./app/screens/ConversationMatches";
 import Conversation from "./app/screens/Conversation";
+import { LocationContextProvider } from "./app/context/LocationContext";
 
 const Stack = createStackNavigator();
 
@@ -27,16 +28,18 @@ export default function App() {
     <NavigationContainer>
       <AuthContextProvider>
         <ConversationContextProvider>
-          <Stack.Navigator initialRouteName="Main">
-            <Stack.Screen name="ConversationMatches" component={ConversationMatches} />
-            <Stack.Screen name="Location" component={LocationScreen} />
-            <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
-            <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
-            <Stack.Screen name="Conversation" component={Conversation} />
-            <Stack.Screen name="Conversations" component={Conversations} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
+          <LocationContextProvider>
+            <Stack.Navigator initialRouteName="Main">
+              <Stack.Screen name="ConversationMatches" component={ConversationMatches} />
+              <Stack.Screen name="Location" component={LocationScreen} />
+              <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
+              <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
+              <Stack.Screen name="Conversation" component={Conversation} />
+              <Stack.Screen name="Conversations" component={Conversations} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+            </Stack.Navigator>
+          </LocationContextProvider>
         </ConversationContextProvider>
       </AuthContextProvider>
     </NavigationContainer>
