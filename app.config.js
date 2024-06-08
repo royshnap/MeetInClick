@@ -2,8 +2,11 @@ module.exports = ({ config }) => ({
     ...config,
     slug: "meetinclick",  // Ensure this matches the EAS project slug
     android: {
-      package: "com.royshnap.meetinclick"  // Replace with your unique package identifier
+      package: "com.royshnap.meetinclick"  
     },
+    ios: {
+        bundleIdentifier: "com.royshnap.meetinclick"  
+      },
     extra: {
       ...config.extra,
       eas: {

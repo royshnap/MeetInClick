@@ -6,7 +6,7 @@ import { onValue, ref, set } from "firebase/database";
 const AuthContext = React.createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState(undefined); // State to manage the authenticated user
+    const [user, setUser] = useState(undefined); // string user = undifinnd,State to manage the authenticated user
     const [loading, setLoading] = useState(false); // State to manage loading status
     const [error, setError] = useState(false); // State to manage error status
 

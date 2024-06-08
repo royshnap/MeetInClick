@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "reac
 import { useAuth } from "../context/AuthContext";
 import Location from "expo-location";
 import { useCurrentLocation } from "../context/LocationContext";
+
 const SignUpScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -13,14 +14,16 @@ const SignUpScreen = ({ navigation }) => {
 
   const { user, register, loading, error, setError } = useAuth();
   const { hasLocationPermissions, requestLocationPermissions,currentLocation } = useCurrentLocation();
+  
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
     if (!hasLocationPermissions) {
-        await requestLocationPermissions()
-        return
+      Alert.alert("You must give location permissions to use the app");
+      await requestLocationPermissions()
+      return
     }
     try {
       await register({
