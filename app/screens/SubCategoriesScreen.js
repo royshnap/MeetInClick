@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, FlatList, ScrollView, StyleSheet, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import useSettings from '../components/useSettings';
+import SettingsButton from '../components/SettingsButton';
+
 
 
 const SubCategoriesScreen = ({ route, navigation }) => {
+    const { t } = useTranslation();
     const { category } = route.params; // Get the main category from the route parameters
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
     const {
         listUsersByConversationTopics, loading, error, conversationTopicResults
@@ -53,7 +59,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         } else if (selectedCategories.length < 5) {
             setSelectedCategories([...selectedCategories, category]); // Select category if less than 3
         } else {
-            Alert.alert('You can select up to 5 topics.'); // Alert if more than 3 selected
+            Alert.alert(t('You can select up to 5 topics.')); // Alert if more than 3 selected
         }
     };
 
@@ -64,10 +70,10 @@ const SubCategoriesScreen = ({ route, navigation }) => {
             if (hasResults) {
                 navigation.navigate('ConversationMatches'); // Navigate to matches if results found
             } else {
-                Alert.alert('No matches found for the selected topics.'); // Alert if no matches found
+                Alert.alert(t('No matches found for the selected topics.')); // Alert if no matches found
             }
         } else {
-            Alert.alert('Please select at least one topic.'); // Alert if no topics selected
+            Alert.alert(t('Please select at least one topic.')); // Alert if no topics selected
         }
     };
 
@@ -77,12 +83,20 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.headline}>What would you like to talk about?</Text>
-            <Text style={styles.subtitle}>Choose up to 3 topics</Text>
+      <ImageBackground source={backgroundImage} style={styles.background}>
+        {/* <View style={styles.container}> */}
+        <View style={styles.overlay}>
+            <SettingsButton 
+                onBackgroundChange={handleBackgroundChange}
+                onLanguageChange={handleLanguageChange}
+                onSignOut={handleSignOut}
+            />
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+            <Text style={styles.headline}>{t('What are your preferences?')}</Text>
+            <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>
             <TextInput
                 style={styles.input}
-                placeholder="Search category..."
+                placeholder={t('Search category...')}
                 value={searchQuery}
                 onChangeText={handleSearch} // Handle text input changes
             />
@@ -90,80 +104,102 @@ const SubCategoriesScreen = ({ route, navigation }) => {
                 data={filteredCategories} // Display filtered categories
                 renderItem={({ item }) => (
                     <TouchableOpacity onPress={() => handleSelectCategory(item)}>
-                        <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{item}</Text>
+                        <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{t(item)}</Text>
                     </TouchableOpacity>
                 )}
                 keyExtractor={(item) => item} // Unique key for each category
             />
             <TouchableOpacity style={styles.selectButton} onPress={handleSelectButton}>
-                <Text style={styles.buttonText}>Select</Text>
+                <Text style={styles.buttonText}>{t('Select')}</Text>
             </TouchableOpacity>
+            </ScrollView>
         </View>
+     </ImageBackground>
+
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: '#FFE12A',
-        paddingTop: 20,
+    background: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+    },
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      paddingTop: 80,
+      paddingHorizontal: 10,
     },
     headline: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#333',
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#000',
+      textAlign: 'center',
+      marginBottom: 10,
+      marginTop: 40,
     },
     subtitle: {
-        fontSize: 18,
-        color: 'gray',
-        marginBottom: 20,
+      fontSize: 18,
+      color: 'gray',
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+    scrollView: {
+        width: '100%',
+    },
+    contentContainer: {
+        alignItems: 'center',
     },
     input: {
-        width: '80%',
-        height: 35,
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 10,
-        marginBottom: 20,
-        paddingHorizontal: 10,
+      width: '60%',
+      height: 35,
+      textAlign: 'center',
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 20,
+      marginBottom: 20,
+      paddingHorizontal: 10,
+      backgroundColor: 'white',
     },
     category: {
-        backgroundColor: 'white',
-        borderRadius: 15,
-        marginBottom: 10,
-        paddingVertical: 20,
-        paddingHorizontal: 40,
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        elevation: 5,
+      backgroundColor: 'white',
+      borderRadius: 15,
+      marginBottom: 10,
+      paddingVertical: 20,
+      paddingHorizontal: 40,
+      color: 'black',
+      fontSize: 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.8,
+      shadowRadius: 2,
+      elevation: 5,
+      justifyContent: 'center', // Center text vertically
+      alignItems: 'center', // Center text horizontally
+      width: '100%',
     },
     selectedCategory: {
-        backgroundColor: 'lightblue',
+      backgroundColor: 'lightblue',
     },
     selectButton: {
-        width: '80%',
-        height: 50,
-        backgroundColor: '#2EE411',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        marginTop: 20,
+      width: '80%',
+      height: 50,
+      backgroundColor: '#2EE411',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+      marginTop: 20,
     },
     buttonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
+      color: 'white',
+      fontSize: 18,
+      fontWeight: 'bold',
     },
-});
-
+  });
 
 export default SubCategoriesScreen;

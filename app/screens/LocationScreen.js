@@ -2,29 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next'; // Import useTranslation hook
 
 const Location = () => {
+    const { t } = useTranslation(); // Initialize translation hook
     const navigation = useNavigation();
     const [distance, setDistance] = useState(10); // Initial distance is set to 10 meters
     const handleShowDistance = () => {
-        // alert(`Selected distance: ${distance} meters`), 
-        // { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', };
-
         Alert.alert(
-            `Selected distance: ${distance} meters`,
+            t('Selected distance: {{distance}} meters', { distance }), // Translate the message with distance
             '',
             [
-                { text: 'Back', onPress: () => console.log('Back pressed'), style: 'cancel', },
-                { text: 'Ok', onPress: () => console.log('Ok pressed'), style: 'cancel', },
-                // {text: 'OK',onPress: () => navigation.navigate('Main')} // need to change navigation
+                { text: t('Back'), onPress: () => console.log('Back pressed'), style: 'cancel' },
+                { text: t('Ok'), onPress: () => console.log('Ok pressed'), style: 'cancel' },
             ]
         );
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Choose the distance</Text>
-            <Text style={styles.label}>Distance: {distance} meters</Text>
+            <Text style={styles.title}>{t('Choose the distance')}</Text>
+            <Text style={styles.label}>{t('Distance')}: {distance} {t('meters')}</Text>
             <Slider
                 style={styles.slider}
                 minimumValue={10}
@@ -39,7 +37,7 @@ const Location = () => {
                 <Text style={styles.rangeLabel}>10m</Text>
                 <Text style={styles.rangeLabel}>1KM</Text>
             </View>
-            <Button title="Set" onPress={handleShowDistance} />
+            <Button title={t('Set')} onPress={handleShowDistance} />
         </View>
     );
 };
