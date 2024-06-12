@@ -143,7 +143,8 @@ const resources = {
     he: {
         translation: {
             "Change Background": "החלף רקע",
-            "What would you like to do?": "מה תרצה לעשות?",
+            "What would you": "מה תרצה",
+            "like to do?": "לעשות?",
             "Sign Out": "התנתק",
             "Please select a category": "אנא בחר קטגוריה",
             "Conversation": "שיחה",
@@ -279,12 +280,13 @@ const resources = {
             //settings:
             "Background": "רקע",
             //location screen:
+            "Selected distance": "המרחק הנבחר",
+            "meters": "מטרים",
+            "Back": "חזרה",
+            "OK": "אישור",
             "Choose the distance": "בחר את המרחק",
             "Distance": "מרחק",
-            "meters": "מטרים",
-            "KM": "קמ",
-            "Back": "חזור",
-            "Ok": "אישור"
+            "Set": "הגדר",
 
         }
     }
