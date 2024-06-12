@@ -32,7 +32,6 @@ export default function App() {
               <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
               <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
               <Stack.Screen name="Conversation" component={Conversation} />
-              <Stack.Screen name="Conversations" component={Conversations} />
               <Stack.Screen name="SignUp" component={SignUpScreen} />
               <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
             </Stack.Navigator>

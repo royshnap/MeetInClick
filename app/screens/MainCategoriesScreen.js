@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ImageBackground , Modal } from 'react-native';
-import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton'; // Adjust the path if necessary
-//import SettingsModal from 'C:/Users/yossi/MeetInClick2/MeetInClick';
-import Icon from 'react-native-vector-icons/Ionicons';
-
+import SettingsButton from '../components/SettingsButton';
 
 const MainCategoriesScreen = ({ navigation }) => {
-    const { t, i18n } = useTranslation(); // Correctly destructure i18n
+    const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState('');
-    //const { signOutUser } = useAuth(); // Get the signOutUser function from the useAuth hook
-    //const [settingsVisible, setSettingsVisible] = useState(false);
-    //const [backgroundImage, setBackgroundImage] = useState(require('../assets/b1.jpg'));
     const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
     const handleChooseCategory = (category) => {
@@ -21,20 +14,14 @@ const MainCategoriesScreen = ({ navigation }) => {
     };
 
     const getTitleForCategory = (category) => {
-        switch (category) {
-            case 'Conversation':
-                return 'What would you like to talk about?';
-            case 'Sport Activity':
-                return 'What sport would you like to do?';
-            case 'Travel':
-                return 'Where would you like to travel?';
-            case 'Clubbing':
-                return 'What is your dance style?';
-            default:
-                return 'Choose a category';
-        }
+        const categoryTitles = {
+            'Conversation': t('Conversation'),
+            'Sport Activity': t('Sport Activity'),
+            'Travel': t('Travel'),
+            'Clubbing': t('Clubbing')
+        };
+        return categoryTitles[category] || t('Category');
     };
-
     const handleChooseButton = () => {
         if (selectedCategory) {
             const title = getTitleForCategory(selectedCategory);
@@ -44,66 +31,30 @@ const MainCategoriesScreen = ({ navigation }) => {
         }
     };
 
-    // const handleSignOut = async () => {
-    //     try {
-    //         await signOutUser(); // Await the sign-out process
-    //         navigation.navigate('Main'); // Navigate to the Main screen after signing out
-    //     } catch (error) {
-    //         console.error('Error signing out:', error);
-    //         Alert.alert(t('Error signing out. Please try again.'));
-    //     }
-    // };
-    // const handleBackgroundChange = (background) => {
-    //     setBackgroundImage(background);
-    //     setSettingsVisible(false);
-    //   };
-    
-    //   const handleLanguageChange = () => {
-    //     const newLanguage = i18n.language === 'en' ? 'he' : 'en';
-    //     i18n.changeLanguage(newLanguage);
-    //   };
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
-            
             <View style={styles.overlay}>
-              <SettingsButton 
-                onBackgroundChange={handleBackgroundChange}
-                onLanguageChange={handleLanguageChange}
-                onSignOut={handleSignOut}
-              />
+                <SettingsButton 
+                    onBackgroundChange={handleBackgroundChange}
+                    onLanguageChange={handleLanguageChange}
+                    onSignOut={handleSignOut}
+                />
                 <Text style={styles.title}>
                     {t('What would you')}{'\n'}
                     {t('like to do?')}
                 </Text>
                 <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-                    <TouchableOpacity onPress={() => handleChooseCategory('Conversation')}>
-                        <Text style={[styles.category, selectedCategory === 'Conversation' && styles.selectedCategory]}>{t('Conversation')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleChooseCategory('Sport Activity')}>
-                        <Text style={[styles.category, selectedCategory === 'Sport Activity' && styles.selectedCategory]}>{t('Sport Activity')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleChooseCategory('Travel')}>
-                        <Text style={[styles.category, selectedCategory === 'Travel' && styles.selectedCategory]}>{t('Travel')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleChooseCategory('Clubbing')}>
-                        <Text style={[styles.category, selectedCategory === 'Clubbing' && styles.selectedCategory]}>{t('Clubbing')}</Text>
-                    </TouchableOpacity>
-                    {/* Add more categories here */}
+                    {['Conversation', 'Sport Activity', 'Travel', 'Clubbing'].map((category) => (
+                        <TouchableOpacity key={category} onPress={() => handleChooseCategory(category)}>
+                            <Text style={[styles.category, selectedCategory === category && styles.selectedCategory]}>
+                                {t(category)}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
                 </ScrollView>
                 <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
                     <Text style={styles.chooseButtonText}>{t('Select')}</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity style={styles.settingsButton} onPress={() => setSettingsVisible(true)}>
-                 <Icon name="settings-outline" size={40} color="#000" />
-                </TouchableOpacity> */}
-                {/* <SettingsModal
-                  visible={settingsVisible}
-                  onClose={() => setSettingsVisible(false)}
-                  onBackgroundChange={handleBackgroundChange}
-                  onLanguageChange={handleLanguageChange}
-                  onSignOut={handleSignOut} // Pass the sign out function to the modal
-
-                /> */}
             </View>
         </ImageBackground>
     );
@@ -117,7 +68,7 @@ const styles = StyleSheet.create({
     },
     overlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay for contrast
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'flex-start',
         alignItems: 'center',
         paddingTop: 140,
@@ -127,11 +78,9 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 30,
-        color: '#FFF', // Changed to white for better contrast with the background
-        textAlign: 'center', // Center the text
-        fontFamily: 'YourCustomFont', // Apply custom font
+        color: '#FFF',
+        textAlign: 'center',
     },
-    
     scrollView: {
         width: '100%',
     },
@@ -139,18 +88,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 20,
     },
- 
     category: {
-        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white background
+        backgroundColor: 'white',
         borderRadius: 15,
         marginBottom: 10,
-        paddingVertical: 13,
-        paddingHorizontal: 20,
+        paddingVertical: 20,
+        paddingHorizontal: 40,
         color: 'black',
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        width: '80%', // Set a consistent width
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
@@ -158,16 +105,11 @@ const styles = StyleSheet.create({
         elevation: 5,
         justifyContent: 'center', // Center text vertically
         alignItems: 'center', // Center text horizontally
-    },
-    categoryText: {
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    selectedCategoryText: {
+        width: '100%',
+      },
+      selectedCategory: {
         backgroundColor: 'lightblue',
-    },
+      },
     chooseButton: {
         marginTop: 60,
         backgroundColor: '#8AF326',
@@ -181,7 +123,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    
     settingsButton: {
         position: 'absolute',
         top: 10,
@@ -192,6 +133,5 @@ const styles = StyleSheet.create({
         height: 30,
     },
 });
-
 
 export default MainCategoriesScreen;
