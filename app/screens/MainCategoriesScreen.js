@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Alert, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
@@ -22,6 +22,7 @@ const MainCategoriesScreen = ({ navigation }) => {
         };
         return categoryTitles[category] || t('Category');
     };
+
     const handleChooseButton = () => {
         if (selectedCategory) {
             const title = getTitleForCategory(selectedCategory);
@@ -30,6 +31,8 @@ const MainCategoriesScreen = ({ navigation }) => {
             Alert.alert(t('Please select a category'));
         }
     };
+
+    const categories = ['Conversation', 'Sport Activity', 'Travel', 'Clubbing'];
 
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
@@ -43,15 +46,18 @@ const MainCategoriesScreen = ({ navigation }) => {
                     {t('What would you')}{'\n'}
                     {t('like to do?')}
                 </Text>
-                <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-                    {['Conversation', 'Sport Activity', 'Travel', 'Clubbing'].map((category) => (
-                        <TouchableOpacity key={category} onPress={() => handleChooseCategory(category)}>
-                            <Text style={[styles.category, selectedCategory === category && styles.selectedCategory]}>
-                                {t(category)}
+                <FlatList
+                    data={categories}
+                    keyExtractor={(item) => item}
+                    contentContainerStyle={styles.contentContainer}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={[styles.categoryButton, selectedCategory === item && styles.selectedCategory]} onPress={() => handleChooseCategory(item)}>
+                            <Text style={styles.categoryText}>
+                                {t(item)}
                             </Text>
                         </TouchableOpacity>
-                    ))}
-                </ScrollView>
+                    )}
+                />
                 <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
                     <Text style={styles.chooseButtonText}>{t('Select')}</Text>
                 </TouchableOpacity>
@@ -81,35 +87,32 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
     },
-    scrollView: {
-        width: '100%',
-    },
     contentContainer: {
         alignItems: 'center',
         paddingHorizontal: 20,
     },
-    category: {
+    categoryButton: {
+        width: 200,
+        height: 60,
         backgroundColor: 'white',
         borderRadius: 15,
         marginBottom: 10,
-        paddingVertical: 20,
-        paddingHorizontal: 40,
-        color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
-        justifyContent: 'center', // Center text vertically
-        alignItems: 'center', // Center text horizontally
-        width: '100%',
-      },
-      selectedCategory: {
+    },
+    categoryText: {
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    selectedCategory: {
         backgroundColor: 'lightblue',
-      },
+    },
     chooseButton: {
         marginTop: 60,
         backgroundColor: '#8AF326',
