@@ -14,16 +14,9 @@ import { AuthContextProvider } from "./app/context/AuthContext";
 import { ConversationContextProvider } from "./app/context/ConversationContext";
 import ConversationMatches from "./app/screens/ConversationMatches";
 import Conversation from "./app/screens/Conversation";
+import { LocationContextProvider } from "./app/context/LocationContext";
 
 const Stack = createStackNavigator();
-
-const Conversations = () => {
-  return (
-    <View>
-      <Text>TODO: Implement conversation list</Text>
-    </View>
-  );
-};
 
 export default function App() {
   return (

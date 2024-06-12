@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useActiveConversation } from "../context/ConversationContext";
 import { TextInput, View, TouchableOpacity, Text, StyleSheet, Alert } from "react-native";
 import { Link } from "@react-navigation/native";
@@ -39,6 +39,8 @@ const Conversation = ({ route, navigation }) => {
   const { user } = useAuth(); // Hook to get the current authenticated user
   const [otherUser, setOtherUser] = useState(null); // State to store the other user
 
+  const flatListRef = useRef(null); // Ref for the FlatList
+
   useEffect(() => {
     const fetchOtherUser = async () => {
       if (activeConversation) {
@@ -60,6 +62,9 @@ const Conversation = ({ route, navigation }) => {
         .filter(message => message.sender === user.id)
         .reduce((acc, message) => acc + message.content.replace(/\s+/g, '').length, 0); // Remove white spaces
       setTotalCharacters(total);
+      
+      // Scroll to the end when messages change
+      flatListRef.current?.scrollToEnd({ animated: true });
     }
   }, [activeConversation, user.id]);
 
@@ -71,6 +76,9 @@ const Conversation = ({ route, navigation }) => {
     } else {
       sendMessageToConversation(conversationId, messageContent);
       setMessageContent(""); // Clear the message input
+      
+      // Scroll to the end after sending a message
+      flatListRef.current?.scrollToEnd({ animated: true });
     }
   };
 
@@ -103,11 +111,13 @@ const Conversation = ({ route, navigation }) => {
         You have up to {MAX_CHARACTERS} characters to set a place to meet
       </Text>
       <FlatList
+        ref={flatListRef} // Attach the ref to FlatList
         data={activeConversation.messages || []} // Data for FlatList: messages in the active conversation
         renderItem={({ item: message }) => (
           <MessageItem otherUser={otherUser} currentUser={user} message={message} /> // Render each message item
         )}
         keyExtractor={(item) => item.date.toString()} // Unique key for each message
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })} // Scroll to the end when content size changes
       />
       <TextInput
         placeholder="Enter message"

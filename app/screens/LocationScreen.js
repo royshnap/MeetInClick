@@ -1,76 +1,149 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import Slider from '@react-native-community/slider';
-import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next'; // Import useTranslation hook
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Button, Alert, TouchableOpacity } from "react-native";
+import Slider from "@react-native-community/slider";
+import { useNavigation } from "@react-navigation/native";
+import { useCurrentLocation } from "../context/LocationContext";
 
 const Location = () => {
-    const { t } = useTranslation(); // Initialize translation hook
-    const navigation = useNavigation();
-    const [distance, setDistance] = useState(10); // Initial distance is set to 10 meters
-    const handleShowDistance = () => {
-        Alert.alert(
-            t('Selected distance: {{distance}} meters', { distance }), // Translate the message with distance
-            '',
-            [
-                { text: t('Back'), onPress: () => console.log('Back pressed'), style: 'cancel' },
-                { text: t('Ok'), onPress: () => console.log('Ok pressed'), style: 'cancel' },
-            ]
-        );
-    };
+  const navigation = useNavigation();
+  const { setInterestRadius, interestRadius } = useCurrentLocation();
+  const [d, setDistance] = useState(interestRadius);
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>{t('Choose the distance')}</Text>
-            <Text style={styles.label}>{t('Distance')}: {distance} {t('meters')}</Text>
-            <Slider
-                style={styles.slider}
-                minimumValue={10}
-                maximumValue={1000}
-                step={10}
-                value={distance}
-                onValueChange={(value) => setDistance(value)}
-                thumbTintColor="#007AFF" // Light blue color for the thumb
-                minimumTrackTintColor="#007AFF" // Light blue color for the track
-            />
-            <View style={styles.rangeLabels}>
-                <Text style={styles.rangeLabel}>10m</Text>
-                <Text style={styles.rangeLabel}>1KM</Text>
-            </View>
-            <Button title={t('Set')} onPress={handleShowDistance} />
+  useEffect(() => {
+    setDistance(interestRadius);
+  }, [interestRadius]);
+
+  const handleShowDistance = () => {
+    Alert.alert(`Selected distance: ${d} meters`, "", [
+      { text: "Back", onPress: () => console.log("Back pressed"), style: "cancel" },
+      {
+        text: "OK",
+        onPress: () => {
+          setInterestRadius(d);
+          navigation.navigate('ConversationMatches');
+        },
+      },
+    ]);
+  };
+
+  const incrementDistance = () => {
+    setDistance((prevDistance) => {
+      const newDistance = Math.min(prevDistance + 10, 1000);
+      setInterestRadius(newDistance);
+      return newDistance;
+    });
+  };
+
+  const decrementDistance = () => {
+    setDistance((prevDistance) => {
+      const newDistance = Math.max(prevDistance - 10, 10);
+      setInterestRadius(newDistance);
+      return newDistance;
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.topContainer}>
+        <Text style={styles.title}>Choose the distance</Text>
+      </View>
+      <View style={styles.middleContainer}>
+        <Text style={styles.label}>Distance: {d} meters</Text>
+        <View style={styles.sliderContainer}>
+          <TouchableOpacity onPress={decrementDistance} style={styles.adjustButton}>
+            <Text style={styles.adjustButtonText}>-</Text>
+          </TouchableOpacity>
+          <Slider
+            style={styles.slider}
+            minimumValue={10}
+            maximumValue={1000}
+            step={10}
+            value={d}
+            onValueChange={(value) => {
+              setDistance(value);
+              setInterestRadius(value);
+            }}
+            thumbTintColor="#007AFF" // Light blue color for the thumb
+            minimumTrackTintColor="#007AFF" // Light blue color for the track
+          />
+          <TouchableOpacity onPress={incrementDistance} style={styles.adjustButton}>
+            <Text style={styles.adjustButtonText}>+</Text>
+          </TouchableOpacity>
         </View>
-    );
+        <View style={styles.rangeLabels}>
+          <Text style={styles.rangeLabel}>10m</Text>
+          <Text style={styles.rangeLabel}>1KM</Text>
+        </View>
+      </View>
+      <View style={styles.bottomContainer}>
+        <Button title="Set" onPress={handleShowDistance} />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    label: {
-        fontSize: 18,
-        marginBottom: 10,
-    },
-    slider: {
-        width: '80%',
-        height: 40,
-        marginBottom: 20,
-    },
-    rangeLabels: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '80%',
-    },
-    rangeLabel: {
-        fontSize: 16,
-        color: 'gray',
-    },
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+  },
+  topContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  middleContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bottomContainer: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  sliderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+    marginBottom: 20,
+  },
+  slider: {
+    flex: 1,
+    height: 40,
+  },
+  adjustButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#007AFF",
+    borderRadius: 20,
+    marginHorizontal: 10,
+  },
+  adjustButtonText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  rangeLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+  },
+  rangeLabel: {
+    fontSize: 16,
+    color: "gray",
+  },
 });
 
 export default Location;

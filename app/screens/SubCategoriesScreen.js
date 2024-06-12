@@ -6,7 +6,6 @@ import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 
 
-
 const SubCategoriesScreen = ({ route, navigation }) => {
     const { t } = useTranslation();
     const { category } = route.params; // Get the main category from the route parameters
@@ -20,30 +19,30 @@ const SubCategoriesScreen = ({ route, navigation }) => {
 
     const categoriesMap = {
         Conversation: [
-            "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
+            "AAATest", "Travel", "Books", "Music", "Movies", "Hobbies", "Food", "Technology", "Career",
             "Childhood", "Health", "Relationships", "Culture", "Fashion", "Goals", "Politics",
             "Psychology", "News", "Sports", "Business", "Art", "Philosophy", "Nature", "Social",
             "Education", "Funny", "Achievements", "Anime","Netflix", "Languages", "Pets", "Science", "Dreams",
             "Traditions", "Concerts", "Inspiration", "Finance", "Vacations", "Quotes",
             "Fitness", "Adventure", "Creativity"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         "Sport Activity": [
-            "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
+            "AAATest", "Running", "Swimming", "Cycling", "Yoga", "Weightlifting", "Dancing",
             "Hiking", "Soccer", "Basketball", "Tennis", "Badminton", "Cricket",
             "Baseball", "Rugby", "Table Tennis", "Volleyball", "Skiing", "Snowboarding",
             "Skating", "Martial Arts", "Boxing", "Climbing", "Golf", "Horse Riding"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         Travel: [
-            "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
+            "AAATest", "Adventure", "Beach", "Historical", "Cultural", "Nature", "Road Trip",
             "Cruise", "Backpacking", "Luxury", "Camping", "Solo Travel", "Family Travel",
             "Romantic Getaway", "Business Travel", "Group Travel", "Eco Travel", "Wildlife",
             "Urban Exploration", "Food and Drink", "Festival Travel"
-        ],
+        ].sort((a, b) => a.localeCompare(b)),
         Clubbing: [
-            "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
+            "AAATest", "Nightclubs", "Bars", "Pubs", "Live Music", "Dance Clubs", "Themed Parties",
             "Karaoke", "Lounge Bars", "Rooftop Bars", "Beach Clubs", "Pool Parties",
             "Cocktail Bars", "Discos", "After Hours Clubs", "Jazz Clubs", "Comedy Clubs"
-        ]
+        ].sort((a, b) => a.localeCompare(b))
     };
     const categories = categoriesMap[category] || [];
 
@@ -57,7 +56,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         if (selectedCategories.includes(category)) {
             setSelectedCategories(selectedCategories.filter(c => c !== category)); // Deselect category
         } else if (selectedCategories.length < 5) {
-            setSelectedCategories([...selectedCategories, category]); // Select category if less than 3
+            setSelectedCategories([...selectedCategories, category]); // Select category if less than 5
         } else {
             Alert.alert(t('You can select up to 5 topics.')); // Alert if more than 3 selected
         }

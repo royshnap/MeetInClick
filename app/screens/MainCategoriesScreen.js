@@ -20,9 +20,25 @@ const MainCategoriesScreen = ({ navigation }) => {
         setSelectedCategory(category);
     };
 
+    const getTitleForCategory = (category) => {
+        switch (category) {
+            case 'Conversation':
+                return 'What would you like to talk about?';
+            case 'Sport Activity':
+                return 'What sport would you like to do?';
+            case 'Travel':
+                return 'Where would you like to travel?';
+            case 'Clubbing':
+                return 'What is your dance style?';
+            default:
+                return 'Choose a category';
+        }
+    };
+
     const handleChooseButton = () => {
         if (selectedCategory) {
-            navigation.navigate('SubCategories', { category: selectedCategory });
+            const title = getTitleForCategory(selectedCategory);
+            navigation.navigate('SubCategories', { category: selectedCategory, title });
         } else {
             Alert.alert(t('Please select a category'));
         }
@@ -121,6 +137,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
  
     category: {
@@ -142,7 +159,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center', // Center text vertically
         alignItems: 'center', // Center text horizontally
     },
-    selectedCategory: {
+    categoryText: {
+        color: 'black',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    selectedCategoryText: {
         backgroundColor: 'lightblue',
     },
     chooseButton: {
@@ -169,107 +192,6 @@ const styles = StyleSheet.create({
         height: 30,
     },
 });
-//     return (
-//         <ImageBackground source={require('../assets/back10.jpg')} style={styles.background} resizeMode="contain">
-//             <View style={styles.container}>
-//                 <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-//                     <Text style={styles.signOutButtonText}>Sign Out</Text>
-//                 </TouchableOpacity>
-//                 <Text style={styles.title}>What would you like to do?</Text>
-//                 <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-//                     <TouchableOpacity onPress={() => handleChooseCategory('Conversation')}>
-//                         <Text style={[styles.category, selectedCategory === 'Conversation' && styles.selectedCategory]}>Conversation</Text>
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => handleChooseCategory('Sport Activity')}>
-//                         <Text style={[styles.category, selectedCategory === 'Sport Activity' && styles.selectedCategory]}>Sport Activity</Text>
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => handleChooseCategory('Travel')}>
-//                         <Text style={[styles.category, selectedCategory === 'Travel' && styles.selectedCategory]}>Travel</Text>
-//                     </TouchableOpacity>
-//                     <TouchableOpacity onPress={() => handleChooseCategory('Clubbing')}>
-//                         <Text style={[styles.category, selectedCategory === 'Clubbing' && styles.selectedCategory]}>Clubbing</Text>
-//                     </TouchableOpacity>
-//                     {/* Add more categories here */}
-//                 </ScrollView>
-//                 <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
-//                     <Text style={styles.chooseButtonText}>Select</Text>
-//                 </TouchableOpacity>
-//             </View>
-//         </ImageBackground>
-//     );
-// };
-
-
-// const styles = StyleSheet.create({
-    
-//     background: {
-//         flex: 1,
-//         alignItems: 'center',
-//         resizeMode: 'cover',
-//         paddingTop: 30,
-//     },
-//     overlay: {
-//         flex: 1,
-//         backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent overlay for contrast
-//         justifyContent: 'flex-start',
-//         alignItems: 'center',
-//         paddingTop: 20,
-//     },
-//     title: {
-//         fontSize: 24,
-//         fontWeight: 'bold',
-//         marginBottom: 40,
-//         color: '#333',
-//     },
-//     scrollView: {
-//         width: '80%',
-//     },
-//     contentContainer: {
-//         alignItems: 'center',
-//     },
-//     category: {
-//         backgroundColor: 'white',
-//         borderRadius: 15,
-//         marginBottom: 10,
-//         paddingVertical: 20,
-//         paddingHorizontal: 40,
-//         color: 'black',
-//         fontSize: 20,
-//         fontWeight: 'bold',
-//         textAlign: 'center',
-//         width: '100%',
-//         shadowColor: '#000',
-//         shadowOffset: { width: 0, height: 2 },
-//         shadowOpacity: 0.8,
-//         shadowRadius: 2,
-//         elevation: 5,
-//     },
-//     selectedCategory: {
-//         backgroundColor: 'lightblue',
-//     },
-//     chooseButton: {
-//         marginTop: 10,
-//         backgroundColor: '#2EE411',
-//         borderRadius: 10,
-//         paddingVertical: 10,
-//         paddingHorizontal: 10,
-//         marginBottom: 10,
-//     },
-//     chooseButtonText: {
-//         color: 'white',
-//         fontSize: 18,
-//         fontWeight: 'bold',
-//     },
-//     signOutButton: {
-//         position: 'absolute',
-//         top: 10,
-//         right: 10,
-//     },
-//     signOutButtonText: {
-//         color: '#07D7EF',
-//         fontSize: 16,
-//     },
-// });
 
 
 export default MainCategoriesScreen;
