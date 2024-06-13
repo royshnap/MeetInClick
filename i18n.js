@@ -287,6 +287,19 @@ const resources = {
             "Choose the distance": "בחר את המרחק",
             "Distance": "מרחק",
             "Set": "הגדר",
+            //conversation screen:
+            "User name": "שם משתמש",
+            "Topics": "נושאים",
+            "Start conversation": "התחל שיחה",
+            "Status: Approved": "סטטוס: מאושר",
+            "Status: Declined": "סטטוס: נדחה",
+            "Status: Pending": "סטטוס: בהמתנה",
+            "Send conversation request": "שלח בקשת שיחה",
+            "Request has been sent to": "הבקשה נשלחה ל",
+            "There was a problem starting conversation with": "הייתה בעיה בהתחלת השיחה עם",
+            "There was a problem sending conversation request to": "הייתה בעיה בשליחת בקשת השיחה ל",
+            "No matches found for the selected topics.": "לא נמצאו התאמות לנושאים שנבחרו.",
+            "Matches": "התאמות"
 
         }
     }

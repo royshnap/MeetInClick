@@ -1,10 +1,14 @@
 import React, { useCallback, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, backgroundImage } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
+import { useTranslation } from "react-i18next";
+import useSettings from "../components/useSettings";
+import SettingsButton from "../components/SettingsButton";
 
 // Component to render each match item
 const MatchItem = ({ otherUser, navigation }) => {
+  const { t } = useTranslation();
   const {
     startConversation, 
     sendConversationRequest, 
@@ -14,6 +18,7 @@ const MatchItem = ({ otherUser, navigation }) => {
     isPending,
   } = useConversationTopicMatches(); // Hook to manage conversation topic matches
   const { user } = useAuth(); // Hook to get the current authenticated user
+  const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
   // Function to handle starting a conversation
   const handlePressStartConversation = async (requestId_1, requestId_2) => {
@@ -22,7 +27,7 @@ const MatchItem = ({ otherUser, navigation }) => {
       if (conversationId) {
         navigation.navigate(`Conversation`, { cid: conversationId }); // Navigate to the conversation screen
       } else {
-        Alert.alert(`There was a problem starting conversation with ${otherUser.username}`);
+        Alert.alert(t("There was a problem starting conversation with", { username: otherUser.username }));
       }
     } catch (e) {
       Alert.alert(e.message); // Alert if there's an error
@@ -34,9 +39,9 @@ const MatchItem = ({ otherUser, navigation }) => {
     try {
       const conversationId = await sendConversationRequest(otherUser.id);
       if (conversationId) {
-        Alert.alert(`Request has been sent to ${otherUser.username}`);
+        Alert.alert(t(`Request has been sent to ${otherUser.username}`));
       } else {
-        Alert.alert(`There was a problem sending conversation request to ${otherUser.username}`);
+        Alert.alert(t(`There was a problem sending conversation request to ${otherUser.username}`));
       }
     } catch (e) {
       Alert.alert(e.message); // Alert if there's an error
@@ -63,7 +68,7 @@ const MatchItem = ({ otherUser, navigation }) => {
             color: approved || sender ? "#FFFFFF" : declined ? "#F44336" : "#9E9E9E",
           }}
         >
-          Start conversation
+          {t("Start conversation")}
         </Text>
       </TouchableOpacity>
     );
@@ -71,21 +76,21 @@ const MatchItem = ({ otherUser, navigation }) => {
     if (approved) {
       return (
         <View>
-          <Text style={styles.statusText}>Status: Approved</Text>
+          <Text style={styles.statusText}>{t("Status: Approved")}</Text>
           <StartConversationButton />
         </View>
       );
     } else if (declined) {
       return (
         <View>
-          <Text style={styles.statusText}>Status: Declined</Text>
+          <Text style={styles.statusText}>{t("Status: Declined")}</Text>
           <StartConversationButton />
         </View>
       );
     } else if (sender || recipient) {
       return (
         <View>
-          <Text style={styles.statusText}>Status: Pending</Text>
+          <Text style={styles.statusText}>{t("Status: Pending")}</Text>
           <StartConversationButton />
         </View>
       );
@@ -93,73 +98,92 @@ const MatchItem = ({ otherUser, navigation }) => {
     return (
       <View>
         <TouchableOpacity style={styles.button} onPress={handlePressSendRequest}>
-          <Text style={styles.buttonText}>Send conversation request</Text>
+          <Text style={styles.buttonText}>{t("Send conversation request")}</Text>
         </TouchableOpacity>
       </View>
     );
   }, [requests]);
 
   return (
+    <ImageBackground source={backgroundImage} style={styles.background}>
     <View style={styles.matchItem}>
       <View style={styles.matchItemTextContainer}>
-        <Text style={styles.matchText}>User name: {otherUser.username}</Text>
-        <Text style={styles.topicsText}>Topics: {otherUser.conversationTopics.join(", ")}</Text>
+        <Text style={styles.matchText}>{t("User name")}: {otherUser.username}</Text>
+        <Text style={styles.topicsText}>{t("Topics")}: {otherUser.conversationTopics.join(", ")}</Text>
       </View>
       <Status />
     </View>
+    </ImageBackground>
+
   );
 };
 
 // Component to render the list of conversation matches
 const ConversationMatches = ({ navigation }) => {
+  const { t } = useTranslation();
   const { conversationTopicResults } = useConversationTopicMatches(); // Hook to get conversation topic results
   const { user } = useAuth(); // Hook to get the current authenticated user
+  const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
   return (
-    <View style={styles.container}>
-      {conversationTopicResults.length === 0 && (
-        <Text style={styles.noMatchesText}>No matches found for the selected topics.</Text>
-      )}
-      {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>Matches:</Text>}
-      <FlatList
-        data={conversationTopicResults} // Data for FlatList
-        renderItem={({ item: otherUser }) => (
-          <MatchItem otherUser={otherUser} navigation={navigation} /> // Render each match item
+    <ImageBackground source={backgroundImage} style={styles.background}>
+      <View style={styles.container}>
+        <SettingsButton
+          onBackgroundChange={handleBackgroundChange}
+          onLanguageChange={handleLanguageChange}
+          onSignOut={handleSignOut}
+        />
+        {conversationTopicResults.length === 0 && (
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics.")}</Text>
         )}
-        keyExtractor={(item) => item.id} // Unique key for each item
-      />
-    </View>
+        {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
+        <FlatList
+          data={conversationTopicResults} // Data for FlatList
+          renderItem={({ item: otherUser }) => (
+            <MatchItem otherUser={otherUser} navigation={navigation} /> // Render each match item
+          )}
+          keyExtractor={(item) => item.id} // Unique key for each item
+        />
+      </View>
+    </ImageBackground>
+
   );
 };
-
 const styles = StyleSheet.create({
-  smallText: {
-    fontSize: 12,
-    color: "#757575",
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for better text readability
+    padding: 20,
   },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#FAFAFA",
   },
   noMatchesText: {
     fontSize: 18,
     marginBottom: 20,
+    marginTop: 40,
     textAlign: "center",
     color: "#F44336",
   },
   matchesText: {
-    fontSize: 20,
+    fontSize: 26,
     marginBottom: 20,
     color: "#2196F3",
     fontWeight: "bold",
     textAlign: "center",
+    marginTop: 30,
   },
   matchItem: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 30,
+    padding: 20,
     marginBottom: 15,
+    marginTop: 5,
     justifyContent: "space-between",
     flexDirection: "row",
     shadowColor: "#000",
@@ -175,16 +199,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   matchText: {
-    fontSize: 16,
+    fontSize: 20,
     color: "#333333",
     fontWeight: "bold",
   },
   topicsText: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#666666",
   },
   button: {
-    padding: 10,
+    padding: 12,
     borderRadius: 5,
     backgroundColor: "#2196F3",
     alignItems: "center",
