@@ -81,7 +81,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
                     onLanguageChange={handleLanguageChange}
                     onSignOut={handleSignOut}
                 />
-                <Text style={styles.headline}>{t('What are your preferences?')}</Text>
+                <Text style={[styles.headline, { color: 'white' }]}>{t('What are your preferences?')}</Text>
                 <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>
                 <TextInput
                     style={styles.input}
@@ -97,6 +97,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
                         </TouchableOpacity>
                     )}
                     keyExtractor={(item) => item}
+                    contentContainerStyle={{ paddingBottom: 100 }}
                 />
                 <TouchableOpacity style={styles.selectButton} onPress={handleSelectButton}>
                     <Text style={styles.buttonText}>{t('Select')}</Text>
@@ -121,12 +122,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     headline: {
-        fontSize: 24,
+        fontSize: 27,
         fontWeight: 'bold',
-        color: '#000',
+        color: 'white',
         textAlign: 'center',
         marginBottom: 10,
-        marginTop: 40,
+        marginTop: 20,
     },
     subtitle: {
         fontSize: 18,
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     selectButton: {
         position: 'absolute',
         bottom: 20,
-        width: '80%',
+        width: '30%',
         height: 50,
         backgroundColor: '#2EE411',
         justifyContent: 'center',
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontSize: 18,
+        fontSize: 23,
         fontWeight: 'bold',
     },
 });
