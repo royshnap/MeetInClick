@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MeetInClick",
-    "slug": "MeetInClick",
+    "slug": "meetinclick",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon2.png",
@@ -15,9 +15,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "boundleIdentifier": "com.YandR.MeetInClick"
     },
     "android": {
+      "package": "com.YandR.MeetInClick",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

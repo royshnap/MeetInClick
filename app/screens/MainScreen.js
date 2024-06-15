@@ -3,6 +3,8 @@ import { Image,TextInput, ImageBackground, StyleSheet, Text, TouchableOpacity, V
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import GoogleSignIn from '../context/GoogleSignIn';
+
 
 const MainScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -66,7 +68,7 @@ const toggleSettingsModal = () => {
 
 return (
   <View style={styles.container}>
-    <Image source={require('../assets/appLogo.jpeg')} style={styles.logo} />
+    <Image source={require('../assets/appLogo.jpg')} style={styles.logo} />
     <TextInput
       style={styles.input}
       placeholder={t('Email address')}
@@ -110,9 +112,10 @@ return (
     <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
       <Text style={styles.buttonText}>{t('Sign Up with Facebook')}</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
+    <GoogleSignIn />
+    {/* <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
       <Text style={styles.buttonText}>{t('Sign Up with Gmail')}</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     <Text style={styles.orText}>{t("Don't have a User?")}</Text>
     <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
       <Text style={styles.buttonText}>{t('Sign Up')}</Text>

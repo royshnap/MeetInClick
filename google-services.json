@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "1010390116818",
+    "firebase_url": "https://meetinclick-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "meetinclick",
+    "storage_bucket": "meetinclick.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1010390116818:android:f6ecd953a68d8537e0400b",
+        "android_client_info": {
+          "package_name": "com.YandR.MeetInClick"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1010390116818-decp4r4o6nlnv0u2afqh3mu7bt9npas5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.YandR.MeetInClick",
+            "certificate_hash": "c853691de5a2da240729448a0581c64a610f806d"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUiE0gFjxmYMWtYf0BTOmNaii-shYLKWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010390116818-k3s2acicqquei4h4eqb0fj7bphh01u0j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1010390116818-ietpifbuqjahbln7u4hluhbq03dupdbt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.YandR.MeetInClick"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
