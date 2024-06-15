@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import GoogleSignIn from '../context/GoogleSignIn';
-
+import FacebookLogin from '../context/facebookLogin';
 
 const MainScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -109,9 +109,10 @@ return (
       <Text style={styles.buttonText}>{t('Login')}</Text>
     </TouchableOpacity>
     <Text style={styles.orText}>{t('or Login with')}</Text>
-    <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
+    {/* <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
       <Text style={styles.buttonText}>{t('Sign Up with Facebook')}</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
+    <FacebookLogin />
     <GoogleSignIn />
     {/* <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
       <Text style={styles.buttonText}>{t('Sign Up with Gmail')}</Text>

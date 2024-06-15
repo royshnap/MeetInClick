@@ -6,6 +6,9 @@
     "orientation": "portrait",
     "icon": "./app/assets/icon2.png",
     "userInterfaceStyle": "light",
+    "facebookAppId": "1113204129735804",
+    "facebookDisplayName": "MeetInClickApp",
+    "facebookAutoLogAppEventsEnabled": true,
     "splash": {
       "image": "./app/assets/splash.png",
       "resizeMode": "contain",
@@ -16,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "boundleIdentifier": "com.YandR.MeetInClick"
+      "bundleIdentifier": "com.YandR.MeetInClick"
     },
     "android": {
       "package": "com.YandR.MeetInClick",
@@ -36,3 +39,5 @@
     }
   }
 }
+
+

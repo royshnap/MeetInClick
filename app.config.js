@@ -7,7 +7,7 @@ module.exports = ({ config }) => ({
     },
     ios: {
         //bundleIdentifier: "com.royshnap.meetinclick" 
-        boundleIdentifier: "com.YandR.MeetInClick" 
+        bundleIdentifier: "com.YandR.MeetInClick" 
       },
     extra: {
       ...config.extra,

@@ -2,7 +2,8 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import firebase from '../config/firebase';
-import { useAuthRequest } from 'expo-auth-session';
+import 'firebase/auth';
+import 'firebase/firestore';
 //project-1010390116818
 const GoogleSignIn = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -12,16 +13,45 @@ const GoogleSignIn = () => {
     webClientId: '793761719542-5dfr6olefnlj5h4hur9bl1qmahv4rh50.apps.googleusercontent.com',
   });
 
-  React.useEffect(() => {
+//   React.useEffect(() => {
+//     if (response?.type === 'success') {
+//       const { id_token } = response.params;
+
+//       const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+//       firebase.aouth().signInWithCredential(credential).catch((error) => {
+//         Alert.alert('Authentication error', error.message);
+//       });
+//     }
+//   }, [response]);
+React.useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
 
-      const credential = firebase.Auth.GoogleAuthProvider.credential(id_token);
-      firebase.Auth().signInWithCredential(credential).catch((error) => {
-        Alert.alert('Authentication error', error.message);
-      });
+      const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
+      firebase.auth().signInWithCredential(credential)
+        .then(async (userCredential) => {
+          const { user } = userCredential;
+          await addUserToDatabase(user);
+        })
+        .catch((error) => {
+          Alert.alert('Authentication error', error.message);
+        });
     }
   }, [response]);
+
+  const addUserToDatabase = async (user) => {
+    const { email, displayName } = user;
+    const userRef = firebase.firestore().collection('users').doc(user.uid);
+    const doc = await userRef.get();
+
+    if (!doc.exists) {
+      await userRef.set({
+        email,
+        displayName,
+        // Add other fields as needed
+      });
+    }
+  };
 
   return (
     <TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
