@@ -1,20 +1,22 @@
 import React, { useCallback, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, backgroundImage } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
+import { useCurrentLocation } from "../context/LocationContext";
+import { calculateDistance } from "../utils";
 
 // Component to render each match item
 const MatchItem = ({ otherUser, navigation }) => {
   const { t } = useTranslation();
   const {
-    startConversation, 
-    sendConversationRequest, 
-    isApproved, 
-    requests, 
-    isDeclined, 
+    startConversation,
+    sendConversationRequest,
+    isApproved,
+    requests,
+    isDeclined,
     isPending,
   } = useConversationTopicMatches(); // Hook to manage conversation topic matches
   const { user } = useAuth(); // Hook to get the current authenticated user
@@ -25,7 +27,7 @@ const MatchItem = ({ otherUser, navigation }) => {
     try {
       const conversationId = await startConversation(otherUser.id, requestId_1, requestId_2);
       if (conversationId) {
-        navigation.navigate(`Conversation`, { cid: conversationId }); // Navigate to the conversation screen
+        navigation.navigate("Conversation", { cid: conversationId }); // Navigate to the conversation screen
       } else {
         Alert.alert(t("There was a problem starting conversation with", { username: otherUser.username }));
       }
@@ -105,7 +107,6 @@ const MatchItem = ({ otherUser, navigation }) => {
   }, [requests]);
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background}>
     <View style={styles.matchItem}>
       <View style={styles.matchItemTextContainer}>
         <Text style={styles.matchText}>{t("User name")}: {otherUser.username}</Text>
@@ -113,8 +114,6 @@ const MatchItem = ({ otherUser, navigation }) => {
       </View>
       <Status />
     </View>
-    </ImageBackground>
-
   );
 };
 
@@ -124,6 +123,17 @@ const ConversationMatches = ({ navigation }) => {
   const { conversationTopicResults } = useConversationTopicMatches(); // Hook to get conversation topic results
   const { user } = useAuth(); // Hook to get the current authenticated user
   const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
+  const { backgroundImage, currentLocation, interestRadius } = useCurrentLocation(); // Hook to get the current location and interest radius
+
+  const filteredMatches = useMemo(() => {
+    return conversationTopicResults.filter(otherUser => {
+      if (currentLocation && otherUser.currentLocation) {
+        const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
+        return distance <= interestRadius;
+      }
+      return false;
+    });
+  }, [conversationTopicResults, currentLocation, interestRadius]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -133,12 +143,12 @@ const ConversationMatches = ({ navigation }) => {
           onLanguageChange={handleLanguageChange}
           onSignOut={() => handleSignOut(navigation)}
         />
-        {conversationTopicResults.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics.")}</Text>
+        {filteredMatches.length === 0 && (
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance.")}</Text>
         )}
-        {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
+        {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
         <FlatList
-          data={conversationTopicResults} // Data for FlatList
+          data={filteredMatches} // Data for FlatList
           renderItem={({ item: otherUser }) => (
             <MatchItem otherUser={otherUser} navigation={navigation} /> // Render each match item
           )}
@@ -146,19 +156,14 @@ const ConversationMatches = ({ navigation }) => {
         />
       </View>
     </ImageBackground>
-
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     width: '100%',
     height: '100%',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for better text readability
-    padding: 20,
   },
   container: {
     flex: 1,

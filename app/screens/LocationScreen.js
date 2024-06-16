@@ -24,7 +24,7 @@ const Location = () => {
       {
         text: t('OK'),
         onPress: () => {
-          setInterestRadius(d);
+          setInterestRadius(d); // Update interest radius here
           navigation.navigate('ConversationMatches');
         },
       },
@@ -69,7 +69,7 @@ const Location = () => {
             value={d}
             onValueChange={(value) => {
               setDistance(value);
-              setInterestRadius(value);
+              setInterestRadius(value); // Update interest radius here
             }}
             thumbTintColor="#007AFF"
             minimumTrackTintColor="#007AFF"

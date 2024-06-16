@@ -15,7 +15,7 @@ export const useCurrentLocation = () => {
 export const LocationContextProvider = ({ children }) => {
   const { user } = useAuth();
 
-  const [interestRadius, setInterestRadius] = useState(-1);
+  const [interestRadius, setInterestRadius] = useState(0);
   const [hasLocationPermissions, setHasLocationPermissions] = useState(false);
   /**
    * @type [Location.LocationObject | undefined, any]
