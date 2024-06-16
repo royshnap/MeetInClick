@@ -10,10 +10,10 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     const { category } = route.params;
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
-
+    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
+  
     const {
-        listUsersByConversationTopics, loading, error, conversationTopicResults
+      listUsersByConversationTopics, loading, error, conversationTopicResults
     } = useConversationTopicMatches();
 
     const categoriesMap = {
@@ -45,66 +45,65 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     };
     const categories = categoriesMap[category] || [];
 
-    const handleSearch = (query) => {
-        setSearchQuery(query);
-    };
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
 
-    const handleSelectCategory = (category) => {
-        if (selectedCategories.includes(category)) {
-            setSelectedCategories(selectedCategories.filter(c => c !== category));
-        } else if (selectedCategories.length < 5) {
-            setSelectedCategories([...selectedCategories, category]);
-        } else {
-            Alert.alert(t('You can select up to 5 topics.'));
-        }
-    };
+  const handleSelectCategory = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter(c => c !== category));
+    } else if (selectedCategories.length < 5) {
+      setSelectedCategories([...selectedCategories, category]);
+    } else {
+      Alert.alert(t('You can select up to 5 topics.'));
+    }
+  };
 
-    const handleSelectButton = async () => {
-        if (selectedCategories.length > 0) {
-            await listUsersByConversationTopics(selectedCategories);
-            navigation.navigate('Location');
-        }
-        else {
-            Alert.alert(t('Please select at least one topic.'));
-        }
-    };
+  const handleSelectButton = async () => {
+    if (selectedCategories.length > 0) {
+      await listUsersByConversationTopics(selectedCategories);
+      navigation.navigate('Location');
+    } else {
+      Alert.alert(t('Please select at least one topic.'));
+    }
+  };
 
-    const filteredCategories = categories.filter(category =>
-        category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const filteredCategories = categories.filter(category =>
+    category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    return (
-        <ImageBackground source={backgroundImage} style={styles.background}>
-            <View style={styles.overlay}>
-                <SettingsButton 
-                    onBackgroundChange={handleBackgroundChange}
-                    onLanguageChange={handleLanguageChange}
-                    onSignOut={handleSignOut}
-                />
-                <Text style={[styles.headline, { color: 'white' }]}>{t('What are your preferences?')}</Text>
-                <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder={t('Search category...')}
-                    value={searchQuery}
-                    onChangeText={handleSearch}
-                />
-                <FlatList
-                    data={filteredCategories}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity onPress={() => handleSelectCategory(item)}>
-                            <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{t(item)}</Text>
-                        </TouchableOpacity>
-                    )}
-                    keyExtractor={(item) => item}
-                    contentContainerStyle={{ paddingBottom: 100 }}
-                />
-                <TouchableOpacity style={styles.selectButton} onPress={handleSelectButton}>
-                    <Text style={styles.buttonText}>{t('Select')}</Text>
-                </TouchableOpacity>
-            </View>
-        </ImageBackground>
-    );
+  return (
+    <ImageBackground source={backgroundImage} style={styles.background}>
+      <View style={styles.overlay}>
+        <SettingsButton 
+          onBackgroundChange={handleBackgroundChange}
+          onLanguageChange={handleLanguageChange}
+          onSignOut={() => handleSignOut(navigation)}
+        />
+        <Text style={[styles.headline, { color: 'white' }]}>{t('What are your preferences?')}</Text>
+        <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>
+        <TextInput
+          style={styles.input}
+          placeholder={t('Search category...')}
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+        <FlatList
+          data={filteredCategories}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleSelectCategory(item)}>
+              <Text style={[styles.category, selectedCategories.includes(item) && styles.selectedCategory]}>{t(item)}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+        <TouchableOpacity style={styles.selectButton} onPress={handleSelectButton}>
+          <Text style={styles.buttonText}>{t('Select')}</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
+  );
 };
 
 const styles = StyleSheet.create({

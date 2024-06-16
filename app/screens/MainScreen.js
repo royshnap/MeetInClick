@@ -69,6 +69,10 @@ const toggleSettingsModal = () => {
 return (
   <View style={styles.container}>
     <Image source={require('../assets/appLogo.jpg')} style={styles.logo} />
+    <Text style={styles.subtitle}>
+        <Text style={styles.notText}>NOT </Text>
+        a dating app
+      </Text>
     <TextInput
       style={styles.input}
       placeholder={t('Email address')}
@@ -130,7 +134,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#FFE12A',
+    // backgroundColor: '#FFE12A',
     paddingTop: 5
   },
   
@@ -165,11 +169,14 @@ const styles = StyleSheet.create({
     height: 400,
     marginBottom: 10,
   },
-  // whatRuUpToText: {
-  //   fontSize: 24,
-  //   fontWeight: 'bold',
-  //   marginBottom: 70,
-  // },
+  subtitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  notText: {
+    color: 'red',
+  },
   input: {
     width: '80%',
     height: 35,

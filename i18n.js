@@ -168,7 +168,7 @@ const resources = {
             // sub category screen:
             "What are your preferences?": "מהן ההעדפות שלך?",
             "Choose up to 5 topics": "בחר עד 5 נושאים",
-            "Search category...": "מחפש קטגוריה...",
+            "Search category...": "חפש קטגוריה...",
             "You can select up to 5 topics.": "תוכל לבחור עד חמישה נושאים.",
             "No matches found for the selected topics.": "לא נמצאו התאמות עבור הנושאים שנבחרו.",
             "Please select at least one topic.": "בחר לפחות נושא אחד.",

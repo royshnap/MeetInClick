@@ -4,7 +4,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import firebase from '../config/firebase';
 import 'firebase/auth';
 import 'firebase/firestore';
-//project-1010390116818
+
 const GoogleSignIn = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: '63eb3457-b53f-4a3b-8c0f-04d8e653773f',
@@ -13,20 +13,9 @@ const GoogleSignIn = () => {
     webClientId: '793761719542-5dfr6olefnlj5h4hur9bl1qmahv4rh50.apps.googleusercontent.com',
   });
 
-//   React.useEffect(() => {
-//     if (response?.type === 'success') {
-//       const { id_token } = response.params;
-
-//       const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
-//       firebase.aouth().signInWithCredential(credential).catch((error) => {
-//         Alert.alert('Authentication error', error.message);
-//       });
-//     }
-//   }, [response]);
-React.useEffect(() => {
+  React.useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
-
       const credential = firebase.auth.GoogleAuthProvider.credential(id_token);
       firebase.auth().signInWithCredential(credential)
         .then(async (userCredential) => {
@@ -43,19 +32,17 @@ React.useEffect(() => {
     const { email, displayName } = user;
     const userRef = firebase.firestore().collection('users').doc(user.uid);
     const doc = await userRef.get();
-
     if (!doc.exists) {
       await userRef.set({
         email,
         displayName,
-        // Add other fields as needed
       });
     }
   };
 
   return (
     <TouchableOpacity style={styles.button} onPress={() => promptAsync()}>
-      <Text style={styles.buttonText}>Sign Up with Google</Text>
+      <Text style={styles.buttonText}>Log in with Google</Text>
     </TouchableOpacity>
   );
 };
@@ -63,15 +50,16 @@ React.useEffect(() => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#4285F4',
-    padding: 15,
+    padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
+    marginVertical: 5,
+    width: '70%',
   },
   buttonText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });

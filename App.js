@@ -43,6 +43,3 @@ export default function App() {
     </I18nextProvider>
   );
 }
-// "users": {
-//   ".indexOn": ["conversationTopics", "sportActivityTopics", "travelTopics", "clubbingTopics"]
-// }

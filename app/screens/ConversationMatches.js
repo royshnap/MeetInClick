@@ -131,7 +131,7 @@ const ConversationMatches = ({ navigation }) => {
         <SettingsButton
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
-          onSignOut={handleSignOut}
+          onSignOut={() => handleSignOut(navigation)}
         />
         {conversationTopicResults.length === 0 && (
           <Text style={styles.noMatchesText}>{t("No matches found for the selected topics.")}</Text>
