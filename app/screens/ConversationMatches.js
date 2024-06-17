@@ -146,9 +146,6 @@ const ConversationMatches = ({ navigation }) => {
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
         <SettingsButton
-          // onBackgroundChange={handleBackgroundChange}
-          // onLanguageChange={handleLanguageChange}
-          // onSignOut={handleSignOut}
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
           onSignOut={() => handleSignOut(navigation)}
