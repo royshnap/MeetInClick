@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button, Alert, TouchableOpacity, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ImageBackground } from "react-native";
 import Slider from "@react-native-community/slider";
 import { useNavigation } from "@react-navigation/native";
 import { useCurrentLocation } from "../context/LocationContext";
@@ -24,7 +24,7 @@ const Location = () => {
       {
         text: t('OK'),
         onPress: () => {
-          setInterestRadius(d);
+          setInterestRadius(d); // Update interest radius here
           navigation.navigate('ConversationMatches');
         },
       },
@@ -53,7 +53,7 @@ const Location = () => {
         <SettingsButton
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
-          onSignOut={handleSignOut}
+          onSignOut={() => handleSignOut(navigation)}
         />
         <Text style={styles.title}>{t('Choose the distance')}</Text>
         <Text style={styles.label}>{t('Distance')}: {d} {t('meters')}</Text>
@@ -69,7 +69,7 @@ const Location = () => {
             value={d}
             onValueChange={(value) => {
               setDistance(value);
-              setInterestRadius(value);
+              setInterestRadius(value); // Update interest radius here
             }}
             thumbTintColor="#007AFF"
             minimumTrackTintColor="#007AFF"

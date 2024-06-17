@@ -47,15 +47,3 @@ export default function App() {
 
   );
 }
-// "users": {
-//   ".indexOn": ["conversationTopics", "sportActivityTopics", "travelTopics", "clubbingTopics"]
-// }
-// {
-//   "rules": {
-//     ".read": "auth != null",
-//     ".write": "auth != null",
-//     "users": {
-//         ".indexOn": ["conversationTopics"]
-//     }
-//   }
-// }

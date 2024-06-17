@@ -5,15 +5,17 @@ import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 
+const MAX_SUBCATEGORIES = 5;
+
 const SubCategoriesScreen = ({ route, navigation }) => {
     const { t } = useTranslation();
     const { category } = route.params;
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
-
+    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
+  
     const {
-        listUsersByConversationTopics, loading, error, conversationTopicResults
+      listUsersByConversationTopics, loading, error, conversationTopicResults
     } = useConversationTopicMatches();
 
     const categoriesMap = {
@@ -45,6 +47,16 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     };
     const categories = categoriesMap[category] || [];
 
+    const getTitleForCategory = (category) => {
+        const categoryTitles = {
+            'Conversation': t('What would you like to talk about?'),
+            'Sport Activity': t('What kind of sport would you like to do?'),
+            'Travel': t('Which kind of travel you want?'),
+            'Clubbing': t('What type of club you want to go?')
+        };
+        return categoryTitles[category] || t('What are your preferences?');
+    };
+
     const handleSearch = (query) => {
         setSearchQuery(query);
     };
@@ -52,7 +64,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     const handleSelectCategory = (category) => {
         if (selectedCategories.includes(category)) {
             setSelectedCategories(selectedCategories.filter(c => c !== category));
-        } else if (selectedCategories.length < 5) {
+        } else if (selectedCategories.length < MAX_SUBCATEGORIES) {
             setSelectedCategories([...selectedCategories, category]);
         } else {
             Alert.alert(t('You can select up to 5 topics.'));
@@ -63,8 +75,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         if (selectedCategories.length > 0) {
             await listUsersByConversationTopics(selectedCategories);
             navigation.navigate('Location');
-        }
-        else {
+        } else {
             Alert.alert(t('Please select at least one topic.'));
         }
     };
@@ -79,9 +90,9 @@ const SubCategoriesScreen = ({ route, navigation }) => {
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
-                    onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+                    onSignOut={() => handleSignOut(navigation)}
                 />
-                <Text style={[styles.headline, { color: 'white' }]}>{t('What are your preferences?')}</Text>
+                <Text style={[styles.headline, { color: 'white' }]}>{getTitleForCategory(category)}</Text>
                 <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>
                 <TextInput
                     style={styles.input}

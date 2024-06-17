@@ -167,8 +167,13 @@ const resources = {
             "Change Language": "שנה שפה",
             // sub category screen:
             "What are your preferences?": "מהן ההעדפות שלך?",
+            "What would you like to talk about?": "על מה תרצו לדבר?",
+            "What kind of sport would you like to do?": "איזה סוג ספורט תרצו לעשות?",
+            "Which kind of travel you want?": "איזה סוג של טיול תרצו?",
+            "What type of club you want to go?": "לאיזה סגנון של מועדון תרצו ללכת?",
+
             "Choose up to 5 topics": "בחר עד 5 נושאים",
-            "Search category...": "מחפש קטגוריה...",
+            "Search category...": "חפש קטגוריה...",
             "You can select up to 5 topics.": "תוכל לבחור עד חמישה נושאים.",
             "No matches found for the selected topics.": "לא נמצאו התאמות עבור הנושאים שנבחרו.",
             "Please select at least one topic.": "בחר לפחות נושא אחד.",

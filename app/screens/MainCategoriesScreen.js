@@ -43,7 +43,7 @@ const MainCategoriesScreen = ({ navigation }) => {
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
-                    onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+                    onSignOut={() => handleSignOut(navigation)}
                 />
                 <Text style={styles.title}>
                     {t('What would you')}{'\n'}

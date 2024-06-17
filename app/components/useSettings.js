@@ -22,7 +22,7 @@ export const SettingsProvider = ({ children }) => {
 
   const handleSignOut = async (navigation) => {
     try {
-      await signOutUser();
+      await signOutUser(navigation);
       navigation.navigate('Main');
     } catch (error) {
       console.error('Error signing out:', error);
@@ -40,4 +40,3 @@ export const SettingsProvider = ({ children }) => {
 const useSettings = () => useContext(SettingsContext);
 
 export default useSettings;
-

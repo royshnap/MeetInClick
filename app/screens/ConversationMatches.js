@@ -1,40 +1,40 @@
-import React, { useCallback, useMemo } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, backgroundImage } from "react-native";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
+import { useCurrentLocation } from "../context/LocationContext";
+import { calculateDistance } from "../utils";
+import ConfettiCannon from 'react-native-confetti-cannon';
 
-// Component to render each match item
 const MatchItem = ({ otherUser, navigation }) => {
   const { t } = useTranslation();
   const {
-    startConversation, 
-    sendConversationRequest, 
-    isApproved, 
-    requests, 
-    isDeclined, 
+    startConversation,
+    sendConversationRequest,
+    isApproved,
+    requests,
+    isDeclined,
     isPending,
-  } = useConversationTopicMatches(); // Hook to manage conversation topic matches
-  const { user } = useAuth(); // Hook to get the current authenticated user
+  } = useConversationTopicMatches();
+  const { user } = useAuth();
   const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
-  // Function to handle starting a conversation
   const handlePressStartConversation = async (requestId_1, requestId_2) => {
     try {
       const conversationId = await startConversation(otherUser.id, requestId_1, requestId_2);
       if (conversationId) {
-        navigation.navigate(`Conversation`, { cid: conversationId }); // Navigate to the conversation screen
+        navigation.navigate("Conversation", { cid: conversationId });
       } else {
         Alert.alert(t("There was a problem starting conversation with", { username: otherUser.username }));
       }
     } catch (e) {
-      Alert.alert(e.message); // Alert if there's an error
+      Alert.alert(e.message);
     }
   };
 
-  // Function to handle sending a conversation request
   const handlePressSendRequest = async () => {
     try {
       const conversationId = await sendConversationRequest(otherUser.id);
@@ -44,11 +44,10 @@ const MatchItem = ({ otherUser, navigation }) => {
         Alert.alert(t(`There was a problem sending conversation request to ${otherUser.username}`));
       }
     } catch (e) {
-      Alert.alert(e.message); // Alert if there's an error
+      Alert.alert(e.message);
     }
   };
 
-  // Component to display the status of the conversation request
   const Status = useCallback(() => {
     const approved = isApproved(otherUser.id);
     const declined = isDeclined(otherUser.id);
@@ -56,7 +55,6 @@ const MatchItem = ({ otherUser, navigation }) => {
     const cid1 = `${otherUser.id}_${user.id}`;
     const cid2 = `${user.id}_${otherUser.id}`;
 
-    // Button to start a conversation
     const StartConversationButton = () => (
       <TouchableOpacity
         style={[styles.startConversationButton, { backgroundColor: approved ? "#4CAF50" : sender ? "#BDBDBD" : "transparent" }]}
@@ -105,7 +103,6 @@ const MatchItem = ({ otherUser, navigation }) => {
   }, [requests]);
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background}>
     <View style={styles.matchItem}>
       <View style={styles.matchItemTextContainer}>
         <Text style={styles.matchText}>{t("User name")}: {otherUser.username}</Text>
@@ -113,17 +110,37 @@ const MatchItem = ({ otherUser, navigation }) => {
       </View>
       <Status />
     </View>
-    </ImageBackground>
-
   );
 };
 
-// Component to render the list of conversation matches
 const ConversationMatches = ({ navigation }) => {
   const { t } = useTranslation();
-  const { conversationTopicResults } = useConversationTopicMatches(); // Hook to get conversation topic results
-  const { user } = useAuth(); // Hook to get the current authenticated user
+  const { conversationTopicResults } = useConversationTopicMatches();
+  const { user } = useAuth();
   const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
+  const { backgroundImage, currentLocation, interestRadius } = useCurrentLocation();
+
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const filteredMatches = useMemo(() => {
+    const matches = conversationTopicResults.filter(otherUser => {
+      if (currentLocation && otherUser.currentLocation) {
+        const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
+        return distance <= interestRadius;
+      }
+      return false;
+    });
+    
+    if (matches.length > 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000); // Show confetti for 3 seconds
+      matches.forEach(match => {
+        console.log("Match details:", match);
+      });
+    }
+
+    return matches;
+  }, [conversationTopicResults, currentLocation, interestRadius]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -134,37 +151,40 @@ const ConversationMatches = ({ navigation }) => {
           // onSignOut={handleSignOut}
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+          onSignOut={() => handleSignOut(navigation)}
         />
-        {conversationTopicResults.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics.")}</Text>
+        {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
+        {filteredMatches.length === 0 && (
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance.")}</Text>
         )}
-        {conversationTopicResults.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
+        {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
         <FlatList
-          data={conversationTopicResults} // Data for FlatList
+          data={filteredMatches}
           renderItem={({ item: otherUser }) => (
-            <MatchItem otherUser={otherUser} navigation={navigation} /> // Render each match item
+            <MatchItem otherUser={otherUser} navigation={navigation} />
           )}
-          keyExtractor={(item) => item.id} // Unique key for each item
+          keyExtractor={(item) => item.id}
         />
       </View>
     </ImageBackground>
-
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     width: '100%',
     height: '100%',
   },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for better text readability
-    padding: 20,
-  },
   container: {
     flex: 1,
+    position: 'relative',
+  },
+  confetti: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 9999, // Ensure the confetti is in front of everything
   },
   noMatchesText: {
     fontSize: 18,

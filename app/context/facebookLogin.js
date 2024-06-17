@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import * as Facebook from 'expo-facebook';
 
 const FacebookLogin = () => {
@@ -13,7 +13,6 @@ const FacebookLogin = () => {
       });
 
       if (result.type === 'success') {
-        // Get user data using Facebook's Graph API
         const response = await fetch(`https://graph.facebook.com/me?access_token=${result.token}`);
         const userData = await response.json();
         Alert.alert('Logged in!', `Hi ${userData.name}!`);
@@ -26,10 +25,27 @@ const FacebookLogin = () => {
   };
 
   return (
-    <View>
-      <Button title="Login with Facebook" onPress={handleFacebookLogin} />
-    </View>
+    <TouchableOpacity style={styles.button} onPress={handleFacebookLogin}>
+      <Text style={styles.buttonText}>Log in with Facebook</Text>
+    </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#3b5998',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 5,
+    width: '70%',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
 
 export default FacebookLogin;

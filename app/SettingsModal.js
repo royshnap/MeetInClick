@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange, onSignOut }) => {
+const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange, onSignOut, navigation }) => {
   const { t } = useTranslation();
   const [showBackgroundOptions, setShowBackgroundOptions] = useState(false); // State to control visibility
   const backgrounds = [
@@ -63,7 +63,7 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
           <View style={styles.separator} />
 
           <View style={styles.section}>
-            <TouchableOpacity style={styles.signOutButton} onPress={onSignOut}>
+            <TouchableOpacity style={styles.signOutButton} onPress={() => onSignOut(navigation)}>
               <Text style={styles.signOutButtonText}>{t('Sign Out')}</Text>
             </TouchableOpacity>
           </View>
