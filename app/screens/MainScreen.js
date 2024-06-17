@@ -109,14 +109,8 @@ return (
       <Text style={styles.buttonText}>{t('Login')}</Text>
     </TouchableOpacity>
     <Text style={styles.orText}>{t('or Login with')}</Text>
-    {/* <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
-      <Text style={styles.buttonText}>{t('Sign Up with Facebook')}</Text>
-    </TouchableOpacity> */}
     <FacebookLogin />
     <GoogleSignIn />
-    {/* <TouchableOpacity style={styles.socialButton} onPress={() => navigation.navigate('MainCategories')}>
-      <Text style={styles.buttonText}>{t('Sign Up with Gmail')}</Text>
-    </TouchableOpacity> */}
     <Text style={styles.orText}>{t("Don't have a User?")}</Text>
     <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
       <Text style={styles.buttonText}>{t('Sign Up')}</Text>
@@ -165,11 +159,6 @@ const styles = StyleSheet.create({
     height: 400,
     marginBottom: 10,
   },
-  // whatRuUpToText: {
-  //   fontSize: 24,
-  //   fontWeight: 'bold',
-  //   marginBottom: 70,
-  // },
   input: {
     width: '80%',
     height: 35,

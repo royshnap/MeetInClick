@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, FlatList, Button } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
+import ProfileHeader from '../components/ProfileHeader';
+
 
 const MainCategoriesScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState('');
-    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
-
+    const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
     const handleChooseCategory = (category) => {
         setSelectedCategory(category);
     };
@@ -37,10 +38,12 @@ const MainCategoriesScreen = ({ navigation }) => {
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
             <View style={styles.overlay}>
+            <ProfileHeader navigation={navigation} />
+              {/* <Button title="View Profile" onPress={handleViewProfile} /> */}
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
-                    onSignOut={handleSignOut}
+                    onSignOut={() => handleSignOut(navigation)} // Pass navigation here
                 />
                 <Text style={styles.title}>
                     {t('What would you')}{'\n'}

@@ -79,7 +79,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
-                    onSignOut={handleSignOut}
+                    onSignOut={() => handleSignOut(navigation)} // Pass navigation here
                 />
                 <Text style={[styles.headline, { color: 'white' }]}>{t('What are your preferences?')}</Text>
                 <Text style={styles.subtitle}>{t('Choose up to 5 topics')}</Text>

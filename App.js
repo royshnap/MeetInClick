@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LocationScreen from "./app/screens/LocationScreen";
 import SignUpScreen from "./app/screens/SignUpScreen";
+import UserScreen from "./app/screens/UserScreen";
 import SubCategoriesScreen from "./app/screens/SubCategoriesScreen";
 import MainCategoriesScreen from "./app/screens/MainCategoriesScreen";
 import MainScreen from "./app/screens/MainScreen";
@@ -20,13 +21,14 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    <AuthContextProvider>
     <I18nextProvider i18n={i18n}>
+    <SettingsProvider>
       <NavigationContainer>
-        <AuthContextProvider>
-          <SettingsProvider>
             <ConversationContextProvider>
               <LocationContextProvider>
                 <Stack.Navigator initialRouteName="Main">
+                  <Stack.Screen name="UserScreen" component={UserScreen} />
                   <Stack.Screen name="ConversationMatches" component={ConversationMatches} />
                   <Stack.Screen name="Location" component={LocationScreen} />
                   <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
@@ -37,12 +39,23 @@ export default function App() {
                 </Stack.Navigator>
               </LocationContextProvider>
             </ConversationContextProvider>
-          </SettingsProvider>
-        </AuthContextProvider>
       </NavigationContainer>
+      </SettingsProvider>
+
     </I18nextProvider>
+    </AuthContextProvider>
+
   );
 }
 // "users": {
 //   ".indexOn": ["conversationTopics", "sportActivityTopics", "travelTopics", "clubbingTopics"]
+// }
+// {
+//   "rules": {
+//     ".read": "auth != null",
+//     ".write": "auth != null",
+//     "users": {
+//         ".indexOn": ["conversationTopics"]
+//     }
+//   }
 // }

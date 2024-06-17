@@ -1,8 +1,9 @@
 // SettingsButton.js
 import React, { useState } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SettingsModal from '../SettingsModal'; // Adjust the path if necessary
+import useSettings from '../components/useSettings'; // Adjust the path if necessary
 
 const SettingsButton = ({ onBackgroundChange, onLanguageChange, onSignOut }) => {
   const [settingsVisible, setSettingsVisible] = useState(false);

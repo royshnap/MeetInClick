@@ -129,9 +129,12 @@ const ConversationMatches = ({ navigation }) => {
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
         <SettingsButton
+          // onBackgroundChange={handleBackgroundChange}
+          // onLanguageChange={handleLanguageChange}
+          // onSignOut={handleSignOut}
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
-          onSignOut={handleSignOut}
+          onSignOut={() => handleSignOut(navigation)} // Pass navigation here
         />
         {conversationTopicResults.length === 0 && (
           <Text style={styles.noMatchesText}>{t("No matches found for the selected topics.")}</Text>
