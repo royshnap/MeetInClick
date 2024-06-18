@@ -20,7 +20,6 @@ const MatchItem = ({ otherUser, navigation }) => {
     isPending,
   } = useConversationTopicMatches();
   const { user } = useAuth();
-  const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
   const handlePressStartConversation = async (requestId_1, requestId_2) => {
     try {
@@ -117,8 +116,9 @@ const ConversationMatches = ({ navigation }) => {
   const { t } = useTranslation();
   const { conversationTopicResults } = useConversationTopicMatches();
   const { user } = useAuth();
-  const { handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
-  const { backgroundImage, currentLocation, interestRadius } = useCurrentLocation();
+  const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
+  const { currentLocation, interestRadius } = useCurrentLocation();
+
 
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -152,7 +152,7 @@ const ConversationMatches = ({ navigation }) => {
         />
         {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
         {filteredMatches.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance.")}</Text>
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
         )}
         {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
         <FlatList
@@ -173,10 +173,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  container: {
-    flex: 1,
-    position: 'relative',
-  },
+  // container: {
+  //   flex: 1,
+  //   position: 'relative',
+  // },
   confetti: {
     position: 'absolute',
     top: 0,
@@ -186,24 +186,23 @@ const styles = StyleSheet.create({
   noMatchesText: {
     fontSize: 18,
     marginBottom: 20,
-    marginTop: 40,
+    marginTop: 60,
     textAlign: "center",
     color: "#F44336",
   },
   matchesText: {
-    fontSize: 26,
+    fontSize: 40,
     marginBottom: 20,
-    color: "#2196F3",
+    color: "#2e2934",
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 30,
+    marginTop: 50,
   },
   matchItem: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 30,
+    backgroundColor: "#fff0d6",
+    borderRadius: 25,
     padding: 20,
     marginBottom: 15,
-    marginTop: 5,
     justifyContent: "space-between",
     flexDirection: "row",
     shadowColor: "#000",

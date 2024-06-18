@@ -9,15 +9,18 @@ import {
   ImageBackground,
   ScrollView,
   Alert,
+  I18nManager
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { ref, get } from "firebase/database";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
 import Firebase from "../config/firebase";
+import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 
 const UserScreen = () => { 
+  const { t, i18n } = useTranslation(); 
   const [userData, setUserData] = useState(null);
   const route = useRoute();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
@@ -31,10 +34,10 @@ const UserScreen = () => {
         if (snapshot.exists()) {
           setUserData(snapshot.val());
         } else {
-          Alert.alert("User not found");
+          Alert.alert(t("User not found"));
         }
       } catch (error) {
-        Alert.alert("Error fetching user data");
+        Alert.alert(t("Error fetching user data"));
       }
     };
     fetchUserData();
@@ -70,9 +73,13 @@ return (
             style={styles.profileImage}
           />
       </View>
-      <Text style={styles.detail}>Full Name: {userData.firstName} {userData.lastName}</Text>
-      <Text style={styles.detail}>Email: {userData.email}</Text>
-      <Text style={styles.detail}>User Name: @{userData.username}</Text>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.detail}>{t("Full Name")}: {userData.firstName} {userData.lastName}</Text>
+        <Text style={styles.detail}>{t("Email")}: {userData.email}</Text>
+        <Text style={styles.detail}>{t("User Name")}: @{userData.username}</Text>
+      {/* <Text style={styles.detail}>{t("Full Name")}: {userData.firstName} {userData.lastName}</Text>
+      <Text style={styles.detail}>{t("Email")}: {userData.email}</Text>
+      <Text style={styles.detail}>{t("User Name")}: @{userData.username}</Text> */}
       {userData.instagram && (
         <Text style={styles.socialLink}>Instagram: {userData.instagram}</Text>
       )}
@@ -82,6 +89,7 @@ return (
       {userData.twitter && (
         <Text style={styles.socialLink}>Twitter: {userData.twitter}</Text>
       )}
+      </View>
     </ScrollView>
   </ImageBackground>
 );
@@ -110,10 +118,14 @@ profileImage: {
   marginBottom: 20,
   marginTop: 30
 },
+detailsContainer: {
+  paddingHorizontal: 20,
+  alignSelf: "flex-start", // Align details to the left by default
+},
 detail: {
-  fontSize: 20,
-  marginBottom: 15,
-  fontWeight: 'bold',
+  fontSize: 18,
+  marginBottom: 20,
+  textAlign: "left", // Ensure text aligns left by default
 },
 iconsContainer: {
   flexDirection: "row",

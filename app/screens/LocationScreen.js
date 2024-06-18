@@ -6,6 +6,7 @@ import { useCurrentLocation } from "../context/LocationContext";
 import { useTranslation } from "react-i18next";
 import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
+import ProfileHeader from '../components/ProfileHeader';
 
 const Location = () => {
   const navigation = useNavigation();
@@ -49,6 +50,7 @@ const Location = () => {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
+      <ProfileHeader navigation={navigation} />
       <View style={styles.overlay}>
         <SettingsButton
           onBackgroundChange={handleBackgroundChange}

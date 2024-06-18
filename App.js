@@ -12,6 +12,7 @@ import MainCategoriesScreen from "./app/screens/MainCategoriesScreen";
 import MainScreen from "./app/screens/MainScreen";
 import { SettingsProvider } from "./app/components/useSettings";
 import { AuthContextProvider } from "./app/context/AuthContext";
+import {ProfileHeader} from "./app/components/ProfileHeader";
 import { ConversationContextProvider } from "./app/context/ConversationContext";
 import ConversationMatches from "./app/screens/ConversationMatches";
 import Conversation from "./app/screens/Conversation";
@@ -34,8 +35,8 @@ export default function App() {
                   <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
                   <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
                   <Stack.Screen name="Conversation" component={Conversation} />
-                  <Stack.Screen name="SignUp" component={SignUpScreen} />
                   <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
+                  <Stack.Screen name="SignUp" component={SignUpScreen} />
                 </Stack.Navigator>
               </LocationContextProvider>
             </ConversationContextProvider>

@@ -303,12 +303,28 @@ const resources = {
             "Request has been sent to": "הבקשה נשלחה ל",
             "There was a problem starting conversation with": "הייתה בעיה בהתחלת השיחה עם",
             "There was a problem sending conversation request to": "הייתה בעיה בשליחת בקשת השיחה ל",
-            "No matches found for the selected topics.": "לא נמצאו התאמות לנושאים שנבחרו.",
-            "Matches": "התאמות"
-
+            "No matches found for the selected topics within the specified distance": "לא נמצאו התאמות לנושאים שנבחרו ולמרחק שנקבע",
+            "Matches": "התאמות",
+            //User Screen:
+            "User not found": "המשתמש לא נמצא",
+            "Error fetching user data": "שגיאה בהעלאת נתוני המשתמש",
+            "Full Name": "שם מלא",
+            "Email": "כתובת אימייל",
+            "User Name": "שם משתמש",
+            //Sign Up Screen:
+            "Pick an image": "בחר תמונה",
+            "Welcome To ": "ברוכים הבאים ל ",
+            "First Name": "שם פרטי",
+            "Last Name": "שם משפחה",
+            "Email": "כתבות אימייל",
+            "Username": "שם משתמש",
+            "Password": "סיסמה",
+            "Confirm Password": "אשר סיסמה",
+            "Add Social Network Link": "הוסף לינק לרשתות חברתיות",
         }
     }
 };
+
 i18n.use(initReactI18next)
   .init({
     resources,

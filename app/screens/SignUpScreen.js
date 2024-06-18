@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  ImageBackground,
   StyleSheet,
   Alert,
   Image,
@@ -13,6 +14,9 @@ import {
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useCurrentLocation } from "../context/LocationContext";
+import useSettings from '../components/useSettings';
+import { useTranslation } from 'react-i18next';
+import SettingsButton from '../components/SettingsButton';
 import * as ImagePicker from "expo-image-picker";
 
 const SignUpScreen = ({ navigation }) => {
@@ -27,9 +31,10 @@ const SignUpScreen = ({ navigation }) => {
   const [facebook, setFacebook] = useState("");
   const [twitter, setTwitter] = useState("");
   const [showSocialLinks, setShowSocialLinks] = useState(false);
-
+  const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
   const { user, register, loading, error, setError } = useAuth();
   const { hasLocationPermissions, requestLocationPermissions, currentLocation } = useCurrentLocation();
+  const { t } = useTranslation();
 
   const handleSignUp = async () => {
     try {
@@ -106,56 +111,62 @@ const SignUpScreen = ({ navigation }) => {
   };
  
   return (
+    <ImageBackground source={backgroundImage} style={styles.background}>
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.title}>Welcome To MeetInClick</Text>
+      <SettingsButton 
+          onBackgroundChange={handleBackgroundChange}
+          onLanguageChange={handleLanguageChange}
+          onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+      />
+        <Text style={styles.title}>{t("Welcome To ")}MeetInClick</Text>
         <TouchableOpacity onPress={pickImage}>
           {profileImage ? (
             <Image source={{ uri: profileImage }} style={styles.profileImage} />
           ) : (
             <View style={styles.imagePlaceholder}>
-              <Text style={styles.imagePlaceholderText}>Pick an image</Text>
+              <Text style={styles.imagePlaceholderText}>{t("Pick an image")}</Text>
             </View>
           )}
         </TouchableOpacity>
         <TextInput
           style={styles.input}
-          placeholder="First Name"
+          placeholder={t("First Name")}
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Last Name"
+          placeholder={t("Last Name")}
           value={lastName}
           onChangeText={setLastName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t("Email")}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
-          placeholder="Username"
+          placeholder={t("Username")}
           value={username}
           onChangeText={setUsername}
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t("Password")}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
         <TextInput
           style={styles.input}
-          placeholder="Confirm Password"
+          placeholder={t("Confirm Password")}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -164,7 +175,7 @@ const SignUpScreen = ({ navigation }) => {
           style={styles.addButton}
           onPress={() => setShowSocialLinks(!showSocialLinks)}
         >
-          <Text style={styles.addButtonText}>Add Social Network Link</Text>
+          <Text style={styles.addButtonText}>{t("Add Social Network Link")}</Text>
         </TouchableOpacity>
         {showSocialLinks && (
           <>
@@ -189,17 +200,28 @@ const SignUpScreen = ({ navigation }) => {
           </>
         )}
         <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <Text style={styles.buttonText}>{t("Sign Up")}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
+    </ImageBackground>
+
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: "#FFE12A",
+    width: '100%',
+    height: '100%',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  settingsItem: {
+    marginBottom: 40,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -208,15 +230,16 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 27,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 7,
+    marginTop: 30,
   },
   input: {
     width: "80%",
     height: 50,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "black",
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 10,
@@ -236,19 +259,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileImage: {
-    width: 100,
-    height: 100,
+    width: 130,
+    height: 130,
     borderRadius: 50,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   imagePlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "gray",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   imagePlaceholderText: {
     color: "white",

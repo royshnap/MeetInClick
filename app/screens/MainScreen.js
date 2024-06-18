@@ -91,10 +91,11 @@ return (
               <Ionicons name="close-circle" size={24} color="black" />
             </TouchableOpacity>
             {/* Language selection */}
-            <TouchableOpacity style={styles.settingsItem} onPress={changeLanguage}>
-              <Text>{t('Change Language')}</Text>
+            <View style={styles.section}>
+            <TouchableOpacity style={styles.languageButton} onPress={changeLanguage}>
+              <Text style={styles.languageButtonText}>{t('Change Language')}</Text>
             </TouchableOpacity>
-            {/* Other settings */}
+            </View>
           </View>
         </View>
     </Modal>
@@ -127,7 +128,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFE12A',
     paddingTop: 5
   },
-  
   settingsButton: {
     position: 'absolute',
     top: 70,
@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   settingsContent: {
-    width: '50%',
+    width: '70%',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 40,
     borderRadius: 30,
   },
   closeButton: {
@@ -194,7 +194,15 @@ signUpButton: {
     borderRadius: 10,
     marginBottom: 20,
 },
-
+languageButton: {
+  backgroundColor: '#3b5998',
+  borderRadius: 15,
+  padding: 15,
+},
+languageButtonText: {
+  fontSize: 16,
+  color: 'white',
+},
   button: {
     marginVertical: 5,
   },

@@ -4,6 +4,8 @@ import { useConversationTopicMatches } from '../context/ConversationContext';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
+import ProfileHeader from '../components/ProfileHeader';
+
 
 const MAX_SUBCATEGORIES = 5;
 
@@ -87,6 +89,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
             <View style={styles.overlay}>
+            <ProfileHeader navigation={navigation} />
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
