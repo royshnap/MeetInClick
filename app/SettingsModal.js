@@ -6,7 +6,7 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
   const { t } = useTranslation();
   const [showBackgroundOptions, setShowBackgroundOptions] = useState(false); // State to control visibility
   const backgrounds = [
-    require('./assets/b1.jpg'),
+    require('./assets/b1.png'),
     require('./assets/b2.jpg'),
     require('./assets/b3.jpg'),
     require('./assets/b4.jpg'),
@@ -17,6 +17,10 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
     require('./assets/b9.jpg'),
     require('./assets/b10.jpg'),
     require('./assets/b11.jpg'),
+    require('./assets/b12.jpg'),
+    require('./assets/b13.jpg'),
+    require('./assets/b14.jpg'),
+
   ];
 
   const handleBackgroundButtonPress = () => {

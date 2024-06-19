@@ -8,7 +8,7 @@ const SettingsContext = createContext();
 export const SettingsProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
   const { signOutUser } = useAuth();
-  const [backgroundImage, setBackgroundImage] = useState(require('../assets/b1.jpg'));
+  const [backgroundImage, setBackgroundImage] = useState(require('../assets/b1.png'));
   
 
   const handleBackgroundChange = (background) => {

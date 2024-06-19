@@ -67,8 +67,9 @@ const toggleSettingsModal = () => {
 };
 
 return (
+  //<ImageBackground source={require('../assets/b13.jpg')} style={styles.background}>
   <View style={styles.container}>
-    <Image source={require('../assets/appLogo.jpg')} style={styles.logo} />
+    <Image source={require('../assets/LOGO7.png')} style={styles.logo} />
     <TextInput
       style={styles.input}
       placeholder={t('Email address')}
@@ -118,14 +119,28 @@ return (
     </TouchableOpacity>
   
   </View>
+  //</ImageBackground>
+
 );
 };
 const styles = StyleSheet.create({
+//   background: {
+//     flex: 1,
+//     width: '100%',
+//     height: '100%',
+//   },
+//   container: {
+//     flex: 1,
+//     justifyContent: 'flex-start',
+//     alignItems: 'center',
+//     backgroundColor: 'transparent',
+//     paddingTop: 5,
+//   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#FFE12A',
+    backgroundColor: '#F2F2CC',
     paddingTop: 5
   },
   settingsButton: {
@@ -155,8 +170,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginTop: 60,
-    width: 400,
-    height: 400,
+    width: 420,
+    height: 420,
     marginBottom: 10,
   },
   input: {
