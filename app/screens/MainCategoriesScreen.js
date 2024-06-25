@@ -4,12 +4,15 @@ import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 import ProfileHeader from '../components/ProfileHeader';
-
+import { getDatabase, ref, set } from 'firebase/database';
+import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext to get the current user
 
 const MainCategoriesScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState('');
     const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
+    const { user } = useAuth(); // Assuming useAuth provides the current authenticated user
+
     const handleChooseCategory = (category) => {
         setSelectedCategory(category);
     };
@@ -27,9 +30,20 @@ const MainCategoriesScreen = ({ navigation }) => {
     const handleChooseButton = () => {
         if (selectedCategory) {
             const title = getTitleForCategory(selectedCategory);
+            saveMainCategory(selectedCategory);
             navigation.navigate('SubCategories', { category: selectedCategory, title });
         } else {
             Alert.alert(t('Please select a category'));
+        }
+    };
+
+    const saveMainCategory = async (category) => {
+        try {
+            const db = getDatabase();
+            const userRef = ref(db, `users/${user.id}/mainCategory`);
+            await set(userRef, category);
+        } catch (error) {
+            console.error("Error saving main category to Firebase:", error);
         }
     };
 

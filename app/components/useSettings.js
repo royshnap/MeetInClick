@@ -2,14 +2,15 @@ import { createContext, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { Alert } from 'react-native';
+import Firebase from '../config/firebase'; // Import the configured Firebase
+import { ref, remove } from 'firebase/database';
 
 const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
-  const { signOutUser } = useAuth();
+  const { signOutUser, user } = useAuth(); // Get the current user
   const [backgroundImage, setBackgroundImage] = useState(require('../assets/b1.png'));
-  
 
   const handleBackgroundChange = (background) => {
     setBackgroundImage(background);
@@ -22,7 +23,16 @@ export const SettingsProvider = ({ children }) => {
 
   const handleSignOut = async (navigation) => {
     try {
-      await signOutUser(navigation);
+      if (user) {
+        const db = Firebase.Database;
+        const userRef = ref(db, `users/${user.id}`);
+        
+        // Remove main category and subcategories
+        await remove(ref(db, `users/${user.id}/mainCategory`));
+        await remove(ref(db, `users/${user.id}/conversationTopics`));
+
+        await signOutUser(navigation);
+      }
       navigation.navigate('Main');
     } catch (error) {
       console.error('Error signing out:', error);

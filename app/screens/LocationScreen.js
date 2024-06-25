@@ -21,7 +21,7 @@ const Location = () => {
 
   const handleShowDistance = () => {
     Alert.alert(`${t('Selected distance')}: ${d} ${t('meters')}`, "", [
-      { text: t('Back'), onPress: () => console.log("Back pressed"), style: "cancel" },
+      { text: t('Back'), style: "cancel" },
       {
         text: t('OK'),
         onPress: () => {

@@ -6,7 +6,6 @@ import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 import ProfileHeader from '../components/ProfileHeader';
 
-
 const MAX_SUBCATEGORIES = 5;
 
 const SubCategoriesScreen = ({ route, navigation }) => {
@@ -15,7 +14,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategories, setSelectedCategories] = useState([]);
     const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-  
+
     const {
       listUsersByConversationTopics, loading, error, conversationTopicResults
     } = useConversationTopicMatches();
@@ -76,6 +75,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     const handleSelectButton = async () => {
         if (selectedCategories.length > 0) {
             await listUsersByConversationTopics(selectedCategories);
+            setSelectedCategories([]); // Reset selected categories before navigating
             navigation.navigate('Location');
         } else {
             Alert.alert(t('Please select at least one topic.'));
@@ -89,7 +89,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
             <View style={styles.overlay}>
-            <ProfileHeader navigation={navigation} />
+                <ProfileHeader navigation={navigation} />
                 <SettingsButton 
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}

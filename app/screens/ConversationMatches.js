@@ -118,29 +118,32 @@ const ConversationMatches = ({ navigation }) => {
   const { user } = useAuth();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
   const { currentLocation, interestRadius } = useCurrentLocation();
-
-
   const [showConfetti, setShowConfetti] = useState(false);
 
   const filteredMatches = useMemo(() => {
+    if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
+      return [];
+    }
+
     const matches = conversationTopicResults.filter(otherUser => {
-      if (currentLocation && otherUser.currentLocation) {
-        const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
-        return distance <= interestRadius;
+      if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
+        return false;
       }
-      return false;
+
+      const sameMainCategory = user.mainCategory === otherUser.mainCategory;
+      const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
+      const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
+
+      return sameMainCategory && commonTopics && distance <= interestRadius;
     });
-    
+
     if (matches.length > 0) {
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000); // Show confetti for 3 seconds
-      matches.forEach(match => {
-        console.log("Match details:", match);
-      });
+      setTimeout(() => setShowConfetti(false), 5000); 
     }
 
     return matches;
-  }, [conversationTopicResults, currentLocation, interestRadius]);
+  }, [conversationTopicResults, currentLocation, interestRadius, user]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -173,10 +176,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  // container: {
-  //   flex: 1,
-  //   position: 'relative',
-  // },
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
   confetti: {
     position: 'absolute',
     top: 0,
