@@ -26,6 +26,8 @@ const SignUpScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
   const [profileImage, setProfileImage] = useState(null);
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
@@ -55,6 +57,8 @@ const SignUpScreen = ({ navigation }) => {
         email,
         username,
         password,
+        gender,
+        age,
         currentLocation,
         profileImage,
         // instagram: instagram || '',
@@ -171,6 +175,27 @@ const SignUpScreen = ({ navigation }) => {
           onChangeText={setConfirmPassword}
           secureTextEntry
         />
+        <TextInput
+                style={styles.input}
+                placeholder={t('Age')}
+                value={age}
+                onChangeText={setAge}
+                keyboardType="numeric"
+        />
+        <View style={styles.genderContainer}>
+            <TouchableOpacity
+                style={[styles.genderButton, gender === 'Man' && styles.selectedGender]}
+                onPress={() => setGender('Man')}
+            >
+                <Text style={styles.genderText}>{t('Man')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={[styles.genderButton, gender === 'Female' && styles.selectedGender]}
+                onPress={() => setGender('Female')}
+            >
+                <Text style={styles.genderText}>{t('Female')}</Text>
+            </TouchableOpacity>
+        </View>
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => setShowSocialLinks(!showSocialLinks)}
@@ -235,10 +260,31 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     marginTop: 30,
   },
+  genderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '60%',
+    marginVertical: 10,
+  },
+  genderButton: {
+      flex: 1,
+      padding: 8,
+      marginHorizontal: 5,
+      borderWidth: 2,
+      borderColor: 'black',
+      borderRadius: 10,
+      alignItems: 'center',
+  },
+  selectedGender: {
+      backgroundColor: 'lightblue',
+  },
+  genderText: {
+      fontSize: 18,
+  },
   input: {
     width: "80%",
     height: 50,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "black",
     borderRadius: 10,
     paddingHorizontal: 10,
