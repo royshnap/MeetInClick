@@ -76,7 +76,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
         if (selectedCategories.length > 0) {
             await listUsersByConversationTopics(selectedCategories);
             setSelectedCategories([]); // Reset selected categories before navigating
-            navigation.navigate('Location');
+            navigation.navigate('Filter');
         } else {
             Alert.alert(t('Please select at least one topic.'));
         }

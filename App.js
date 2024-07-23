@@ -4,7 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import LocationScreen from "./app/screens/LocationScreen";
+import FilterScreen from "./app/screens/FilterScreen";
 import SignUpScreen from "./app/screens/SignUpScreen";
 import UserScreen from "./app/screens/UserScreen";
 import SubCategoriesScreen from "./app/screens/SubCategoriesScreen";
@@ -31,7 +31,7 @@ export default function App() {
                 <Stack.Navigator initialRouteName="Main">
                   <Stack.Screen name="UserScreen" component={UserScreen} />
                   <Stack.Screen name="ConversationMatches" component={ConversationMatches} />
-                  <Stack.Screen name="Location" component={LocationScreen} />
+                  <Stack.Screen name="Filter" component={FilterScreen} />
                   <Stack.Screen name="SubCategories" component={SubCategoriesScreen} />
                   <Stack.Screen name="MainCategories" component={MainCategoriesScreen} />
                   <Stack.Screen name="Conversation" component={Conversation} />
