@@ -117,24 +117,29 @@ const ConversationMatches = ({ navigation }) => {
   const { conversationTopicResults } = useConversationTopicMatches();
   const { user } = useAuth();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-  const { currentLocation, interestRadius } = useCurrentLocation();
+  // const { currentLocation, interestRadius } = useCurrentLocation();
   const [showConfetti, setShowConfetti] = useState(false);
 
   const filteredMatches = useMemo(() => {
-    if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
+    // if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) 
+    if (!user || !user.mainCategory || !user.conversationTopics)
+    {
       return [];
     }
 
     const matches = conversationTopicResults.filter(otherUser => {
-      if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
+      // if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) 
+      if (!otherUser.mainCategory || !otherUser.conversationTopics)
+      {
         return false;
       }
 
       const sameMainCategory = user.mainCategory === otherUser.mainCategory;
       const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
-      const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
+      // const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
 
-      return sameMainCategory && commonTopics && distance <= interestRadius;
+      // return sameMainCategory && commonTopics && distance <= interestRadius;
+      return sameMainCategory && commonTopics;
     });
 
     if (matches.length > 0) {
@@ -143,7 +148,7 @@ const ConversationMatches = ({ navigation }) => {
     }
 
     return matches;
-  }, [conversationTopicResults, currentLocation, interestRadius, user]);
+  }, [conversationTopicResults, /*currentLocation, interestRadius,*/ user]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -155,7 +160,7 @@ const ConversationMatches = ({ navigation }) => {
         />
         {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
         {filteredMatches.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics")}</Text>
         )}
         {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
         <FlatList

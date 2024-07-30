@@ -14,7 +14,7 @@ const Filter = () => {
   const { setInterestRadius, interestRadius } = useCurrentLocation();
   const [d, setDistance] = useState(interestRadius);
   const [ageRange, setAgeRange] = useState([18, 99]);
-  const [genderPreference, setGenderPreference] = useState('both');
+  const [genderPreference, setGenderPreference] = useState('Both');
   const [isAgeRangeVisible, setIsAgeRangeVisible] = useState(false);
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
@@ -30,7 +30,7 @@ const Filter = () => {
 
   const incrementDistance = () => {
     setDistance((prevDistance) => {
-      const newDistance = Math.min(prevDistance + 100, 100000);
+      const newDistance = Math.min(prevDistance + 20, 100000);
       setInterestRadius(newDistance);
       return newDistance;
     });
@@ -38,7 +38,7 @@ const Filter = () => {
 
   const decrementDistance = () => {
     setDistance((prevDistance) => {
-      const newDistance = Math.max(prevDistance - 100, 100);
+      const newDistance = Math.max(prevDistance - 20, 100);
       setInterestRadius(newDistance);
       return newDistance;
     });
@@ -93,9 +93,9 @@ const Filter = () => {
             </TouchableOpacity>
             <Slider
               style={styles.slider}
-              minimumValue={100}
+              minimumValue={0}
               maximumValue={10000}
-              step={100}
+              step={20}
               value={d}
               onValueChange={(value) => {
                 setDistance(value);
@@ -109,7 +109,7 @@ const Filter = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.rangeLabels}>
-            <Text style={styles.rangeLabel}>100m</Text>
+            <Text style={styles.rangeLabel}>0m</Text>
             <Text style={styles.rangeLabel}>10KM</Text>
           </View>
         </View>
@@ -163,20 +163,20 @@ const Filter = () => {
           <Text style={styles.label}>{t('Gender Preference:')}</Text>
           <View style={styles.genderContainer}>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'male' && styles.selectedGenderButton]}
-              onPress={() => setGenderPreference('male')}
+              style={[styles.genderButton, genderPreference === 'Man' && styles.selectedGenderButton]}
+              onPress={() => setGenderPreference('Man')}
             >
-              <Text style={styles.genderButtonText}>{t('Male')}</Text>
+              <Text style={styles.genderButtonText}>{t('Man')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'female' && styles.selectedGenderButton]}
-              onPress={() => setGenderPreference('female')}
+              style={[styles.genderButton, genderPreference === 'Woman' && styles.selectedGenderButton]}
+              onPress={() => setGenderPreference('Woman')}
             >
-              <Text style={styles.genderButtonText}>{t('Female')}</Text>
+              <Text style={styles.genderButtonText}>{t('Woman')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'both' && styles.selectedGenderButton]}
-              onPress={() => setGenderPreference('both')}
+              style={[styles.genderButton, genderPreference === 'Both' && styles.selectedGenderButton]}
+              onPress={() => setGenderPreference('Both')}
             >
               <Text style={styles.genderButtonText}>{t('Both')}</Text>
             </TouchableOpacity>
