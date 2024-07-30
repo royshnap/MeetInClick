@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
 import { useCurrentLocation } from "../context/LocationContext";
+import { ref, onValue } from "firebase/database";
+import Firebase from "../config/firebase";
 import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
@@ -114,32 +116,49 @@ const MatchItem = ({ otherUser, navigation }) => {
 
 const ConversationMatches = ({ navigation }) => {
   const { t } = useTranslation();
-  const { conversationTopicResults } = useConversationTopicMatches();
   const { user } = useAuth();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-  // const { currentLocation, interestRadius } = useCurrentLocation();
+  const { currentLocation, interestRadius } = useCurrentLocation();
+  const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      const usersRef = ref(Firebase.Database, 'users');
+      const listener = onValue(usersRef, (snapshot) => {
+        const results = [];
+        snapshot.forEach((childSnapshot) => {
+          const otherUser = childSnapshot.val();
+          if (
+            otherUser.id !== user.id && // Exclude the current user
+            otherUser.conversationTopics &&
+            user.conversationTopics &&
+            user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic))
+          ) {
+            results.push(otherUser);
+          }
+        });
+        setConversationTopicResults(results);
+      });
+      return () => listener(); // Cleanup the listener on unmount
+    }
+  }, [user]);
+
   const filteredMatches = useMemo(() => {
-    // if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) 
-    if (!user || !user.mainCategory || !user.conversationTopics)
-    {
+    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
       return [];
     }
 
     const matches = conversationTopicResults.filter(otherUser => {
-      // if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) 
-      if (!otherUser.mainCategory || !otherUser.conversationTopics)
-      {
+      if (!otherUser.mainCategory || !otherUser.conversationTopics /*|| !otherUser.currentLocation*/) {
         return false;
       }
 
       const sameMainCategory = user.mainCategory === otherUser.mainCategory;
       const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
-      // const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
+      const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
 
-      // return sameMainCategory && commonTopics && distance <= interestRadius;
-      return sameMainCategory && commonTopics;
+      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/;
     });
 
     if (matches.length > 0) {
@@ -148,7 +167,7 @@ const ConversationMatches = ({ navigation }) => {
     }
 
     return matches;
-  }, [conversationTopicResults, /*currentLocation, interestRadius,*/ user]);
+  }, [conversationTopicResults, currentLocation, interestRadius, user]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -160,7 +179,7 @@ const ConversationMatches = ({ navigation }) => {
         />
         {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
         {filteredMatches.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics")}</Text>
+          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
         )}
         {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
         <FlatList
