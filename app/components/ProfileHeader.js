@@ -6,7 +6,7 @@ const ProfileHeader = ({ navigation }) => {
   const { user } = useAuth();
 
   const handleViewProfile = () => {
-    navigation.navigate('UserScreen', { userId: user.id });
+    navigation.navigate('ViewProfile', { userId: user.id });
   };
 
   return (
@@ -14,9 +14,15 @@ const ProfileHeader = ({ navigation }) => {
       <TouchableOpacity onPress={handleViewProfile} style={styles.touchable}>
         <View style={styles.profileImageContainer}>
           {user?.profileImage ? (
-            <Image source={{ uri: user.profileImage }} style={styles.profileImage} />
+            <Image
+              source={{ uri: user.profileImage }}
+              style={styles.profileImage}
+            />
           ) : (
-            <Image source={require('../assets/defaultProfileImageMan.png')} style={styles.profileImage} />
+            <Image
+              source={require('../assets/defaultProfileImageMan.png')}
+              style={styles.profileImage}
+            />
           )}
         </View>
         <View style={styles.buttonContainer}>
@@ -58,4 +64,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileHeader;
-

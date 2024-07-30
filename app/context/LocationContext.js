@@ -36,7 +36,7 @@ export const LocationContextProvider = ({ children }) => {
       {
         accuracy: Location.Accuracy.High,
         timeInterval: 10000, // 10 seconds
-        distanceInterval: 10, // 10 meter
+        distanceInterval: 20, // 20 meter
       },
       (location) => {
         setCurrentLocation(location);

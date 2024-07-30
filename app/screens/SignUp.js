@@ -213,10 +213,10 @@ const SignUpScreen = ({ navigation }) => {
                 <Text style={styles.genderText}>{t('Man')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={[styles.genderButton, gender === 'Female' && styles.selectedGender]}
-                onPress={() => setGender('Female')}
+                style={[styles.genderButton, gender === 'Woman' && styles.selectedGender]}
+                onPress={() => setGender('Woman')}
             >
-                <Text style={styles.genderText}>{t('Female')}</Text>
+                <Text style={styles.genderText}>{t('Woman')}</Text>
             </TouchableOpacity>
         </View>
         <TouchableOpacity

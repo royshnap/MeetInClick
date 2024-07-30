@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
 import { useCurrentLocation } from "../context/LocationContext";
+import { ref, onValue } from "firebase/database";
+import Firebase from "../config/firebase";
 import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
@@ -114,19 +116,41 @@ const MatchItem = ({ otherUser, navigation }) => {
 
 const ConversationMatches = ({ navigation }) => {
   const { t } = useTranslation();
-  const { conversationTopicResults } = useConversationTopicMatches();
   const { user } = useAuth();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
   const { currentLocation, interestRadius } = useCurrentLocation();
+  const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  useEffect(() => {
+    if (user) {
+      const usersRef = ref(Firebase.Database, 'users');
+      const listener = onValue(usersRef, (snapshot) => {
+        const results = [];
+        snapshot.forEach((childSnapshot) => {
+          const otherUser = childSnapshot.val();
+          if (
+            otherUser.id !== user.id && // Exclude the current user
+            otherUser.conversationTopics &&
+            user.conversationTopics &&
+            user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic))
+          ) {
+            results.push(otherUser);
+          }
+        });
+        setConversationTopicResults(results);
+      });
+      return () => listener(); // Cleanup the listener on unmount
+    }
+  }, [user]);
+
   const filteredMatches = useMemo(() => {
-    if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
+    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
       return [];
     }
 
     const matches = conversationTopicResults.filter(otherUser => {
-      if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
+      if (!otherUser.mainCategory || !otherUser.conversationTopics /*|| !otherUser.currentLocation*/) {
         return false;
       }
 
@@ -134,7 +158,7 @@ const ConversationMatches = ({ navigation }) => {
       const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
       const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
 
-      return sameMainCategory && commonTopics && distance <= interestRadius;
+      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/;
     });
 
     if (matches.length > 0) {
