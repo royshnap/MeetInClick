@@ -6,9 +6,10 @@
     "orientation": "portrait",
     "icon": "./app/assets/icon2.png",
     "userInterfaceStyle": "light",
-    "facebookAppId": "1113204129735804",
+    "facebookAppId": "468740272218826",
     "facebookDisplayName": "MeetInClickApp",
     "facebookAutoLogAppEventsEnabled": true,
+    "facebookScheme": "fb468740272218826", 
     "splash": {
       "image": "./app/assets/splash.png",
       "resizeMode": "contain",
