@@ -6,7 +6,7 @@ const FacebookLogin = () => {
   const handleFacebookLogin = async () => {
     try {
       await Facebook.initializeAsync({
-        appId: '1113204129735804',
+        appId: '468740272218826',
       });
       const result = await Facebook.logInWithReadPermissionsAsync({
         permissions: ['public_profile', 'email'],
