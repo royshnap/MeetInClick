@@ -12,7 +12,7 @@ import {
   I18nManager
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import { ref, get } from "firebase/database";
+import { ref, get, onValue } from "firebase/database";
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
 import Firebase from "../config/firebase";
 import { useTranslation } from 'react-i18next';
@@ -77,9 +77,6 @@ return (
         <Text style={styles.detail}>{t("Full Name")}: {userData.firstName} {userData.lastName}</Text>
         <Text style={styles.detail}>{t("Email")}: {userData.email}</Text>
         <Text style={styles.detail}>{t("User Name")}: @{userData.username}</Text>
-      {/* <Text style={styles.detail}>{t("Full Name")}: {userData.firstName} {userData.lastName}</Text>
-      <Text style={styles.detail}>{t("Email")}: {userData.email}</Text>
-      <Text style={styles.detail}>{t("User Name")}: @{userData.username}</Text> */}
       {userData.instagram && (
         <Text style={styles.socialLink}>Instagram: {userData.instagram}</Text>
       )}

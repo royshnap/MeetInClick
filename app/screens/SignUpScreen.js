@@ -18,6 +18,10 @@ import useSettings from '../components/useSettings';
 import { useTranslation } from 'react-i18next';
 import SettingsButton from '../components/SettingsButton';
 import * as ImagePicker from "expo-image-picker";
+import Firebase from "../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+//import { v4 as uuidv4 } from 'uuid'; // Correct import
+import uuid from 'react-native-uuid';
 
 const SignUpScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
@@ -38,6 +42,16 @@ const SignUpScreen = ({ navigation }) => {
   const { hasLocationPermissions, requestLocationPermissions, currentLocation } = useCurrentLocation();
   const { t } = useTranslation();
 
+
+  const uploadImageAsync = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const uniqueId = uuid.v4(); // Generate a unique ID for the image
+    const imageRef = ref(Firebase.Storage, `profileImages/${uniqueId}`); // Use uniqueId here
+    await uploadBytes(imageRef, blob);
+    return await getDownloadURL(imageRef);
+  };
+
   const handleSignUp = async () => {
     try {
       // Check if passwords match and location permissions are granted
@@ -50,6 +64,10 @@ const SignUpScreen = ({ navigation }) => {
         await requestLocationPermissions();
         return;
       }
+      let profileImageUrl = '';
+      if (profileImage) {
+        profileImageUrl = await uploadImageAsync(profileImage);
+      }
   
       await register({
         firstName,
@@ -60,7 +78,9 @@ const SignUpScreen = ({ navigation }) => {
         gender,
         age,
         currentLocation,
-        profileImage,
+        profileImage: profileImageUrl,
+
+        //profileImage,
         // instagram: instagram || '',
         // facebook: facebook || '',
         // twitter: twitter || '',
@@ -108,10 +128,13 @@ const SignUpScreen = ({ navigation }) => {
       aspect: [4, 3],
       quality: 1,
     });
-
     if (!pickerResult.canceled) {
       setProfileImage(pickerResult.assets[0].uri); // Ensure correct URI is set
     }
+
+    // if (!pickerResult.canceled) {
+    //   setProfileImage(pickerResult.assets[0].uri); // Ensure correct URI is set
+    // }
   };
  
   return (
