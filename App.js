@@ -2,7 +2,7 @@ import 'intl-pluralrules'; // Add this line at the top
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
-import { FacebookLoginProvider } from './app/context/FacebookLogin'; 
+import { FacebookLoginProvider } from './app/context/FacebookLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FilterScreen from './app/screens/Filter';
