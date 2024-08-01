@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image } from "react-native";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image, Modal, Button } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -11,16 +11,9 @@ import Firebase from "../config/firebase";
 import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
-const MatchItem = ({ otherUser, navigation }) => {
+const MatchItem = ({ otherUser, navigation, onPress }) => {
   const { t } = useTranslation();
-  const {
-    startConversation,
-    sendConversationRequest,
-    isApproved,
-    requests,
-    isDeclined,
-    isPending,
-  } = useConversationTopicMatches();
+  const { startConversation, sendConversationRequest, isApproved, requests, isDeclined, isPending } = useConversationTopicMatches();
   const { user } = useAuth();
 
   const handlePressStartConversation = async (requestId_1, requestId_2) => {
@@ -111,13 +104,13 @@ const MatchItem = ({ otherUser, navigation }) => {
     : require('../assets/defaultProfileImageMan.png');
 
   return (
-    <View style={styles.matchItem}>
+    <TouchableOpacity style={styles.matchItem} onPress={() => onPress(otherUser)}>
       <Image source={profileImage} style={styles.profilePicture} />
       <View style={styles.matchItemTextContainer}>
         <Text style={styles.matchText}>{otherUser.username}</Text>
         <Status />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -128,6 +121,8 @@ const ConversationMatches = ({ navigation }) => {
   const { currentLocation, interestRadius } = useCurrentLocation();
   const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // State to manage selected user for modal
+  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
 
   useEffect(() => {
     if (user) {
@@ -177,6 +172,11 @@ const ConversationMatches = ({ navigation }) => {
     return matches;
   }, [conversationTopicResults, currentLocation, interestRadius, user]);
 
+  const handleMatchPress = (user) => {
+    setSelectedUser(user);
+    setModalVisible(true);
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
@@ -193,12 +193,42 @@ const ConversationMatches = ({ navigation }) => {
         <FlatList
           data={filteredMatches}
           renderItem={({ item: otherUser }) => (
-            <MatchItem otherUser={otherUser} navigation={navigation} />
+            <MatchItem otherUser={otherUser} navigation={navigation} onPress={handleMatchPress} />
           )}
           keyExtractor={(item) => item.id}
           numColumns={2} // Two items per row
           columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between items
         />
+        {/* Modal to show user details */}
+        {selectedUser && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Image
+                  source={
+                    selectedUser.profileImage
+                      ? { uri: selectedUser.profileImage }
+                      : selectedUser.gender === "Woman"
+                      ? require('../assets/defaultProfileImageWoman.png')
+                      : require('../assets/defaultProfileImageMan.png')
+                  }
+                  style={styles.modalProfilePicture}
+                />
+                <Text style={styles.modalText}>Name: {selectedUser.firstName} {selectedUser.lastName}</Text>
+                <Text style={styles.modalText}>Age: {selectedUser.age}</Text>
+                <Text style={styles.modalText}>Gender: {selectedUser.gender}</Text>
+                <Text style={styles.modalText}>Main Category: {selectedUser.mainCategory}</Text>
+                <Text style={styles.modalText}>Topics: {selectedUser.conversationTopics.join(', ')}</Text>
+                <Button title={t("Close")} onPress={() => setModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+        )}
       </View>
     </ImageBackground>
   );
@@ -236,11 +266,11 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   matchItem: {
-    backgroundColor: "transparent", // Set background to transparent
+    backgroundColor: "transparent",
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
-    width: '48%', // Adjust width to fit two items per row with spacing
+    width: '48%',
     flexDirection: "column",
     alignItems: "center",
     shadowColor: "transparent",
@@ -287,6 +317,28 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalProfilePicture: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+  },
+  modalText: {
+    fontSize: 18,
+    marginVertical: 5,
   },
 });
 
