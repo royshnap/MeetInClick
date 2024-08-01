@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground } from "react-native";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -97,19 +97,26 @@ const MatchItem = ({ otherUser, navigation }) => {
     return (
       <View>
         <TouchableOpacity style={styles.button} onPress={handlePressSendRequest}>
-          <Text style={styles.buttonText}>{t("Send conversation request")}</Text>
+          <Text style={styles.buttonText}>{t("Send request")}</Text>
         </TouchableOpacity>
       </View>
     );
   }, [requests]);
 
+  // Determine profile image to show
+  const profileImage = otherUser.profileImage
+    ? { uri: otherUser.profileImage }
+    : otherUser.gender === "Woman"
+    ? require('../assets/defaultProfileImageWoman.png')
+    : require('../assets/defaultProfileImageMan.png');
+
   return (
     <View style={styles.matchItem}>
+      <Image source={profileImage} style={styles.profilePicture} />
       <View style={styles.matchItemTextContainer}>
-        <Text style={styles.matchText}>{t("User name")}: {otherUser.username}</Text>
-        <Text style={styles.topicsText}>{t("Topics")}: {otherUser.conversationTopics.join(", ")}</Text>
+        <Text style={styles.matchText}>{otherUser.username}</Text>
+        <Status />
       </View>
-      <Status />
     </View>
   );
 };
@@ -145,6 +152,7 @@ const ConversationMatches = ({ navigation }) => {
   }, [user]);
 
   const filteredMatches = useMemo(() => {
+    // Filter users based on topics and distance
     if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
       return [];
     }
@@ -188,6 +196,8 @@ const ConversationMatches = ({ navigation }) => {
             <MatchItem otherUser={otherUser} navigation={navigation} />
           )}
           keyExtractor={(item) => item.id}
+          numColumns={2} // Two items per row
+          columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between items
         />
       </View>
     </ImageBackground>
@@ -226,38 +236,37 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   matchItem: {
-    backgroundColor: "#fff0d6",
+    backgroundColor: "transparent", // Set background to transparent
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
-    justifyContent: "space-between",
-    flexDirection: "row",
-    shadowColor: "#000",
+    width: '48%', // Adjust width to fit two items per row with spacing
+    flexDirection: "column",
+    alignItems: "center",
+    shadowColor: "transparent",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   matchItemTextContainer: {
-    flex: 1,
+    alignItems: "center",
   },
   matchText: {
     fontSize: 20,
     color: "#333333",
     fontWeight: "bold",
-  },
-  topicsText: {
-    fontSize: 15,
-    color: "#666666",
+    marginTop: 10,
   },
   button: {
     padding: 12,
     borderRadius: 5,
     backgroundColor: "#2196F3",
     alignItems: "center",
+    marginTop: 10,
   },
   startConversationButton: {
     padding: 10,
@@ -273,6 +282,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  profilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 });
 
