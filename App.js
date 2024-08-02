@@ -13,11 +13,12 @@ import MainCategoriesScreen from './app/screens/MainCategories';
 import MainScreen from './app/screens/Main';
 import { SettingsProvider } from './app/components/useSettings';
 import { AuthContextProvider } from './app/context/AuthContext';
-import { ProfileHeader } from './app/components/ProfileHeader'; // Add this line
+import { ProfileHeader } from './app/components/ProfileHeader';
 import { ConversationContextProvider } from './app/context/ConversationContext';
 import ConversationMatches from './app/screens/ConversationMatches';
 import Conversation from './app/screens/Conversation';
 import { LocationContextProvider } from './app/context/LocationContext';
+import { MyTab } from './app/components/MyTab';
 
 const Stack = createStackNavigator();
 
