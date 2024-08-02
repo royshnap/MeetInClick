@@ -1,8 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MatchesScreen from './screens/MatchesScreen';
-import MessagesScreen from './screens/ConversationMatches';
-import ProfileScreen from './screens/ProfileScreen';
+import MatchesScreen from '../screens/Matches';
+import MessagesScreen from '../screens/ConversationMatches';
+import ProfileScreen from '../screens/ViewProfile';
 import { Ionicons } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
