@@ -15,7 +15,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import GoogleSignIn from '../context/GoogleSignIn';
-import { useFacebookLogin } from '../context/FacebookLogin';
+//import { useFacebookLogin } from '../context/FacebookLogin';
 import CustomScrollView from '../components/CustomScrollView';
 
 const MainScreen = ({ navigation }) => {
@@ -24,7 +24,7 @@ const MainScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const { user, login, error, setError } = useAuth();
   const [settingsVisible, setSettingsVisible] = useState(false); // State for settings modal visibility
-  const { promptAsync } = useFacebookLogin();
+  //const { promptAsync } = useFacebookLogin();
   const handleLoginPress = async () => {
     try {
       await login(email, password);
@@ -131,10 +131,10 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>{t('Login')}</Text>
       </TouchableOpacity>
       <Text style={styles.orText}>{t('or Login with')}</Text>
-      {/* <FacebookLogin /> */}
-      <View>
+      {/* <FacebookLogin />  */}
+      {/* <View>
         <Button title='Login with Facebook' onPress={() => promptAsync()} />
-      </View>
+      </View> */}
       <GoogleSignIn />
       <Text style={styles.orText}>{t("Don't have a User?")}</Text>
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
