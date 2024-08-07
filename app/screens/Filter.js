@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ImageBackground, Modal } from "react-native";
+import { View, Text, StyleSheet, Alert, TouchableOpacity, ImageBackground } from "react-native";
 import Slider from "@react-native-community/slider";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import { useNavigation } from "@react-navigation/native";
 import { useCurrentLocation } from "../context/LocationContext";
 import { useTranslation } from "react-i18next";
@@ -8,14 +9,19 @@ import useSettings from "../components/useSettings";
 import SettingsButton from "../components/SettingsButton";
 import ProfileHeader from '../components/ProfileHeader';
 
+const MAX_DISTANCE = 10000; // 10 km
+const DISTANCE_INTERVAL = 20; // 20 meters
+const AGE_INTERVAL = 3; // 3 years
+const MIN_AGE = 18; // Minimum age
+const MAX_AGE = 120; // Maximum age
+
 const Filter = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const { setInterestRadius, interestRadius } = useCurrentLocation();
   const [d, setDistance] = useState(interestRadius);
-  const [ageRange, setAgeRange] = useState([18, 99]);
+  const [ageRange, setAgeRange] = useState([MIN_AGE, MAX_AGE]);
   const [genderPreference, setGenderPreference] = useState('Both');
-  const [isAgeRangeVisible, setIsAgeRangeVisible] = useState(false);
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
 
   useEffect(() => {
@@ -30,7 +36,7 @@ const Filter = () => {
 
   const incrementDistance = () => {
     setDistance((prevDistance) => {
-      const newDistance = Math.min(prevDistance + 20, 100000);
+      const newDistance = Math.min(prevDistance + DISTANCE_INTERVAL, MAX_DISTANCE);
       setInterestRadius(newDistance);
       return newDistance;
     });
@@ -38,7 +44,7 @@ const Filter = () => {
 
   const decrementDistance = () => {
     setDistance((prevDistance) => {
-      const newDistance = Math.max(prevDistance - 20, 100);
+      const newDistance = Math.max(prevDistance - DISTANCE_INTERVAL, 0);
       setInterestRadius(newDistance);
       return newDistance;
     });
@@ -47,7 +53,7 @@ const Filter = () => {
   const incrementAge = (index) => {
     setAgeRange((prevAgeRange) => {
       const newAgeRange = [...prevAgeRange];
-      newAgeRange[index] = Math.min(newAgeRange[index] + 3, index === 0 ? newAgeRange[1] - 3 : 99);
+      newAgeRange[index] = Math.min(newAgeRange[index] + AGE_INTERVAL, index === 0 ? newAgeRange[1] : MAX_AGE);
       return newAgeRange;
     });
   };
@@ -55,23 +61,16 @@ const Filter = () => {
   const decrementAge = (index) => {
     setAgeRange((prevAgeRange) => {
       const newAgeRange = [...prevAgeRange];
-      newAgeRange[index] = Math.max(newAgeRange[index] - 3, index === 1 ? newAgeRange[0] + 3 : 18);
+      newAgeRange[index] = Math.max(newAgeRange[index] - AGE_INTERVAL, index === 1 ? newAgeRange[0] : MIN_AGE);
       return newAgeRange;
     });
   };
 
-  const handleAgeRangePress = () => {
-    setIsAgeRangeVisible(true);
-  };
-
-  const handleAgeRangeClose = () => {
-    setIsAgeRangeVisible(false);
-  };
   const formatDistance = (distance) => {
     if (distance >= 1000) {
-      return `${(distance / 1000).toFixed(1)} KM`;
+      return `${(distance / 1000).toFixed(2)} KM`;
     }
-    return `${distance} meters`;
+    return `${distance.toFixed(2)} meters`;
   };
 
   return (
@@ -84,8 +83,8 @@ const Filter = () => {
           onSignOut={() => handleSignOut(navigation)}
         />
         <Text style={styles.title}>{t('SELECT FILTERS')}</Text>
+        
         <View style={styles.filterContainer}>
-        <Text style={styles.label}>{t('Distance Preference:')}</Text>
           <Text style={styles.label}>{t('Distance')}: {formatDistance(d)}</Text>
           <View style={styles.sliderContainer}>
             <TouchableOpacity onPress={decrementDistance} style={styles.adjustButton}>
@@ -94,8 +93,8 @@ const Filter = () => {
             <Slider
               style={styles.slider}
               minimumValue={0}
-              maximumValue={10000}
-              step={20}
+              maximumValue={MAX_DISTANCE}
+              step={DISTANCE_INTERVAL}
               value={d}
               onValueChange={(value) => {
                 setDistance(value);
@@ -115,50 +114,40 @@ const Filter = () => {
         </View>
 
         <View style={styles.filterContainer}>
-        <Text style={styles.label}>{t('Age Range Preference:')}</Text>
-          <TouchableOpacity style={styles.setButton} onPress={handleAgeRangePress}>
-            <Text style={styles.setButtonText}>{t('Age Range')}</Text>
-          </TouchableOpacity>
-          <Modal
-            visible={isAgeRangeVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={handleAgeRangeClose}
-          >
-            <View style={styles.modalOverlay}>
-              <View style={styles.ageRangeContainer}>
-                <Text style={styles.ageRangeTitle}>{t('Select Age Range')}</Text>
-                <View style={styles.ageRangeContent}>
-                  <View style={styles.ageColumn}>
-                    <Text style={styles.ageLabel}>{t('Min Age')}</Text>
-                    <TouchableOpacity onPress={() => decrementAge(0)} style={styles.adjustButton}>
-                      <Text style={styles.adjustButtonText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ageValue}>{ageRange[0]}</Text>
-                    <TouchableOpacity onPress={() => incrementAge(0)} style={styles.adjustButton}>
-                      <Text style={styles.adjustButtonText}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.ageColumn}>
-                    <Text style={styles.ageLabel}>{t('Max Age')}</Text>
-                    <TouchableOpacity onPress={() => decrementAge(1)} style={styles.adjustButton}>
-                      <Text style={styles.adjustButtonText}>-</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.ageValue}>{ageRange[1]}</Text>
-                    <TouchableOpacity onPress={() => incrementAge(1)} style={styles.adjustButton}>
-                      <Text style={styles.adjustButtonText}>+</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <TouchableOpacity style={styles.closeButton} onPress={handleAgeRangeClose}>
-                  <Text style={styles.setButtonText}>{t('Close')}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
+          <Text style={styles.label}>{t('Age Range')}: {ageRange[0]} - {ageRange[1]}</Text>
+          <View style={styles.sliderContainer}>
+            <TouchableOpacity onPress={() => decrementAge(0)} style={styles.adjustButton}>
+              <Text style={styles.adjustButtonText}>-</Text>
+            </TouchableOpacity>
+            <MultiSlider
+              values={ageRange}
+              sliderLength={200}
+              onValuesChange={(values) => setAgeRange(values)}
+              min={MIN_AGE}
+              max={MAX_AGE}
+              step={AGE_INTERVAL}
+              allowOverlap={false}
+              snapped
+              selectedStyle={{
+                backgroundColor: "#007AFF",
+              }}
+              unselectedStyle={{
+                backgroundColor: "silver",
+              }}
+              markerStyle={{
+                backgroundColor: "#007AFF",
+              }}
+            />
+            <TouchableOpacity onPress={() => incrementAge(1)} style={styles.adjustButton}>
+              <Text style={styles.adjustButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.ageRangeLabels}>
+            <Text style={styles.ageRangeLabel}>{ageRange[0]}</Text>
+            <Text style={styles.ageRangeLabel}>{ageRange[1]}</Text>
+          </View>
         </View>
 
-        
         <View style={styles.filterContainer}>
           <Text style={styles.label}>{t('Gender Preference:')}</Text>
           <View style={styles.genderContainer}>
@@ -258,6 +247,16 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "white",
   },
+  ageRangeLabels: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+    marginTop: 10,
+  },
+  ageRangeLabel: {
+    fontSize: 18,
+    color: "white",
+  },
   setButton: {
     backgroundColor: '#007AFF',
     paddingVertical: 10,
@@ -269,56 +268,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  ageRangeContainer: {
-    width: '70%',
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  bottomBorder: {
-    height: 2,
-    width: '100%',
-    backgroundColor: 'black',
-    marginVertical: 10,
-  },
-  ageRangeTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  ageRangeContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 20,
-  },
-  ageColumn: {
-    alignItems: 'center',
-    width: '40%',
-  },
-  ageLabel: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  ageValue: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  closeButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 10,
   },
   genderContainer: {
     flexDirection: 'row',

@@ -18,9 +18,9 @@ import useSettings from '../components/useSettings';
 import { useTranslation } from 'react-i18next';
 import SettingsButton from '../components/SettingsButton';
 import * as ImagePicker from "expo-image-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Firebase from "../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-//import { v4 as uuidv4 } from 'uuid'; // Correct import
 import uuid from 'react-native-uuid';
 
 const SignUpScreen = ({ navigation }) => {
@@ -31,7 +31,8 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState('');
-  const [age, setAge] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
@@ -42,6 +43,18 @@ const SignUpScreen = ({ navigation }) => {
   const { hasLocationPermissions, requestLocationPermissions, currentLocation } = useCurrentLocation();
   const { t } = useTranslation();
 
+  const minAge = 18; // Minimum age requirement
+
+  const calculateAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
 
   const uploadImageAsync = async (uri) => {
     const response = await fetch(uri);
@@ -53,10 +66,29 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   const handleSignUp = async () => {
-    try {
+    // Check if any required field is empty
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !username ||
+      !password ||
+      !confirmPassword ||
+      !dateOfBirth ||
+      !gender
+    ) {
+      Alert.alert('Missing fields', 'Please fill all the required fields');
+      return;
+    }
+  
+    const age = calculateAge(dateOfBirth);
+    if (age < minAge) {
+      Alert.alert('Not at the appropriate age', `You must be ${minAge} or above to sign up`);
+      return;
+    }
       // Check if passwords match and location permissions are granted
       if (password !== confirmPassword) {
-        Alert.alert('Error', 'Passwords do not match');
+        Alert.alert('Password problem', 'Passwords do not match');
         return;
       }
       if (!hasLocationPermissions) {
@@ -77,30 +109,23 @@ const SignUpScreen = ({ navigation }) => {
         password,
         gender,
         age,
+        dateOfBirth: dateOfBirth.toISOString(), // Save date of birth in ISO format
         currentLocation,
         profileImage: profileImageUrl,
-
-        //profileImage,
-        // instagram: instagram || '',
-        // facebook: facebook || '',
-        // twitter: twitter || '',
       });
-
-      Alert.alert('Sign Up Success', 'You have successfully signed up!');
-
-    } catch (error) {
-      console.error('Error signing up:', error);
-      Alert.alert('Sign Up Error', 'An error occurred during sign up. Please try again.');
-    }
-  };
   
+      // Only navigate if registration is successful
+      if (user) {
+        navigation.navigate("MainCategories");
+      } 
+  };
 
   useEffect(() => {
     if (error) {
-      if (typeof error === "string") {
-        Alert.alert(error);
+      if (error.code === 'auth/invalid-email') {
+        Alert.alert('Email problem', 'Please ensure you entered the correct email');
       } else {
-        Alert.alert(error.message);
+        Alert.alert('Error', 'unknown error');
       }
     }
   }, [error]);
@@ -108,13 +133,6 @@ const SignUpScreen = ({ navigation }) => {
   useEffect(() => {
     setError(undefined);
   }, []);
-
-  useEffect(() => {
-    if (user) {
-      // user logged in
-      navigation.navigate("MainCategories");
-    }
-  }, [user]);
 
   const pickImage = async () => {
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -131,129 +149,139 @@ const SignUpScreen = ({ navigation }) => {
     if (!pickerResult.canceled) {
       setProfileImage(pickerResult.assets[0].uri); // Ensure correct URI is set
     }
-
-    // if (!pickerResult.canceled) {
-    //   setProfileImage(pickerResult.assets[0].uri); // Ensure correct URI is set
-    // }
   };
- 
+
+  const showDatePickerHandler = () => {
+    setShowDatePicker(true);
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <SettingsButton 
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)} // Pass navigation here
-      />
-        <Text style={styles.title}>{t("Welcome To ")}MeetInClick</Text>
-        <TouchableOpacity onPress={pickImage}>
-          {profileImage ? (
-            <Image source={{ uri: profileImage }} style={styles.profileImage} />
-          ) : (
-            <View style={styles.imagePlaceholder}>
-              <Text style={styles.imagePlaceholderText}>{t("Pick an image")}</Text>
-            </View>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <SettingsButton 
+            onBackgroundChange={handleBackgroundChange}
+            onLanguageChange={handleLanguageChange}
+            onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+          />
+          <Text style={styles.title}>{t("Welcome To ")}MeetInClick</Text>
+          <TouchableOpacity onPress={pickImage}>
+            {profileImage ? (
+              <Image source={{ uri: profileImage }} style={styles.profileImage} />
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <Text style={styles.imagePlaceholderText}>{t("Pick an image")}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TextInput
+            style={styles.input}
+            placeholder={t("First Name")}
+            value={firstName}
+            onChangeText={setFirstName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("Last Name")}
+            value={lastName}
+            onChangeText={setLastName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("Email")}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("Username")}
+            value={username}
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("Password")}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          <TextInput
+            style={styles.input}
+            placeholder={t("Confirm Password")}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+          <TouchableOpacity onPress={showDatePickerHandler} style={styles.input}>
+            <Text>{t('Date of Birth')}: {dateOfBirth.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={dateOfBirth}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
           )}
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          placeholder={t("First Name")}
-          value={firstName}
-          onChangeText={setFirstName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("Last Name")}
-          value={lastName}
-          onChangeText={setLastName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("Email")}
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("Username")}
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("Password")}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("Confirm Password")}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
-        <TextInput
+          <View style={styles.genderContainer}>
+            <TouchableOpacity
+              style={[styles.genderButton, gender === 'Man' && styles.selectedGender]}
+              onPress={() => setGender('Man')}
+            >
+              <Text style={styles.genderText}>{t('Man')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.genderButton, gender === 'Woman' && styles.selectedGender]}
+              onPress={() => setGender('Woman')}
+            >
+              <Text style={styles.genderText}>{t('Woman')}</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => setShowSocialLinks(!showSocialLinks)}
+          >
+            <Text style={styles.addButtonText}>{t("Add Social Network Link")}</Text>
+          </TouchableOpacity>
+          {showSocialLinks && (
+            <>
+              <TextInput
                 style={styles.input}
-                placeholder={t('Age')}
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
-        />
-        <View style={styles.genderContainer}>
-            <TouchableOpacity
-                style={[styles.genderButton, gender === 'Man' && styles.selectedGender]}
-                onPress={() => setGender('Man')}
-            >
-                <Text style={styles.genderText}>{t('Man')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[styles.genderButton, gender === 'Woman' && styles.selectedGender]}
-                onPress={() => setGender('Woman')}
-            >
-                <Text style={styles.genderText}>{t('Woman')}</Text>
-            </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => setShowSocialLinks(!showSocialLinks)}
-        >
-          <Text style={styles.addButtonText}>{t("Add Social Network Link")}</Text>
-        </TouchableOpacity>
-        {showSocialLinks && (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="Instagram Link"
-              value={instagram}
-              onChangeText={setInstagram}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Facebook Link"
-              value={facebook}
-              onChangeText={setFacebook}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Twitter Link"
-              value={twitter}
-              onChangeText={setTwitter}
-            />
-          </>
-        )}
-        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-          <Text style={styles.buttonText}>{t("Sign Up")}</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+                placeholder="Instagram Link"
+                value={instagram}
+                onChangeText={setInstagram}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Facebook Link"
+                value={facebook}
+                onChangeText={setFacebook}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Twitter Link"
+                value={twitter}
+                onChangeText={setTwitter}
+              />
+            </>
+          )}
+          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+            <Text style={styles.buttonText}>{t("Sign Up")}</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ImageBackground>
-
   );
 };
 
@@ -312,6 +340,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     marginBottom: 10,
+    justifyContent: 'center', // Center the text vertically
   },
   button: {
     width: "80%",

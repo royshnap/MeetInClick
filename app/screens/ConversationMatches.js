@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground } from "react-native";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image, Modal, Button } from "react-native";
 import { useConversationTopicMatches } from "../context/ConversationContext";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -11,16 +11,9 @@ import Firebase from "../config/firebase";
 import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
 
-const MatchItem = ({ otherUser, navigation }) => {
+const MatchItem = ({ otherUser, navigation, onPress }) => {
   const { t } = useTranslation();
-  const {
-    startConversation,
-    sendConversationRequest,
-    isApproved,
-    requests,
-    isDeclined,
-    isPending,
-  } = useConversationTopicMatches();
+  const { startConversation, sendConversationRequest, isApproved, requests, isDeclined, isPending } = useConversationTopicMatches();
   const { user } = useAuth();
 
   const handlePressStartConversation = async (requestId_1, requestId_2) => {
@@ -97,20 +90,27 @@ const MatchItem = ({ otherUser, navigation }) => {
     return (
       <View>
         <TouchableOpacity style={styles.button} onPress={handlePressSendRequest}>
-          <Text style={styles.buttonText}>{t("Send conversation request")}</Text>
+          <Text style={styles.buttonText}>{t("Send request")}</Text>
         </TouchableOpacity>
       </View>
     );
   }, [requests]);
 
+  // Determine profile image to show
+  const profileImage = otherUser.profileImage
+    ? { uri: otherUser.profileImage }
+    : otherUser.gender === "Woman"
+    ? require('../assets/defaultProfileImageWoman.png')
+    : require('../assets/defaultProfileImageMan.png');
+
   return (
-    <View style={styles.matchItem}>
+    <TouchableOpacity style={styles.matchItem} onPress={() => onPress(otherUser)}>
+      <Image source={profileImage} style={styles.profilePicture} />
       <View style={styles.matchItemTextContainer}>
-        <Text style={styles.matchText}>{t("User name")}: {otherUser.username}</Text>
-        <Text style={styles.topicsText}>{t("Topics")}: {otherUser.conversationTopics.join(", ")}</Text>
+        <Text style={styles.matchText}>{otherUser.username}</Text>
+        <Status />
       </View>
-      <Status />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -121,6 +121,8 @@ const ConversationMatches = ({ navigation }) => {
   const { currentLocation, interestRadius } = useCurrentLocation();
   const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // State to manage selected user for modal
+  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
 
   useEffect(() => {
     if (user) {
@@ -145,6 +147,7 @@ const ConversationMatches = ({ navigation }) => {
   }, [user]);
 
   const filteredMatches = useMemo(() => {
+    // Filter users based on topics and distance
     if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
       return [];
     }
@@ -169,6 +172,11 @@ const ConversationMatches = ({ navigation }) => {
     return matches;
   }, [conversationTopicResults, currentLocation, interestRadius, user]);
 
+  const handleMatchPress = (user) => {
+    setSelectedUser(user);
+    setModalVisible(true);
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
@@ -185,10 +193,42 @@ const ConversationMatches = ({ navigation }) => {
         <FlatList
           data={filteredMatches}
           renderItem={({ item: otherUser }) => (
-            <MatchItem otherUser={otherUser} navigation={navigation} />
+            <MatchItem otherUser={otherUser} navigation={navigation} onPress={handleMatchPress} />
           )}
           keyExtractor={(item) => item.id}
+          numColumns={2} // Two items per row
+          columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between items
         />
+        {/* Modal to show user details */}
+        {selectedUser && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Image
+                  source={
+                    selectedUser.profileImage
+                      ? { uri: selectedUser.profileImage }
+                      : selectedUser.gender === "Woman"
+                      ? require('../assets/defaultProfileImageWoman.png')
+                      : require('../assets/defaultProfileImageMan.png')
+                  }
+                  style={styles.modalProfilePicture}
+                />
+                <Text style={styles.modalText}>Name: {selectedUser.firstName} {selectedUser.lastName}</Text>
+                <Text style={styles.modalText}>Age: {selectedUser.age}</Text>
+                <Text style={styles.modalText}>Gender: {selectedUser.gender}</Text>
+                <Text style={styles.modalText}>Main Category: {selectedUser.mainCategory}</Text>
+                <Text style={styles.modalText}>Topics: {selectedUser.conversationTopics.join(', ')}</Text>
+                <Button title={t("Close")} onPress={() => setModalVisible(false)} />
+              </View>
+            </View>
+          </Modal>
+        )}
       </View>
     </ImageBackground>
   );
@@ -226,38 +266,37 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   matchItem: {
-    backgroundColor: "#fff0d6",
+    backgroundColor: "transparent",
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
-    justifyContent: "space-between",
-    flexDirection: "row",
-    shadowColor: "#000",
+    width: '48%',
+    flexDirection: "column",
+    alignItems: "center",
+    shadowColor: "transparent",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 0,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   matchItemTextContainer: {
-    flex: 1,
+    alignItems: "center",
   },
   matchText: {
     fontSize: 20,
     color: "#333333",
     fontWeight: "bold",
-  },
-  topicsText: {
-    fontSize: 15,
-    color: "#666666",
+    marginTop: 10,
   },
   button: {
     padding: 12,
     borderRadius: 5,
     backgroundColor: "#2196F3",
     alignItems: "center",
+    marginTop: 10,
   },
   startConversationButton: {
     padding: 10,
@@ -273,6 +312,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 5,
+  },
+  profilePicture: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  // Modal styles
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalProfilePicture: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+  },
+  modalText: {
+    fontSize: 18,
+    marginVertical: 5,
   },
 });
 
