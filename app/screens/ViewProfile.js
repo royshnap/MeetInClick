@@ -1,4 +1,3 @@
-// ViewProfile.js
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -9,19 +8,24 @@ import {
   ImageBackground,
   ScrollView,
   Alert,
+  TextInput,
 } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import { ref, get } from 'firebase/database';
+import { useRoute, useNavigation } from '@react-navigation/native';
+import { ref, get, set } from 'firebase/database';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import Firebase from '../config/firebase';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
+import { Picker } from '@react-native-picker/picker'; // Import Picker
 
 const ViewProfile = () => {
   const { t, i18n } = useTranslation();
   const [userData, setUserData] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
   const route = useRoute();
+  const navigation = useNavigation();
   const {
     backgroundImage,
     handleBackgroundChange,
@@ -36,7 +40,9 @@ const ViewProfile = () => {
         const userRef = ref(Firebase.Database, `users/${userId}`);
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
-          setUserData(snapshot.val());
+          const data = snapshot.val();
+          setUserData(data);
+          setFormData(data); // Initialize form data with fetched data
         } else {
           Alert.alert(t('User not found'));
         }
@@ -46,6 +52,29 @@ const ViewProfile = () => {
     };
     fetchUserData();
   }, [userId]);
+
+  const handleInputChange = (field, value) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [field]: value,
+    }));
+  };
+
+  const handleSave = async () => {
+    if (formData.age < 18 || formData.age > 99) {
+      Alert.alert(t('Age must be between 18 and 99'));
+      return;
+    }
+    try {
+      const userRef = ref(Firebase.Database, `users/${userId}`);
+      await set(userRef, formData);
+      setUserData(formData);
+      setIsEditing(false);
+      Alert.alert(t('Profile updated successfully'));
+    } catch (error) {
+      Alert.alert(t('Error updating profile'));
+    }
+  };
 
   if (!userData) {
     return (
@@ -72,7 +101,7 @@ const ViewProfile = () => {
               style={styles.icon}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => null}>
+          <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
             <Ionicons
               name='create-outline'
               size={24}
@@ -87,31 +116,116 @@ const ViewProfile = () => {
             style={styles.profileImage}
           />
         </View>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.detail}>
-            {t('Full Name')}: {userData.firstName} {userData.lastName}
-          </Text>
-          <Text style={styles.detail}>
-            {t('Email')}: {userData.email}
-          </Text>
-          <Text style={styles.detail}>
-            {t('User Name')}: @{userData.username}
-          </Text>
-          {/* <Text style={styles.detail}>{t("Full Name")}: {userData.firstName} {userData.lastName}</Text>
-      <Text style={styles.detail}>{t("Email")}: {userData.email}</Text>
-      <Text style={styles.detail}>{t("User Name")}: @{userData.username}</Text> */}
-          {userData.instagram && (
-            <Text style={styles.socialLink}>
-              Instagram: {userData.instagram}
+        {isEditing ? (
+          <View style={styles.detailsContainer}>
+            <TextInput
+              style={styles.input}
+              value={formData.firstName}
+              onChangeText={(value) => handleInputChange('firstName', value)}
+              placeholder={t('First Name')}
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.lastName}
+              onChangeText={(value) => handleInputChange('lastName', value)}
+              placeholder={t('Last Name')}
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.email}
+              onChangeText={(value) => handleInputChange('email', value)}
+              placeholder={t('Email')}
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.username}
+              onChangeText={(value) => handleInputChange('username', value)}
+              placeholder={t('Username')}
+            />
+            <TextInput
+              style={styles.input}
+              value={String(formData.age)}
+              onChangeText={(value) => handleInputChange('age', value)}
+              placeholder={t('Age')}
+              keyboardType='numeric'
+            />
+            <Picker
+              selectedValue={formData.gender}
+              style={styles.input}
+              onValueChange={(itemValue) =>
+                handleInputChange('gender', itemValue)
+              }
+            >
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
+            </Picker>
+            <TextInput
+              style={styles.input}
+              value={formData.instagram}
+              onChangeText={(value) => handleInputChange('instagram', value)}
+              placeholder='Instagram'
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.facebook}
+              onChangeText={(value) => handleInputChange('facebook', value)}
+              placeholder='Facebook'
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.twitter}
+              onChangeText={(value) => handleInputChange('twitter', value)}
+              placeholder='Twitter'
+            />
+            <TextInput
+              style={styles.input}
+              value={formData.linkedin}
+              onChangeText={(value) => handleInputChange('linkedin', value)}
+              placeholder='LinkedIn'
+            />
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>{t('Save')}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.detailsContainer}>
+            <Text style={styles.detail}>
+              {t('Full Name')}: {userData.firstName} {userData.lastName}
             </Text>
-          )}
-          {userData.facebook && (
-            <Text style={styles.socialLink}>Facebook: {userData.facebook}</Text>
-          )}
-          {userData.twitter && (
-            <Text style={styles.socialLink}>Twitter: {userData.twitter}</Text>
-          )}
-        </View>
+            <Text style={styles.detail}>
+              {t('Email')}: {userData.email}
+            </Text>
+            <Text style={styles.detail}>
+              {t('User Name')}: @{userData.username}
+            </Text>
+            <Text style={styles.detail}>
+              {t('Age')}: {userData.age}
+            </Text>
+            <Text style={styles.detail}>
+              {t('Gender')}: {userData.gender}
+            </Text>
+            {userData.instagram && (
+              <Text style={styles.socialLink}>
+                Instagram: {userData.instagram}
+              </Text>
+            )}
+            {userData.facebook && (
+              <Text style={styles.socialLink}>
+                Facebook: {userData.facebook}
+              </Text>
+            )}
+            {userData.twitter && (
+              <Text style={styles.socialLink}>
+                Twitter: {userData.twitter}
+              </Text>
+            )}
+            {userData.linkedin && (
+              <Text style={styles.socialLink}>
+                LinkedIn: {userData.linkedin}
+              </Text>
+            )}
+          </View>
+        )}
       </ScrollView>
     </ImageBackground>
   );
@@ -162,6 +276,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 5,
   },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    width: '100%',
+    borderRadius: 5, // Added border radius for rounded corners
+    backgroundColor: 'white', // Added background color for inputs
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default ViewProfile;
+
+
