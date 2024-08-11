@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, FlatList, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 import ProfileHeader from '../components/ProfileHeader';
 import { getDatabase, ref, set } from 'firebase/database';
-import { useAuth } from '../context/AuthContext'; // Assuming you have an AuthContext to get the current user
+import { useAuth } from '../context/AuthContext';
 
 const MainCategoriesScreen = ({ navigation }) => {
     const { t } = useTranslation();
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [isNavigating, setIsNavigating] = useState(false);
     const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-    const { user } = useAuth(); // Assuming useAuth provides the current authenticated user
+    const { user } = useAuth();
 
     const handleChooseCategory = (category) => {
         setSelectedCategory(category);
@@ -27,11 +28,19 @@ const MainCategoriesScreen = ({ navigation }) => {
         return categoryTitles[category] || t('Category');
     };
 
+    useEffect(() => {
+        if (isNavigating && selectedCategory) {
+            const title = getTitleForCategory(selectedCategory);
+            saveMainCategory(selectedCategory).then(() => {
+                setIsNavigating(false);
+                navigation.navigate('SubCategories', { category: selectedCategory, title });
+            });
+        }
+    }, [isNavigating, selectedCategory]);
+
     const handleChooseButton = () => {
         if (selectedCategory) {
-            const title = getTitleForCategory(selectedCategory);
-            saveMainCategory(selectedCategory);
-            navigation.navigate('SubCategories', { category: selectedCategory, title });
+            setIsNavigating(true);
         } else {
             Alert.alert(t('Please select a category'));
         }
@@ -52,12 +61,11 @@ const MainCategoriesScreen = ({ navigation }) => {
     return (
         <ImageBackground source={backgroundImage} style={styles.background}>
             <View style={styles.overlay}>
-            <ProfileHeader navigation={navigation} />
-              {/* <Button title="View Profile" onPress={handleViewProfile} /> */}
-                <SettingsButton 
+                <ProfileHeader navigation={navigation} />
+                <SettingsButton
                     onBackgroundChange={handleBackgroundChange}
                     onLanguageChange={handleLanguageChange}
-                    onSignOut={() => handleSignOut(navigation)} // Pass navigation here
+                    onSignOut={() => handleSignOut(navigation)}
                 />
                 <Text style={styles.title}>
                     {t('What would you')}{'\n'}
@@ -68,14 +76,22 @@ const MainCategoriesScreen = ({ navigation }) => {
                     keyExtractor={(item) => item}
                     contentContainerStyle={styles.contentContainer}
                     renderItem={({ item }) => (
-                        <TouchableOpacity style={[styles.categoryButton, selectedCategory === item && styles.selectedCategory]} onPress={() => handleChooseCategory(item)}>
+                        <TouchableOpacity
+                            style={[styles.categoryButton, selectedCategory === item && styles.selectedCategory]}
+                            onPress={() => handleChooseCategory(item)}
+                            disabled={isNavigating} // Disable the button while navigating
+                        >
                             <Text style={styles.categoryText}>
                                 {t(item)}
                             </Text>
                         </TouchableOpacity>
                     )}
                 />
-                <TouchableOpacity style={styles.chooseButton} onPress={handleChooseButton}>
+                <TouchableOpacity
+                    style={styles.chooseButton}
+                    onPress={handleChooseButton}
+                    disabled={isNavigating} // Disable the button while navigating
+                >
                     <Text style={styles.chooseButtonText}>{t('Select')}</Text>
                 </TouchableOpacity>
             </View>
@@ -142,15 +158,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    settingsButton: {
-        position: 'absolute',
-        top: 10,
-        right: 10,
-    },
-    settingsIcon: {
-        width: 30,
-        height: 30,
     },
 });
 
