@@ -9,6 +9,11 @@ const ProfileHeader = ({ navigation }) => {
     navigation.navigate('ViewProfile', { userId: user.id });
   };
 
+  // Determine the default image based on gender
+  const defaultProfileImage = user?.gender === 'Female' 
+    ? require('../assets/defaultProfileImageWoman.png') 
+    : require('../assets/defaultProfileImageMan.png');
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleViewProfile} style={styles.touchable}>
@@ -20,7 +25,7 @@ const ProfileHeader = ({ navigation }) => {
             />
           ) : (
             <Image
-              source={require('../assets/defaultProfileImageMan.png')}
+              source={defaultProfileImage}
               style={styles.profileImage}
             />
           )}
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'blue',
     fontWeight: 'bold',
-    textAlign: 'center', // Center text within button
+    textAlign: 'center',
   },
 });
 

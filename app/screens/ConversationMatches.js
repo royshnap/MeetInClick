@@ -99,7 +99,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
   // Determine profile image to show
   const profileImage = otherUser.profileImage
     ? { uri: otherUser.profileImage }
-    : otherUser.gender === "Woman"
+    : otherUser.gender === "Female"
     ? require('../assets/defaultProfileImageWoman.png')
     : require('../assets/defaultProfileImageMan.png');
 
@@ -148,12 +148,12 @@ const ConversationMatches = ({ navigation }) => {
 
   const filteredMatches = useMemo(() => {
     // Filter users based on topics and distance
-    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
+    if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
       return [];
     }
 
     const matches = conversationTopicResults.filter(otherUser => {
-      if (!otherUser.mainCategory || !otherUser.conversationTopics /*|| !otherUser.currentLocation*/) {
+      if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
         return false;
       }
 
@@ -161,7 +161,7 @@ const ConversationMatches = ({ navigation }) => {
       const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
       const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
 
-      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/;
+      return sameMainCategory && commonTopics && distance <= interestRadius;
     });
 
     if (matches.length > 0) {
@@ -213,7 +213,7 @@ const ConversationMatches = ({ navigation }) => {
                   source={
                     selectedUser.profileImage
                       ? { uri: selectedUser.profileImage }
-                      : selectedUser.gender === "Woman"
+                      : selectedUser.gender === "Female"
                       ? require('../assets/defaultProfileImageWoman.png')
                       : require('../assets/defaultProfileImageMan.png')
                   }

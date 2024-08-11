@@ -28,8 +28,8 @@ export const SettingsProvider = ({ children }) => {
         const userRef = ref(db, `users/${user.id}`);
         
         // Remove main category and subcategories
-        await remove(ref(db, `users/${user.id}/mainCategory`));
-        await remove(ref(db, `users/${user.id}/conversationTopics`));
+        // await remove(ref(db, `users/${user.id}/mainCategory`));
+        // await remove(ref(db, `users/${user.id}/conversationTopics`));
 
         await signOutUser(navigation);
       }

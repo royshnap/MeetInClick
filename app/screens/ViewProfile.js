@@ -84,6 +84,11 @@ const ViewProfile = () => {
     );
   }
 
+  // Determine the default image based on gender
+  const defaultProfileImage = userData?.gender === 'Female' 
+    ? require('../assets/defaultProfileImageWoman.png') 
+    : require('../assets/defaultProfileImageMan.png');
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -112,7 +117,7 @@ const ViewProfile = () => {
         </View>
         <View style={styles.profileContainer}>
           <Image
-            source={{ uri: userData.profileImage }}
+            source={userData.profileImage ? { uri: userData.profileImage } : defaultProfileImage}
             style={styles.profileImage}
           />
         </View>
@@ -302,5 +307,3 @@ const styles = StyleSheet.create({
 });
 
 export default ViewProfile;
-
-
