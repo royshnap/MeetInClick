@@ -30,7 +30,10 @@ const Filter = () => {
 
   const handleSetFilters = () => {
     Alert.alert(`${t('Filters set')}`, "", [
-      { text: t('OK'), onPress: () => navigation.navigate('ConversationMatches') },
+      { text: t('OK'), onPress: () => navigation.navigate('ConversationMatches', {
+        ageRange,
+        genderPreference,
+      }) },
     ]);
   };
 
@@ -152,16 +155,16 @@ const Filter = () => {
           <Text style={styles.label}>{t('Gender Preference:')}</Text>
           <View style={styles.genderContainer}>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'Man' && styles.selectedGenderButton]}
-              onPress={() => setGenderPreference('Man')}
+              style={[styles.genderButton, genderPreference === 'Male' && styles.selectedGenderButton]}
+              onPress={() => setGenderPreference('Male')}
             >
-              <Text style={styles.genderButtonText}>{t('Man')}</Text>
+              <Text style={styles.genderButtonText}>{t('Male')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'Woman' && styles.selectedGenderButton]}
-              onPress={() => setGenderPreference('Woman')}
+              style={[styles.genderButton, genderPreference === 'Female' && styles.selectedGenderButton]}
+              onPress={() => setGenderPreference('Female')}
             >
-              <Text style={styles.genderButtonText}>{t('Woman')}</Text>
+              <Text style={styles.genderButtonText}>{t('Female')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.genderButton, genderPreference === 'Both' && styles.selectedGenderButton]}

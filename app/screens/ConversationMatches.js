@@ -116,7 +116,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
   );
 };
 
-const ConversationMatches = ({ navigation }) => {
+const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
@@ -125,6 +125,9 @@ const ConversationMatches = ({ navigation }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null); // State to manage selected user for modal
   const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
+
+  // Get the filters passed from the Filter screen
+  const { ageRange = [18, 120], genderPreference = 'Both' } = route.params || {};
 
   useEffect(() => {
     if (user) {
@@ -156,13 +159,19 @@ const ConversationMatches = ({ navigation }) => {
   }, [user]);
 
   const filteredMatches = useMemo(() => {
-    // Filter users based on topics and distance
-    if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
+    // Filter users based on topics, distance, age range, and gender preference
+    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
       return [];
     }
  
     const matches = conversationTopicResults.filter(otherUser => {
-      if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
+      if (
+        !otherUser.mainCategory ||
+        !otherUser.conversationTopics ||
+        /*!otherUser.currentLocation ||*/
+        !otherUser.age ||
+        !otherUser.gender
+      ) {
         return false;
       }
 
@@ -170,16 +179,22 @@ const ConversationMatches = ({ navigation }) => {
       const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
       const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
 
-      return sameMainCategory && commonTopics && distance <= interestRadius;
+      // Check age preference
+      const withinAgeRange = otherUser.age >= ageRange[0] && otherUser.age <= ageRange[1];
+
+      // Check gender preference
+      const genderMatch = genderPreference === 'Both' || otherUser.gender === genderPreference;
+
+      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/ && withinAgeRange && genderMatch;
     });
 
     if (matches.length > 0) {
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000); 
+      setTimeout(() => setShowConfetti(false), 5000);
     }
 
     return matches;
-  }, [conversationTopicResults, currentLocation, interestRadius, user]);
+  }, [conversationTopicResults, currentLocation, interestRadius, user, ageRange, genderPreference]);
 
   const handleMatchPress = (user) => {
     setSelectedUser(user);
