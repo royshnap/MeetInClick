@@ -10,6 +10,8 @@ import { ref, onValue } from "firebase/database";
 import Firebase from "../config/firebase";
 import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
+import { addMatchNotification } from '../context/notification'; // Adjust the import path
+
 
 const MatchItem = ({ otherUser, navigation, onPress }) => {
   const { t } = useTranslation();
@@ -139,8 +141,15 @@ const ConversationMatches = ({ navigation }) => {
           ) {
             results.push(otherUser);
           }
+      
         });
         setConversationTopicResults(results);
+
+        // Add match notifications for users who match the criteria
+        results.forEach((matchedUser) => {
+          addMatchNotification(matchedUser.id, user.username);
+    });
+
       });
       return () => listener(); // Cleanup the listener on unmount
     }
@@ -151,7 +160,7 @@ const ConversationMatches = ({ navigation }) => {
     if (!user || !user.mainCategory || !user.conversationTopics || !currentLocation) {
       return [];
     }
-
+ 
     const matches = conversationTopicResults.filter(otherUser => {
       if (!otherUser.mainCategory || !otherUser.conversationTopics || !otherUser.currentLocation) {
         return false;

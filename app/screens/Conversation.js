@@ -6,6 +6,8 @@ import { useAuth } from "../context/AuthContext";
 import { FlatList } from "react-native-gesture-handler";
 import { ref, get } from "firebase/database";
 import Firebase from "../config/firebase";
+import { addMessageNotification } from '../context/notification'; // Adjust the import path
+
 
 // Define the maximum number of characters
 const MAX_CHARACTERS = 100;
@@ -76,7 +78,11 @@ const Conversation = ({ route, navigation }) => {
     } else {
       sendMessageToConversation(conversationId, messageContent);
       setMessageContent(""); // Clear the message input
-      
+
+      // Add message notification after sending a message
+        if (otherUser) {
+          addMessageNotification(otherUser.id, user.username);
+        }
       // Scroll to the end after sending a message
       flatListRef.current?.scrollToEnd({ animated: true });
     }
