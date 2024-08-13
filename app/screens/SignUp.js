@@ -1,17 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ImageBackground,
-  StyleSheet,
-  Alert,
-  Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import {View,Text,TextInput,TouchableOpacity,ImageBackground,StyleSheet,Alert,Image,ScrollView,KeyboardAvoidingView,Platform,} from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useCurrentLocation } from "../context/LocationContext";
 import useSettings from '../components/useSettings';
@@ -44,7 +32,7 @@ const SignUpScreen = ({ navigation }) => {
   const { t } = useTranslation();
 
   const minAge = 18; // Minimum age requirement
-
+  const maxAge = 120;
   const calculateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
@@ -82,8 +70,8 @@ const SignUpScreen = ({ navigation }) => {
     }
   
     const age = calculateAge(dateOfBirth);
-    if (age < minAge) {
-      Alert.alert('Not at the appropriate age', `You must be ${minAge} or above to sign up`);
+    if (age < minAge || age > maxAge) {
+      Alert.alert('Not at the appropriate age', `You must be between ${minAge} and ${maxAge} to sign up`);
       return;
     }
       // Check if passwords match and location permissions are granted
