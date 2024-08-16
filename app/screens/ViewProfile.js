@@ -11,7 +11,7 @@ import {
   TextInput,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { ref, get, set, onValue } from 'firebase/database';
+import { ref, get, set, onValue, update } from 'firebase/database';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import Firebase from '../config/firebase';
 import { useTranslation } from 'react-i18next';
@@ -36,10 +36,17 @@ const ViewProfile = () => {
   } = useSettings();
   const { userId } = route.params;
 
-  // Updated markNotificationAsRead function
   const markNotificationAsRead = async () => {
-    const notificationsRef = ref(Firebase.Database, `notification/${userId}`);
-    await set(notificationsRef, null); // Clear the notifications after user closes the container
+    try {
+      const notificationsRef = ref(Firebase.Database, `notification/${userId}`);
+      await update(notificationsRef, {
+        newMatches: null,
+        newMessages: null,
+      });
+      console.log("Notifications cleared successfully");
+    } catch (error) {
+      console.error("Error clearing notifications: ", error);
+    }
   };
 
   // Handle notification button press
@@ -79,11 +86,14 @@ const ViewProfile = () => {
         const notificationsData = snapshot.val();
         const allNotifications = [];
 
+        // Process new matches notifications
         if (notificationsData.newMatches) {
-          allNotifications.push({
-            type: 'newMatches',
-            content: `You have a new match with ${notificationsData.newMatches.userName}`,
-            timestamp: notificationsData.newMatches.timestamp,
+          Object.values(notificationsData.newMatches).forEach(match => {
+            allNotifications.push({
+              type: 'newMatches',
+              content: `You have a new match with ${match.userName}`,
+              timestamp: match.timestamp,
+            });
           });
         }
 
@@ -94,6 +104,17 @@ const ViewProfile = () => {
             timestamp: notificationsData.newMessages.timestamp,
           });
         }
+
+        // // Process new messages notifications
+        // if (notificationsData.newMessages) {
+        //   Object.values(notificationsData.newMessages).forEach(message => {
+        //     allNotifications.push({
+        //       type: 'newMessages',
+        //       content: `You have a new message from ${message.userName}`,
+        //       timestamp: message.timestamp,
+        //     });
+        //   });
+        // }
 
         // Sort notifications by timestamp
         allNotifications.sort((a, b) => b.timestamp - a.timestamp);
@@ -108,6 +129,7 @@ const ViewProfile = () => {
 
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [userId]);
+
 
   const handleInputChange = (field, value) => {
     setFormData((prevFormData) => ({
