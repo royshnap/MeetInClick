@@ -151,7 +151,7 @@ const ConversationMatches = ({ route, navigation }) => {
         // Add match notifications for users who match the criteria
         results.forEach((matchedUser) => {
           addMatchNotification(matchedUser.id, user.username);
-    });
+        });
 
       });
       return () => listener(); // Cleanup the listener on unmount
