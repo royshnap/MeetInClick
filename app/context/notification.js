@@ -1,12 +1,12 @@
 // 
-import { ref, set } from "firebase/database";
+import { ref, set , push } from "firebase/database";
 import Firebase from "../config/firebase";
 
 // Function to add a match notification
 export const addMatchNotification = async (userId, userName) => {
   try {
     const matchRef = ref(Firebase.Database, `notification/${userId}/newMatches`);
-    await set(matchRef, {
+    await push(matchRef, {
       type: 'newMatches',
       userName,
       timestamp: Date.now(),
