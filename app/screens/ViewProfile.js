@@ -98,23 +98,14 @@ const ViewProfile = () => {
         }
 
         if (notificationsData.newMessages) {
-          allNotifications.push({
-            type: 'newMessages',
-            content: `You have a new message from ${notificationsData.newMessages.userName}`,
-            timestamp: notificationsData.newMessages.timestamp,
+          Object.values(notificationsData.newMessages).forEach(message => {
+            allNotifications.push({
+              type: 'newMessages',
+              content: `You have a new message from ${message.userName}`,
+              timestamp: message.timestamp,
+            });
           });
         }
-
-        // // Process new messages notifications
-        // if (notificationsData.newMessages) {
-        //   Object.values(notificationsData.newMessages).forEach(message => {
-        //     allNotifications.push({
-        //       type: 'newMessages',
-        //       content: `You have a new message from ${message.userName}`,
-        //       timestamp: message.timestamp,
-        //     });
-        //   });
-        // }
 
         // Sort notifications by timestamp
         allNotifications.sort((a, b) => b.timestamp - a.timestamp);
@@ -334,9 +325,13 @@ const ViewProfile = () => {
         {/* Notification Container - Updated */}
         {showNotification && notifications.length > 0 && (
           <View style={styles.notificationDropdown}>
-            {notifications.map((notification, index) => (
-              <Text key={index} style={styles.notificationText}>{notification.content}</Text>
-            ))}
+            <ScrollView style={styles.notificationList}>
+              {notifications.map((notification, index) => (
+                <Text key={index} style={styles.notificationText}>
+                  {notification.content}
+                </Text>
+              ))}
+            </ScrollView>
             <TouchableOpacity onPress={handleNotificationPress}>
               <Text style={styles.closeButton}>Close</Text>
             </TouchableOpacity>
@@ -349,113 +344,118 @@ const ViewProfile = () => {
 
 const styles = StyleSheet.create({
   background: {
-  flex: 1,
-  width: '100%',
-  height: '100%',
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
   container: {
-  flexGrow: 1,
-  paddingVertical: 20,
-  paddingHorizontal: 20,
-  alignItems: 'flex-start', // Align items to the left
+    flexGrow: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    alignItems: 'flex-start', // Align items to the left
   },
   profileContainer: {
-  alignItems: 'center', // Center the profile image horizontally
-  marginBottom: 20,
+    alignItems: 'center', // Center the profile image horizontally
+    marginBottom: 20,
   },
   profileImage: {
-  width: 200,
-  height: 200,
-  borderRadius: 100,
-  marginBottom: 5,
-  marginTop: 20,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    marginBottom: 5,
+    marginTop: 20,
   },
   detailsContainer: {
-  paddingHorizontal: 20,
-  alignSelf: 'flex-start', // Align details to the left by default
+    paddingHorizontal: 20,
+    alignSelf: 'flex-start', // Align details to the left by default
   },
   detail: {
-  fontSize: 18,
-  marginBottom: 20,
-  textAlign: 'left', // Ensure text aligns left by default
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'left', // Ensure text aligns left by default
   },
   inputGroup: {
-      marginBottom: 5, // Space between input fields
-    },
-    inputLabel: {
-      fontSize: 14,
-      marginBottom: 5, // Space between label and input field
-      color: 'black', // Label color
-    },
-    input: {
-      height: 30,
-      borderColor: 'gray',
-      borderWidth: 1,
-      paddingHorizontal: 10,
-      width: '150%',
-      borderRadius: 5, // Added border radius for rounded corners
-      backgroundColor: 'white', // Added background color for inputs
-    },
-    saveButton: {
-      backgroundColor: '#007AFF',
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 5,
-      alignItems: 'center',
-      marginTop: 20,
-    },
-    saveButtonText: {
-      color: 'white',
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    iconsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      width: '100%',
-      paddingRight: 30,
-    },
-    icon: {
-      marginHorizontal: 10,
-    },
-    notificationIconContainer: {
-      position: 'relative',
-    },
-    notificationBadge: {
-      position: 'absolute',
-      top: -5,
-      right: -10,
-      backgroundColor: 'red',
-      borderRadius: 10,
-      width: 20,
-      height: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    notificationBadgeText: {
-      color: 'white',
-      fontSize: 12,
-      fontWeight: 'bold',
-    },
-    notificationDropdown: {
-      position: 'absolute',
-      top: 50,
-      right: 30,
-      backgroundColor: '#f1c40f',
-      borderRadius: 10,
-      padding: 10,
-      width: 200,
-      maxHeight: 150,
-    },
-    notificationText: {
-      fontSize: 16,
-      color: '#2c3e50',
-      marginBottom: 10,
-    },
-    closeButton: {
-      color: '#e74c3c',
-      fontSize: 14,
-    },
+    marginBottom: 5, // Space between input fields
+  },
+  inputLabel: {
+    fontSize: 14,
+    marginBottom: 5, // Space between label and input field
+    color: 'black', // Label color
+  },
+  input: {
+    height: 30,
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    width: '150%',
+    borderRadius: 5, // Added border radius for rounded corners
+    backgroundColor: 'white', // Added background color for inputs
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+    paddingRight: 30,
+  },
+  icon: {
+    marginHorizontal: 10,
+  },
+  notificationIconContainer: {
+    position: 'relative',
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -10,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationBadgeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  notificationDropdown: {
+    position: 'absolute',
+    top: 50,
+    right: 30,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    width: 200,
+    maxHeight: 200,
+    overflow: 'hidden', // Ensure content overflow is hidden
+  },
+  notificationList: {
+    maxHeight: 130, // Slightly smaller to fit padding and make it scrollable
+  },
+  notificationText: {
+    fontSize: 16,
+    color: 'black',
+    marginBottom: 15,
+  },
+  closeButton: {
+    color: '#e74c3c',
+    fontSize: 15,
+  },
 });
+
 
 export default ViewProfile;
