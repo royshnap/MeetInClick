@@ -6,13 +6,14 @@ const ProfileHeader = ({ navigation }) => {
   const { user } = useAuth();
 
   const handleViewProfile = () => {
-    navigation.navigate('ViewProfile', { userId: user.id });
+    navigation.navigate('Profile', { userId: user.id });
   };
 
   // Determine the default image based on gender
-  const defaultProfileImage = user?.gender === 'Female' 
-    ? require('../assets/defaultProfileImageWoman.png') 
-    : require('../assets/defaultProfileImageMan.png');
+  const defaultProfileImage =
+    user?.gender === 'Female'
+      ? require('../assets/defaultProfileImageWoman.png')
+      : require('../assets/defaultProfileImageMan.png');
 
   return (
     <View style={styles.container}>
@@ -24,10 +25,7 @@ const ProfileHeader = ({ navigation }) => {
               style={styles.profileImage}
             />
           ) : (
-            <Image
-              source={defaultProfileImage}
-              style={styles.profileImage}
-            />
+            <Image source={defaultProfileImage} style={styles.profileImage} />
           )}
         </View>
         <View style={styles.buttonContainer}>

@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, TouchableOpacity, ImageBackground } from "react-native";
-import Slider from "@react-native-community/slider";
-import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import { useNavigation } from "@react-navigation/native";
-import { useCurrentLocation } from "../context/LocationContext";
-import { useTranslation } from "react-i18next";
-import useSettings from "../components/useSettings";
-import SettingsButton from "../components/SettingsButton";
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
+import Slider from '@react-native-community/slider';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { useNavigation } from '@react-navigation/native';
+import { useCurrentLocation } from '../context/LocationContext';
+import { useTranslation } from 'react-i18next';
+import useSettings from '../components/useSettings';
+import SettingsButton from '../components/SettingsButton';
 import ProfileHeader from '../components/ProfileHeader';
 
 const MAX_DISTANCE = 10000; // 10 km
@@ -22,24 +29,39 @@ const Filter = () => {
   const [d, setDistance] = useState(interestRadius);
   const [ageRange, setAgeRange] = useState([MIN_AGE, MAX_AGE]);
   const [genderPreference, setGenderPreference] = useState('Both');
-  const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings(navigation);
+  const {
+    backgroundImage,
+    handleBackgroundChange,
+    handleLanguageChange,
+    handleSignOut,
+  } = useSettings(navigation);
 
   useEffect(() => {
     setDistance(interestRadius);
   }, [interestRadius]);
 
   const handleSetFilters = () => {
-    Alert.alert(`${t('Filters set')}`, "", [
-      { text: t('OK'), onPress: () => navigation.navigate('ConversationMatches', {
-        ageRange,
-        genderPreference,
-      }) },
+    Alert.alert(`${t('Filters set')}`, '', [
+      {
+        text: t('OK'),
+        onPress: () =>
+          navigation.navigate('AppTabs', {
+            screen: 'Matches',
+            params: {
+              ageRange,
+              genderPreference,
+            },
+          }),
+      },
     ]);
   };
 
   const incrementDistance = () => {
     setDistance((prevDistance) => {
-      const newDistance = Math.min(prevDistance + DISTANCE_INTERVAL, MAX_DISTANCE);
+      const newDistance = Math.min(
+        prevDistance + DISTANCE_INTERVAL,
+        MAX_DISTANCE
+      );
       setInterestRadius(newDistance);
       return newDistance;
     });
@@ -56,7 +78,10 @@ const Filter = () => {
   const incrementAge = (index) => {
     setAgeRange((prevAgeRange) => {
       const newAgeRange = [...prevAgeRange];
-      newAgeRange[index] = Math.min(newAgeRange[index] + AGE_INTERVAL, index === 0 ? newAgeRange[1] : MAX_AGE);
+      newAgeRange[index] = Math.min(
+        newAgeRange[index] + AGE_INTERVAL,
+        index === 0 ? newAgeRange[1] : MAX_AGE
+      );
       return newAgeRange;
     });
   };
@@ -64,7 +89,10 @@ const Filter = () => {
   const decrementAge = (index) => {
     setAgeRange((prevAgeRange) => {
       const newAgeRange = [...prevAgeRange];
-      newAgeRange[index] = Math.max(newAgeRange[index] - AGE_INTERVAL, index === 1 ? newAgeRange[0] : MIN_AGE);
+      newAgeRange[index] = Math.max(
+        newAgeRange[index] - AGE_INTERVAL,
+        index === 1 ? newAgeRange[0] : MIN_AGE
+      );
       return newAgeRange;
     });
   };
@@ -86,11 +114,16 @@ const Filter = () => {
           onSignOut={() => handleSignOut(navigation)}
         />
         <Text style={styles.title}>{t('SELECT FILTERS')}</Text>
-        
+
         <View style={styles.filterContainer}>
-          <Text style={styles.label}>{t('Distance')}: {formatDistance(d)}</Text>
+          <Text style={styles.label}>
+            {t('Distance')}: {formatDistance(d)}
+          </Text>
           <View style={styles.sliderContainer}>
-            <TouchableOpacity onPress={decrementDistance} style={styles.adjustButton}>
+            <TouchableOpacity
+              onPress={decrementDistance}
+              style={styles.adjustButton}
+            >
               <Text style={styles.adjustButtonText}>-</Text>
             </TouchableOpacity>
             <Slider
@@ -103,10 +136,13 @@ const Filter = () => {
                 setDistance(value);
                 setInterestRadius(value); // Update interest radius here
               }}
-              thumbTintColor="#007AFF"
-              minimumTrackTintColor="#007AFF"
+              thumbTintColor='#007AFF'
+              minimumTrackTintColor='#007AFF'
             />
-            <TouchableOpacity onPress={incrementDistance} style={styles.adjustButton}>
+            <TouchableOpacity
+              onPress={incrementDistance}
+              style={styles.adjustButton}
+            >
               <Text style={styles.adjustButtonText}>+</Text>
             </TouchableOpacity>
           </View>
@@ -117,9 +153,14 @@ const Filter = () => {
         </View>
 
         <View style={styles.filterContainer}>
-          <Text style={styles.label}>{t('Age Range')}: {ageRange[0]} - {ageRange[1]}</Text>
+          <Text style={styles.label}>
+            {t('Age Range')}: {ageRange[0]} - {ageRange[1]}
+          </Text>
           <View style={styles.sliderContainer}>
-            <TouchableOpacity onPress={() => decrementAge(0)} style={styles.adjustButton}>
+            <TouchableOpacity
+              onPress={() => decrementAge(0)}
+              style={styles.adjustButton}
+            >
               <Text style={styles.adjustButtonText}>-</Text>
             </TouchableOpacity>
             <MultiSlider
@@ -132,16 +173,19 @@ const Filter = () => {
               allowOverlap={false}
               snapped
               selectedStyle={{
-                backgroundColor: "#007AFF",
+                backgroundColor: '#007AFF',
               }}
               unselectedStyle={{
-                backgroundColor: "silver",
+                backgroundColor: 'silver',
               }}
               markerStyle={{
-                backgroundColor: "#007AFF",
+                backgroundColor: '#007AFF',
               }}
             />
-            <TouchableOpacity onPress={() => incrementAge(1)} style={styles.adjustButton}>
+            <TouchableOpacity
+              onPress={() => incrementAge(1)}
+              style={styles.adjustButton}
+            >
               <Text style={styles.adjustButtonText}>+</Text>
             </TouchableOpacity>
           </View>
@@ -155,19 +199,28 @@ const Filter = () => {
           <Text style={styles.label}>{t('Gender Preference:')}</Text>
           <View style={styles.genderContainer}>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'Male' && styles.selectedGenderButton]}
+              style={[
+                styles.genderButton,
+                genderPreference === 'Male' && styles.selectedGenderButton,
+              ]}
               onPress={() => setGenderPreference('Male')}
             >
               <Text style={styles.genderButtonText}>{t('Male')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'Female' && styles.selectedGenderButton]}
+              style={[
+                styles.genderButton,
+                genderPreference === 'Female' && styles.selectedGenderButton,
+              ]}
               onPress={() => setGenderPreference('Female')}
             >
               <Text style={styles.genderButtonText}>{t('Female')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.genderButton, genderPreference === 'Both' && styles.selectedGenderButton]}
+              style={[
+                styles.genderButton,
+                genderPreference === 'Both' && styles.selectedGenderButton,
+              ]}
               onPress={() => setGenderPreference('Both')}
             >
               <Text style={styles.genderButtonText}>{t('Both')}</Text>
@@ -198,7 +251,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: 'white',
     marginBottom: 25,
     marginTop: 10,
@@ -218,9 +271,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sliderContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "80%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
   },
   slider: {
     flex: 1,
@@ -229,36 +282,36 @@ const styles = StyleSheet.create({
   adjustButton: {
     width: 35,
     height: 35,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#007AFF",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#007AFF',
     borderRadius: 20,
     marginHorizontal: 10,
   },
   adjustButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: 30,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   rangeLabels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
     marginBottom: 15,
   },
   rangeLabel: {
     fontSize: 17,
-    color: "white",
+    color: 'white',
   },
   ageRangeLabels: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
     marginTop: 10,
   },
   ageRangeLabel: {
     fontSize: 18,
-    color: "white",
+    color: 'white',
   },
   setButton: {
     backgroundColor: '#007AFF',
