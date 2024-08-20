@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ViewProfile from '../screens/ViewProfile';
 import Matches from '../screens/Matches';
 import ConversationMatches from '../screens/ConversationMatches';
+import MainCategories from '../screens/MainCategories';
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,9 @@ export default function AppTabs() {
             case 'Chats':
               iconName = focused ? 'chatbox' : 'chatbox-outline';
               break;
+            case 'MainCategories':
+              iconName = focused ? 'grid' : 'grid-outline';
+              break;
             default:
               iconName = 'alert-circle';
           }
@@ -42,6 +46,7 @@ export default function AppTabs() {
       <Tab.Screen name='Profile' component={ViewProfile} />
       <Tab.Screen name='Matches' component={Matches} />
       <Tab.Screen name='Chats' component={ConversationMatches} />
+      <Tab.Screen name='MainCategories' component={MainCategories} />
     </Tab.Navigator>
   );
 }
