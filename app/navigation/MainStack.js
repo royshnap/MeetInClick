@@ -5,6 +5,7 @@ import AppTabs from './AppTabs';
 // Screens:
 import MainScreen from '../screens/Main';
 import SignUpScreen from '../screens/SignUp';
+import WelcomeBack from '../screens/WelcomeBack';
 import ViewProfile from '../screens/ViewProfile';
 import MainCategoriesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
@@ -50,6 +51,11 @@ export default function MainStack() {
       <Stack.Screen
         name='MainCategories'
         component={MainCategoriesScreen}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name='WelcomeBack'
+        component={WelcomeBack}
         options={{ headerShown: true }}
       />
       <Stack.Screen

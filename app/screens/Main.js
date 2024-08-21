@@ -17,6 +17,9 @@ import { Ionicons } from '@expo/vector-icons';
 import GoogleSignIn from '../context/GoogleSignIn';
 //import { useFacebookLogin } from '../context/FacebookLogin';
 import CustomScrollView from '../components/CustomScrollView';
+import { ref, get } from "firebase/database";
+import Firebase from "../config/firebase";
+
 
 const MainScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -25,6 +28,8 @@ const MainScreen = ({ navigation }) => {
   const { user, login, error, setError } = useAuth();
   const [settingsVisible, setSettingsVisible] = useState(false); // State for settings modal visibility
   //const { promptAsync } = useFacebookLogin();
+
+
   const handleLoginPress = async () => {
     try {
       await login(email, password);
@@ -36,22 +41,33 @@ const MainScreen = ({ navigation }) => {
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Function to handle background change
-  const handleBackgroundChange = () => {
-    const nextIndex = (selectedImageIndex + 1) % images.length;
-    setSelectedImageIndex(nextIndex);
-  };
-
   const handleSignUpPress = () => {
     navigation.navigate('SignUp');
   };
 
   useEffect(() => {
-    if (user) {
-      // user logged in
-      navigation.replace('MainCategories');
-    }
+    const checkUserCategories = async () => {
+      if (user) {
+        const userRef = ref(Firebase.Database, `users/${user.id}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          if (userData.mainCategory && userData.conversationTopics) {
+            navigation.replace('WelcomeBack', {
+              username: userData.username,
+              mainCategory: userData.mainCategory,
+              conversationTopics: userData.conversationTopics.map((topic, index) => `${index + 1}. ${topic}`).join('\n'),
+            });
+          } else {
+            navigation.replace('MainCategories');
+          }
+        }
+      }
+    };
+
+    checkUserCategories();
   }, [user]);
+
 
   useEffect(() => {
     if (error)
