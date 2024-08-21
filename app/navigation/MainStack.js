@@ -5,6 +5,8 @@ import AppTabs from './AppTabs';
 // Screens:
 import MainScreen from '../screens/Main';
 import SignUpScreen from '../screens/SignUp';
+import WelcomeBack from '../screens/WelcomeBack';
+import ConversationMatches from '../screens/ConversationMatches';
 import ViewProfileScreen from '../screens/ViewProfile';
 import PreferencesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
@@ -27,6 +29,11 @@ export default function MainStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name='Matches'
+        component={ConversationMatches}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
         name='AppTabs'
         component={AppTabs}
         options={{ headerShown: false }}
@@ -46,6 +53,7 @@ export default function MainStack() {
         component={PreferencesScreen}
         options={{ headerShown: true }}
       />
+
       <Stack.Screen
         name='WelcomeBack'
         component={WelcomeBack}

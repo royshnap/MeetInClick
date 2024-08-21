@@ -46,7 +46,7 @@ const Filter = () => {
         text: t('OK'),
         onPress: () =>
           navigation.navigate('AppTabs', {
-            screen: 'Chats',
+            screen: 'Matches',
             params: {
               ageRange,
               genderPreference,

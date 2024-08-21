@@ -27,7 +27,7 @@ const WelcomeBack = ({ route, navigation }) => {
     
             <TouchableOpacity
                     style={styles.smallButton}
-                    onPress={() => navigation.navigate('MainCategories')}
+                    onPress={() => navigation.navigate('Preferences')}
                 >
                     <Text style={styles.smallButtonText}>Change Main Category</Text>
                 </TouchableOpacity>

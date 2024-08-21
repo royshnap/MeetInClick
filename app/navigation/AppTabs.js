@@ -24,7 +24,7 @@ export default function AppTabs() {
             case 'Preferences':
               iconName = focused ? 'grid' : 'grid-outline';
               break;
-            case 'Chats':
+            case 'Matches':
               iconName = focused ? 'chatbox' : 'chatbox-outline';
               break;
             default:
@@ -41,7 +41,7 @@ export default function AppTabs() {
     >
       <Tab.Screen name='Profile' component={ViewProfile} />
       <Tab.Screen name='Preferences' component={PreferencesScreen} />
-      <Tab.Screen name='Chats' component={ConversationMatches} />
+      <Tab.Screen name='Matches' component={ConversationMatches} />
     </Tab.Navigator>
   );
 }
