@@ -40,7 +40,7 @@ export default function AppTabs() {
         tabBarActiveTintColor: 'navy',
         tabBarInactiveTintColor: 'gray',
         tabBarLabelStyle: { fontSize: 12 },
-        tabBarStyle: { paddingBottom: 5, height: 60 },
+        tabBarStyle: { paddingBottom: 5, height: 70 },
       })}
     >
       <Tab.Screen name='Profile' component={ViewProfile} />

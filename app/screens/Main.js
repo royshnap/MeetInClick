@@ -49,7 +49,9 @@ const MainScreen = ({ navigation }) => {
   useEffect(() => {
     if (user) {
       // user logged in
-      navigation.replace('Preferences');
+      navigation.replace('AppTabs', {
+        screen: 'Preferences',
+      });
     }
   }, [user]);
 
