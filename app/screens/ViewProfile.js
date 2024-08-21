@@ -17,9 +17,11 @@ import Firebase from '../config/firebase';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
+import { useAuth } from '../context/AuthContext';
 
 const ViewProfile = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
@@ -34,7 +36,8 @@ const ViewProfile = () => {
     handleLanguageChange,
     handleSignOut,
   } = useSettings();
-  const { userId } = route.params;
+
+  const userId = route.params?.userId || user?.id;
 
   const markNotificationAsRead = async () => {
     try {
@@ -43,9 +46,9 @@ const ViewProfile = () => {
         newMatches: null,
         newMessages: null,
       });
-      console.log("Notifications cleared successfully");
+      console.log('Notifications cleared successfully');
     } catch (error) {
-      console.error("Error clearing notifications: ", error);
+      console.error('Error clearing notifications: ', error);
     }
   };
 
@@ -88,7 +91,7 @@ const ViewProfile = () => {
 
         // Process new matches notifications
         if (notificationsData.newMatches) {
-          Object.values(notificationsData.newMatches).forEach(match => {
+          Object.values(notificationsData.newMatches).forEach((match) => {
             allNotifications.push({
               type: 'newMatches',
               content: `You have a new match with ${match.userName}`,
@@ -98,7 +101,7 @@ const ViewProfile = () => {
         }
 
         if (notificationsData.newMessages) {
-          Object.values(notificationsData.newMessages).forEach(message => {
+          Object.values(notificationsData.newMessages).forEach((message) => {
             allNotifications.push({
               type: 'newMessages',
               content: `You have a new message from ${message.userName}`,
@@ -120,7 +123,6 @@ const ViewProfile = () => {
 
     return () => unsubscribe(); // Cleanup listener on unmount
   }, [userId]);
-
 
   const handleInputChange = (field, value) => {
     setFormData((prevFormData) => ({
@@ -154,9 +156,10 @@ const ViewProfile = () => {
   }
 
   // Determine the default image based on gender
-  const defaultProfileImage = userData?.gender === 'Female' 
-    ? require('../assets/defaultProfileImageWoman.png') 
-    : require('../assets/defaultProfileImageMan.png');
+  const defaultProfileImage =
+    userData?.gender === 'Female'
+      ? require('../assets/defaultProfileImageWoman.png')
+      : require('../assets/defaultProfileImageMan.png');
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -167,16 +170,23 @@ const ViewProfile = () => {
           onSignOut={() => handleSignOut(navigation)} // Pass navigation here
         />
         <View style={styles.iconsContainer}>
-          <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationIconContainer}>
+          <TouchableOpacity
+            onPress={handleNotificationPress}
+            style={styles.notificationIconContainer}
+          >
             <Ionicons
-              name={hasNewNotification ? 'notifications' : 'notifications-outline'}
+              name={
+                hasNewNotification ? 'notifications' : 'notifications-outline'
+              }
               size={24}
               color={hasNewNotification ? 'orange' : 'black'}
               style={styles.icon}
             />
             {hasNewNotification && (
               <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>{notifications.length}</Text>
+                <Text style={styles.notificationBadgeText}>
+                  {notifications.length}
+                </Text>
               </View>
             )}
           </TouchableOpacity>
@@ -191,7 +201,11 @@ const ViewProfile = () => {
         </View>
         <View style={styles.profileContainer}>
           <Image
-            source={userData.profileImage ? { uri: userData.profileImage } : defaultProfileImage}
+            source={
+              userData.profileImage
+                ? { uri: userData.profileImage }
+                : defaultProfileImage
+            }
             style={styles.profileImage}
           />
         </View>
@@ -311,9 +325,7 @@ const ViewProfile = () => {
               </Text>
             )}
             {userData.twitter && (
-              <Text style={styles.socialLink}>
-                Twitter: {userData.twitter}
-              </Text>
+              <Text style={styles.socialLink}>Twitter: {userData.twitter}</Text>
             )}
             {userData.linkedin && (
               <Text style={styles.socialLink}>
@@ -456,6 +468,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
-
 
 export default ViewProfile;
