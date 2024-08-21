@@ -49,7 +49,7 @@ const MainScreen = ({ navigation }) => {
   useEffect(() => {
     if (user) {
       // user logged in
-      navigation.replace('MainCategories');
+      navigation.replace('Preferences');
     }
   }, [user]);
 
