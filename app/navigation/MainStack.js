@@ -9,7 +9,6 @@ import ViewProfileScreen from '../screens/ViewProfile';
 import PreferencesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
 import FilterScreen from '../screens/Filter';
-import MatchesScreen from '../screens/Matches';
 import ConversationScreen from '../screens/Conversation';
 
 const Stack = createStackNavigator();
@@ -35,11 +34,6 @@ export default function MainStack() {
       <Stack.Screen
         name='Profile'
         component={ViewProfileScreen}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name='Matches'
-        component={MatchesScreen}
         options={{ headerShown: true }}
       />
       <Stack.Screen
