@@ -6,7 +6,7 @@ import { SettingsProvider } from './app/components/useSettings';
 import { AuthContextProvider } from './app/context/AuthContext';
 import { ConversationContextProvider } from './app/context/ConversationContext';
 import { LocationContextProvider } from './app/context/LocationContext';
-import Navigation from './app/navigation'; // Import the centralized Navigation component
+import Navigation from './app/navigation';
 
 export default function App() {
   return (

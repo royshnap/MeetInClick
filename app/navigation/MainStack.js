@@ -5,12 +5,12 @@ import AppTabs from './AppTabs';
 // Screens:
 import MainScreen from '../screens/Main';
 import SignUpScreen from '../screens/SignUp';
-import ViewProfile from '../screens/ViewProfile';
-import MainCategoriesScreen from '../screens/MainCategories';
+import ViewProfileScreen from '../screens/ViewProfile';
+import PreferencesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
 import FilterScreen from '../screens/Filter';
-import Matches from '../screens/Matches';
-import Conversation from '../screens/Conversation';
+import MatchesScreen from '../screens/Matches';
+import ConversationScreen from '../screens/Conversation';
 
 const Stack = createStackNavigator();
 
@@ -34,22 +34,22 @@ export default function MainStack() {
       />
       <Stack.Screen
         name='Profile'
-        component={ViewProfile}
+        component={ViewProfileScreen}
         options={{ headerShown: true }}
       />
       <Stack.Screen
         name='Matches'
-        component={Matches}
+        component={MatchesScreen}
         options={{ headerShown: true }}
       />
       <Stack.Screen
         name='Conversation'
-        component={Conversation}
+        component={ConversationScreen}
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name='MainCategories'
-        component={MainCategoriesScreen}
+        name='Preferences'
+        component={PreferencesScreen}
         options={{ headerShown: true }}
       />
       <Stack.Screen
