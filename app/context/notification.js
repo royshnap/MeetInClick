@@ -25,7 +25,6 @@ export const addMatchNotification = async (userId, userName) => {
         userName,
         timestamp: Date.now(),
       });
-      console.log("Match notification added successfully");
     } else {
       console.log("Match notification already exists, not adding again.");
     }
@@ -58,7 +57,6 @@ export const addMessageNotification = async (userId, userName) => {
         userName,
         timestamp: Date.now(),
       });
-      console.log("Message notification added successfully");
     } else {
       console.log("Message notification already exists, not adding again.");
     }
