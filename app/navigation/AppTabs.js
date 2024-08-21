@@ -22,14 +22,14 @@ export default function AppTabs() {
             case 'Profile':
               iconName = focused ? 'person' : 'person-outline';
               break;
+            case 'MainCategories':
+              iconName = focused ? 'grid' : 'grid-outline';
+              break;
             case 'Matches':
               iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
               break;
             case 'Chats':
               iconName = focused ? 'chatbox' : 'chatbox-outline';
-              break;
-            case 'MainCategories':
-              iconName = focused ? 'grid' : 'grid-outline';
               break;
             default:
               iconName = 'alert-circle';
@@ -44,9 +44,9 @@ export default function AppTabs() {
       })}
     >
       <Tab.Screen name='Profile' component={ViewProfile} />
+      <Tab.Screen name='MainCategories' component={MainCategories} />
       <Tab.Screen name='Matches' component={Matches} />
       <Tab.Screen name='Chats' component={ConversationMatches} />
-      <Tab.Screen name='MainCategories' component={MainCategories} />
     </Tab.Navigator>
   );
 }
