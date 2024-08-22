@@ -28,46 +28,34 @@ export default function MainStack() {
         component={SignUpScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name='Matches'
-        component={ConversationMatches}
-        options={{ headerShown: true }}
-      />
+      <Stack.Screen name='Matches' component={ConversationMatches} />
       <Stack.Screen
         name='AppTabs'
         component={AppTabs}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name='Profile'
-        component={ViewProfileScreen}
-        options={{ headerShown: true }}
-      />
+      <Stack.Screen name='Profile' component={ViewProfileScreen} />
       <Stack.Screen
         name='Conversation'
         component={ConversationScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name='Preferences'
-        component={PreferencesScreen}
-        options={{ headerShown: true }}
-      />
+      <Stack.Screen name='Preferences' component={PreferencesScreen} />
 
       <Stack.Screen
         name='WelcomeBack'
         component={WelcomeBack}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name='SubCategories'
         component={SubCategoriesScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name='Filter'
         component={FilterScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
