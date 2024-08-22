@@ -28,11 +28,7 @@ export default function MainStack() {
         component={SignUpScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name='Matches'
-        component={ConversationMatches}
-        options={{ headerShown: true }}
-      />
+      <Stack.Screen name='Matches' component={ConversationMatches} />
       <Stack.Screen
         name='AppTabs'
         component={AppTabs}
@@ -61,7 +57,7 @@ export default function MainStack() {
       <Stack.Screen
         name='SubCategories'
         component={SubCategoriesScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name='Filter'
