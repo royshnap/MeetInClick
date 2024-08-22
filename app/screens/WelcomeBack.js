@@ -65,59 +65,59 @@ const WelcomeBack = ({ route, navigation }) => {
             paddingTop: 140,
             paddingHorizontal: 10,
         },
-      welcomeText: {
-        fontSize: 27,
-        fontWeight: 'bold',
-        color: 'black',
-        marginBottom: 40,
-        textAlign: 'center',
-      },
-      mainCategoryText: {
-        fontSize: 20,
-        color: 'black',
-        marginBottom: 10,
-        textAlign: 'center',
-      },
-      subCategoryText: {
-        fontSize: 20,
-        color: 'black',
-        marginBottom: 10,
-        textAlign: 'center',
-      },
-      highlight: {
-        fontSize: 23,
-        color: 'blue', // Blue color for highlighting
-        fontWeight: 'bold',
-        marginBottom: 30,
-      },
-      smallButton: {
-        backgroundColor: '#007AFF', // Blue button background
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
-        marginVertical: 5,
-        width: '60%', // Button width
-        alignItems: 'center',
-    },
-    smallButtonText: {
-        color: '#fff',
-        fontSize: 14,
-        fontWeight: 'bold',
-    },
-    largeButton: {
-        backgroundColor: '#FF5733', // Highlighted button background
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        borderRadius: 8,
-        marginVertical: 20,
-        width: '80%', // Button width
-        alignItems: 'center',
-    },
-    largeButtonText: {
-        color: '#fff',
-        fontSize: 26,
-        fontWeight: 'bold',
-    },
+        welcomeText: {
+            fontSize: 27,
+            fontWeight: 'bold',
+            color: 'black',
+            marginBottom: 40,
+            textAlign: 'center',
+        },
+        mainCategoryText: {
+            fontSize: 20,
+            color: 'black',
+            marginBottom: 10,
+            textAlign: 'center',
+        },
+        subCategoryText: {
+            fontSize: 20,
+            color: 'black',
+            marginBottom: 10,
+            textAlign: 'center',
+        },
+        highlight: {
+            fontSize: 23,
+            color: 'blue', // Blue color for highlighting
+            fontWeight: 'bold',
+            marginBottom: 30,
+        },
+        smallButton: {
+            backgroundColor: '#007AFF', // Blue button background
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderRadius: 8,
+            marginVertical: 5,
+            width: '60%', // Button width
+            alignItems: 'center',
+        },
+        smallButtonText: {
+            color: '#fff',
+            fontSize: 14,
+            fontWeight: 'bold',
+        },
+        largeButton: {
+            backgroundColor: '#FF5733', // Highlighted button background
+            paddingVertical: 15,
+            paddingHorizontal: 30,
+            borderRadius: 8,
+            marginVertical: 20,
+            width: '80%', // Button width
+            alignItems: 'center',
+        },
+        largeButtonText: {
+            color: '#fff',
+            fontSize: 26,
+            fontWeight: 'bold',
+        },
     });
     
 

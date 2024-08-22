@@ -15,7 +15,7 @@ import ProfileHeader from '../components/ProfileHeader';
 import { getDatabase, ref, set } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
 
-const MainCategoriesScreen = ({ navigation }) => {
+const PreferencesScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isNavigating, setIsNavigating] = useState(false);
@@ -179,4 +179,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MainCategoriesScreen;
+export default PreferencesScreen;

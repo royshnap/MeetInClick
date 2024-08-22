@@ -188,11 +188,6 @@ const ConversationMatches = ({ route, navigation }) => {
       return sameMainCategory && commonTopics /*&& distance <= interestRadius*/ && withinAgeRange && genderMatch;
     });
 
-    if (matches.length > 0) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000);
-    }
-
     return matches;
   }, [conversationTopicResults, currentLocation, interestRadius, user, ageRange, genderPreference]);
 
@@ -200,6 +195,13 @@ const ConversationMatches = ({ route, navigation }) => {
     setSelectedUser(user);
     setModalVisible(true);
   };
+
+  useEffect(() => {
+    if (filteredMatches.length > 0) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+    }
+}, [filteredMatches]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>

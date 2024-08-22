@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Image,
   TextInput,
-  ImageBackground,
   StyleSheet,
-  Button,
   Text,
   TouchableOpacity,
   View,
@@ -34,12 +32,11 @@ const MainScreen = ({ navigation }) => {
     try {
       await login(email, password);
     } catch (e) {
-      // Handle error, e.g., by setting an error state or logging
-      console.error(e); // or display an alert, etc.
+      console.error(e); 
     }
   };
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  //const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const handleSignUpPress = () => {
     navigation.navigate('SignUp');
@@ -59,7 +56,7 @@ const MainScreen = ({ navigation }) => {
               conversationTopics: userData.conversationTopics.map((topic, index) => `${index + 1}. ${topic}`).join('\n'),
             });
           } else {
-            navigation.replace('MainCategories');
+            navigation.replace('Preferences');
           }
         }
       }

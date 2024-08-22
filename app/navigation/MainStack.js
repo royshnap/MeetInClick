@@ -7,11 +7,11 @@ import MainScreen from '../screens/Main';
 import SignUpScreen from '../screens/SignUp';
 import WelcomeBack from '../screens/WelcomeBack';
 import ConversationMatches from '../screens/ConversationMatches';
-import ViewProfileScreen from '../screens/ViewProfile';
+import ViewProfile from '../screens/ViewProfile';
 import PreferencesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
-import FilterScreen from '../screens/Filter';
-import ConversationScreen from '../screens/Conversation';
+import Filter from '../screens/Filter';
+import Conversation from '../screens/Conversation';
 
 const Stack = createStackNavigator();
 
@@ -40,12 +40,12 @@ export default function MainStack() {
       />
       <Stack.Screen
         name='Profile'
-        component={ViewProfileScreen}
+        component={ViewProfile}
         options={{ headerShown: true }}
       />
       <Stack.Screen
         name='Conversation'
-        component={ConversationScreen}
+        component={Conversation}
         options={{ headerShown: true }}
       />
       <Stack.Screen
@@ -53,11 +53,10 @@ export default function MainStack() {
         component={PreferencesScreen}
         options={{ headerShown: true }}
       />
-
       <Stack.Screen
         name='WelcomeBack'
         component={WelcomeBack}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name='SubCategories'
@@ -66,7 +65,7 @@ export default function MainStack() {
       />
       <Stack.Screen
         name='Filter'
-        component={FilterScreen}
+        component={Filter}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>

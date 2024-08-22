@@ -104,7 +104,7 @@ const SignUpScreen = ({ navigation }) => {
   
       // Only navigate if registration is successful
       if (user) {
-        navigation.navigate("MainCategories");
+        navigation.navigate("Preferences");
       } 
   };
 
