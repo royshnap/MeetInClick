@@ -89,7 +89,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
               approved || sender ? '#FFFFFF' : declined ? '#F44336' : '#9E9E9E',
           }}
         >
-          {t('Start conversation')}
+          {t('Enter Chat')}
         </Text>
       </TouchableOpacity>
     );
@@ -97,7 +97,6 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
     if (approved) {
       return (
         <View>
-          <Text style={styles.statusText}>{t('Status: Approved')}</Text>
           <StartConversationButton />
         </View>
       );
@@ -153,8 +152,8 @@ const styles = StyleSheet.create({
   matchItem: {
     backgroundColor: 'transparent',
     borderRadius: 25,
-    padding: 20,
-    marginBottom: 15,
+    padding: 6,
+    marginBottom: 10,
     flexDirection: 'column',
     alignItems: 'center',
     shadowColor: 'transparent',

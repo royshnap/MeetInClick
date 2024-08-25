@@ -13,11 +13,20 @@ import SettingsButton from '../components/SettingsButton';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import MatchItem from '../components/MatchItem';
 import UserDetailsModal from '../components/UserDetailsModal';
-import { useFilteredMatches } from '../hooks/useFilteredMatches'; // Filtering logic
-import { useMatchSections } from '../hooks/useMatchSections'; // Categorization logic
+import { useFilteredMatches } from '../hooks/useFilteredMatches';
+import { useMatchSections } from '../hooks/useMatchSections';
 import { ref, onValue } from 'firebase/database';
 import Firebase from '../config/firebase';
 import { addMatchNotification } from '../context/notification';
+import HorizontalList from '../components/HorizontalList';
+
+// Add console logs to debug
+console.log('useSettings:', useSettings);
+console.log('SettingsButton:', SettingsButton);
+console.log('MatchItem:', MatchItem);
+console.log('UserDetailsModal:', UserDetailsModal);
+console.log('useFilteredMatches:', useFilteredMatches);
+console.log('useMatchSections:', useMatchSections);
 
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
@@ -109,55 +118,33 @@ const ConversationMatches = ({ route, navigation }) => {
           />
         )}
 
-        {/* Display new matches */}
-        {newMatches.length > 0 ? (
-          <>
-            <Text style={styles.sectionHeader}>{t('New Matches')}:</Text>
-            <FlatList
-              data={newMatches}
-              renderItem={({ item: otherUser }) => (
-                <MatchItem
-                  otherUser={otherUser}
-                  navigation={navigation}
-                  onPress={handleMatchPress}
-                />
-              )}
-              keyExtractor={(item) => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.horizontalMatches}
-              contentContainerStyle={{ alignItems: 'flex-start' }} // Align items to the top
+        {/* New Matches */}
+        <HorizontalList
+          data={newMatches}
+          renderItem={({ item: otherUser }) => (
+            <MatchItem
+              otherUser={otherUser}
+              navigation={navigation}
+              onPress={handleMatchPress}
             />
-          </>
-        ) : (
-          <Text style={styles.noMatchesOrChatsText}>
-            {t('There are no matches')}
-          </Text>
-        )}
+          )}
+          headerTitle={t('New Matches')}
+          emptyMessage={t('There are no matches')}
+        />
 
-        {/* Display ongoing conversations */}
-        <Text style={styles.sectionHeader}>{t('Chats')}:</Text>
-        {ongoingConversations.length > 0 ? (
-          <FlatList
-            data={ongoingConversations}
-            renderItem={({ item: otherUser }) => (
-              <MatchItem
-                otherUser={otherUser}
-                navigation={navigation}
-                onPress={handleMatchPress}
-              />
-            )}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.horizontalMatches}
-            contentContainerStyle={{ alignItems: 'flex-start' }} // Align items to the top
-          />
-        ) : (
-          <Text style={styles.noMatchesOrChatsText}>
-            {t('There are no chats')}
-          </Text>
-        )}
+        {/* Chats */}
+        <HorizontalList
+          data={ongoingConversations}
+          renderItem={({ item }) => (
+            <MatchItem
+              otherUser={item}
+              navigation={navigation}
+              onPress={handleMatchPress}
+            />
+          )}
+          headerTitle={t('Chats')}
+          emptyMessage={t('There are no chats')}
+        />
 
         {/* User Details Modal */}
         <UserDetailsModal
@@ -175,53 +162,16 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    resizeMode: 'cover', // Ensure the image covers the entire background
+    resizeMode: 'cover',
   },
-  matchItem: {
-    backgroundColor: 'transparent',
-    borderRadius: 25,
-    padding: 10, // Reduced padding from 20
-    marginBottom: 10, // Reduced margin from 15
-    flex: 1, // Allow items to take up available space equally
-    flexDirection: 'column',
-    alignItems: 'center',
-    shadowColor: 'transparent',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0,
-    shadowRadius: 0,
-    elevation: 0,
+  container: {
+    flex: 1,
   },
-  matchItemTextContainer: {
-    alignItems: 'center',
-  },
-  matchText: {
-    fontSize: 20,
-    color: '#333333',
-    fontWeight: 'bold',
-    marginTop: 5, // Adjusted for consistency
-  },
-  row: {
-    justifyContent: 'space-between', // Ensure items are evenly spaced in each row
-  },
-  horizontalMatches: {
-    paddingHorizontal: 5, // Adjust to reduce extra padding
-  },
-  noMatchesOrChatsText: {
-    fontSize: 18,
-    marginBottom: 20,
-    marginTop: 20,
-    textAlign: 'center',
-    color: '#F44336', // Red color for "no matches" or "no chats" text
-  },
-  sectionHeader: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    marginLeft: 10,
-    color: '#2e2934',
+  confetti: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 9999,
   },
 });
 
