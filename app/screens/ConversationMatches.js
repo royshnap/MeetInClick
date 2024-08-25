@@ -1,134 +1,42 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image, Modal, Button } from "react-native";
-import { useConversationTopicMatches } from "../context/ConversationContext";
-import { useAuth } from "../context/AuthContext";
-import { useTranslation } from "react-i18next";
-import useSettings from "../components/useSettings";
-import SettingsButton from "../components/SettingsButton";
-import { useCurrentLocation } from "../context/LocationContext";
-import { ref, onValue } from "firebase/database";
-import Firebase from "../config/firebase";
-import { calculateDistance } from "../utils";
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ImageBackground,
+} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
+import useSettings from '../components/useSettings';
+import SettingsButton from '../components/SettingsButton';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { addMatchNotification } from '../context/notification'; // Adjust the import path
-
-
-const MatchItem = ({ otherUser, navigation, onPress }) => {
-  const { t } = useTranslation();
-  const { startConversation, sendConversationRequest, isApproved, requests, isDeclined, isPending } = useConversationTopicMatches();
-  const { user } = useAuth();
-
-  const handlePressStartConversation = async (requestId_1, requestId_2) => {
-    try {
-      const conversationId = await startConversation(otherUser.id, requestId_1, requestId_2);
-      if (conversationId) {
-        navigation.navigate("Conversation", { cid: conversationId });
-      } else {
-        Alert.alert(t("There was a problem starting conversation with", { username: otherUser.username }));
-      }
-    } catch (e) {
-      Alert.alert(e.message);
-    }
-  };
-
-  const handlePressSendRequest = async () => {
-    try {
-      const conversationId = await sendConversationRequest(otherUser.id);
-      if (conversationId) {
-        Alert.alert(t(`Request has been sent to ${otherUser.username}`));
-      } else {
-        Alert.alert(t(`There was a problem sending conversation request to ${otherUser.username}`));
-      }
-    } catch (e) {
-      Alert.alert(e.message);
-    }
-  };
-
-  const Status = useCallback(() => {
-    const approved = isApproved(otherUser.id);
-    const declined = isDeclined(otherUser.id);
-    const { sender, recipient } = isPending(otherUser.id);
-    const cid1 = `${otherUser.id}_${user.id}`;
-    const cid2 = `${user.id}_${otherUser.id}`;
-
-    const StartConversationButton = () => (
-      <TouchableOpacity
-        style={[styles.startConversationButton, { backgroundColor: approved ? "#4CAF50" : sender ? "#BDBDBD" : "transparent" }]}
-        disabled={!sender && !approved}
-        onPress={() => handlePressStartConversation(cid1, cid2)}
-      >
-        <Text
-          style={{
-            color: approved || sender ? "#FFFFFF" : declined ? "#F44336" : "#9E9E9E",
-          }}
-        >
-          {t("Start conversation")}
-        </Text>
-      </TouchableOpacity>
-    );
-
-    if (approved) {
-      return (
-        <View>
-          <Text style={styles.statusText}>{t("Status: Approved")}</Text>
-          <StartConversationButton />
-        </View>
-      );
-    } else if (declined) {
-      return (
-        <View>
-          <Text style={styles.statusText}>{t("Status: Declined")}</Text>
-          <StartConversationButton />
-        </View>
-      );
-    } else if (sender || recipient) {
-      return (
-        <View>
-          <Text style={styles.statusText}>{t("Status: Pending")}</Text>
-          <StartConversationButton />
-        </View>
-      );
-    }
-    return (
-      <View>
-        <TouchableOpacity style={styles.button} onPress={handlePressSendRequest}>
-          <Text style={styles.buttonText}>{t("Send request")}</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }, [requests]);
-
-  // Determine profile image to show
-  const profileImage = otherUser.profileImage
-    ? { uri: otherUser.profileImage }
-    : otherUser.gender === "Female"
-    ? require('../assets/defaultProfileImageWoman.png')
-    : require('../assets/defaultProfileImageMan.png');
-
-  return (
-    <TouchableOpacity style={styles.matchItem} onPress={() => onPress(otherUser)}>
-      <Image source={profileImage} style={styles.profilePicture} />
-      <View style={styles.matchItemTextContainer}>
-        <Text style={styles.matchText}>{otherUser.username}</Text>
-        <Status />
-      </View>
-    </TouchableOpacity>
-  );
-};
+import MatchItem from '../components/MatchItem';
+import UserDetailsModal from '../components/UserDetailsModal';
+import { useFilteredMatches } from '../hooks/useFilteredMatches'; // Filtering logic
+import { useMatchSections } from '../hooks/useMatchSections'; // Categorization logic
+import { ref, onValue } from 'firebase/database';
+import Firebase from '../config/firebase';
+import { addMatchNotification } from '../context/notification';
 
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-  const { currentLocation, interestRadius } = useCurrentLocation();
+  const {
+    backgroundImage,
+    handleBackgroundChange,
+    handleLanguageChange,
+    handleSignOut,
+  } = useSettings();
+
   const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // State to manage selected user for modal
-  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Get the filters passed from the Filter screen
-  const { ageRange = [18, 120], genderPreference = 'Both' } = route.params || {};
+  const { ageRange, genderPreference } = route.params || {};
 
+  // Fetch and filter users from Firebase
   useEffect(() => {
     if (user) {
       const usersRef = ref(Firebase.Database, 'users');
@@ -140,11 +48,12 @@ const ConversationMatches = ({ route, navigation }) => {
             otherUser.id !== user.id && // Exclude the current user
             otherUser.conversationTopics &&
             user.conversationTopics &&
-            user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic))
+            user.conversationTopics.some((topic) =>
+              otherUser.conversationTopics.includes(topic)
+            )
           ) {
             results.push(otherUser);
           }
-      
         });
         setConversationTopicResults(results);
 
@@ -152,44 +61,25 @@ const ConversationMatches = ({ route, navigation }) => {
         results.forEach((matchedUser) => {
           addMatchNotification(matchedUser.id, user.username);
         });
-
       });
       return () => listener(); // Cleanup the listener on unmount
     }
   }, [user]);
 
-  const filteredMatches = useMemo(() => {
-    // Filter users based on topics, distance, age range, and gender preference
-    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
-      return [];
-    }
- 
-    const matches = conversationTopicResults.filter(otherUser => {
-      if (
-        !otherUser.mainCategory ||
-        !otherUser.conversationTopics ||
-        /*!otherUser.currentLocation ||*/
-        !otherUser.age ||
-        !otherUser.gender
-      ) {
-        return false;
-      }
+  // Prepare filters for the hook
+  const filters = {
+    ageRange: ageRange || [18, 120],
+    genderPreference: genderPreference || 'Both',
+  };
 
-      const sameMainCategory = user.mainCategory === otherUser.mainCategory;
-      const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
-      const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
-
-      // Check age preference
-      const withinAgeRange = otherUser.age >= ageRange[0] && otherUser.age <= ageRange[1];
-
-      // Check gender preference
-      const genderMatch = genderPreference === 'Both' || otherUser.gender === genderPreference;
-
-      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/ && withinAgeRange && genderMatch;
-    });
-
-    return matches;
-  }, [conversationTopicResults, currentLocation, interestRadius, user, ageRange, genderPreference]);
+  // Use hooks to filter and categorize matches
+  const filteredMatches = useFilteredMatches(
+    conversationTopicResults,
+    user,
+    filters
+  );
+  const { newMatches, ongoingConversations } =
+    useMatchSections(filteredMatches);
 
   const handleMatchPress = (user) => {
     setSelectedUser(user);
@@ -197,11 +87,11 @@ const ConversationMatches = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if (filteredMatches.length > 0) {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 5000);
+    if (newMatches.length > 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
     }
-}, [filteredMatches]);
+  }, [newMatches]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -211,50 +101,70 @@ const ConversationMatches = ({ route, navigation }) => {
           onLanguageChange={handleLanguageChange}
           onSignOut={() => handleSignOut(navigation)}
         />
-        {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
-        {filteredMatches.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
+        {showConfetti && (
+          <ConfettiCannon
+            count={200}
+            origin={{ x: -10, y: 0 }}
+            style={styles.confetti}
+          />
         )}
-        {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
-        <FlatList
-          data={filteredMatches}
-          renderItem={({ item: otherUser }) => (
-            <MatchItem otherUser={otherUser} navigation={navigation} onPress={handleMatchPress} />
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={2} // Two items per row
-          columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between items
-        />
-        {/* Modal to show user details */}
-        {selectedUser && (
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Image
-                  source={
-                    selectedUser.profileImage
-                      ? { uri: selectedUser.profileImage }
-                      : selectedUser.gender === "Female"
-                      ? require('../assets/defaultProfileImageWoman.png')
-                      : require('../assets/defaultProfileImageMan.png')
-                  }
-                  style={styles.modalProfilePicture}
+
+        {/* Display new matches */}
+        {newMatches.length > 0 ? (
+          <>
+            <Text style={styles.sectionHeader}>{t('New Matches')}:</Text>
+            <FlatList
+              data={newMatches}
+              renderItem={({ item: otherUser }) => (
+                <MatchItem
+                  otherUser={otherUser}
+                  navigation={navigation}
+                  onPress={handleMatchPress}
                 />
-                <Text style={styles.modalText}>Name: {selectedUser.firstName} {selectedUser.lastName}</Text>
-                <Text style={styles.modalText}>Age: {selectedUser.age}</Text>
-                <Text style={styles.modalText}>Gender: {selectedUser.gender}</Text>
-                <Text style={styles.modalText}>Main Category: {selectedUser.mainCategory}</Text>
-                <Text style={styles.modalText}>Topics: {selectedUser.conversationTopics.join(', ')}</Text>
-                <Button title={t("Close")} onPress={() => setModalVisible(false)} />
-              </View>
-            </View>
-          </Modal>
+              )}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.horizontalMatches}
+              contentContainerStyle={{ alignItems: 'flex-start' }} // Align items to the top
+            />
+          </>
+        ) : (
+          <Text style={styles.noMatchesOrChatsText}>
+            {t('There are no matches')}
+          </Text>
         )}
+
+        {/* Display ongoing conversations */}
+        <Text style={styles.sectionHeader}>{t('Chats')}:</Text>
+        {ongoingConversations.length > 0 ? (
+          <FlatList
+            data={ongoingConversations}
+            renderItem={({ item: otherUser }) => (
+              <MatchItem
+                otherUser={otherUser}
+                navigation={navigation}
+                onPress={handleMatchPress}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.horizontalMatches}
+            contentContainerStyle={{ alignItems: 'flex-start' }} // Align items to the top
+          />
+        ) : (
+          <Text style={styles.noMatchesOrChatsText}>
+            {t('There are no chats')}
+          </Text>
+        )}
+
+        {/* User Details Modal */}
+        <UserDetailsModal
+          visible={modalVisible}
+          user={selectedUser}
+          onClose={() => setModalVisible(false)}
+        />
       </View>
     </ImageBackground>
   );
@@ -265,41 +175,17 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-  },
-  container: {
-    flex: 1,
-    position: 'relative',
-  },
-  confetti: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 9999, // Ensure the confetti is in front of everything
-  },
-  noMatchesText: {
-    fontSize: 18,
-    marginBottom: 20,
-    marginTop: 60,
-    textAlign: "center",
-    color: "#F44336",
-  },
-  matchesText: {
-    fontSize: 40,
-    marginBottom: 20,
-    color: "#2e2934",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 50,
+    resizeMode: 'cover', // Ensure the image covers the entire background
   },
   matchItem: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderRadius: 25,
-    padding: 20,
-    marginBottom: 15,
-    width: '48%',
-    flexDirection: "column",
-    alignItems: "center",
-    shadowColor: "transparent",
+    padding: 10, // Reduced padding from 20
+    marginBottom: 10, // Reduced margin from 15
+    flex: 1, // Allow items to take up available space equally
+    flexDirection: 'column',
+    alignItems: 'center',
+    shadowColor: 'transparent',
     shadowOffset: {
       width: 0,
       height: 0,
@@ -309,62 +195,33 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   matchItemTextContainer: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   matchText: {
     fontSize: 20,
-    color: "#333333",
-    fontWeight: "bold",
-    marginTop: 10,
+    color: '#333333',
+    fontWeight: 'bold',
+    marginTop: 5, // Adjusted for consistency
   },
-  button: {
-    padding: 12,
-    borderRadius: 5,
-    backgroundColor: "#2196F3",
-    alignItems: "center",
-    marginTop: 10,
+  row: {
+    justifyContent: 'space-between', // Ensure items are evenly spaced in each row
   },
-  startConversationButton: {
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
+  horizontalMatches: {
+    paddingHorizontal: 5, // Adjust to reduce extra padding
   },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  profilePicture: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  // Modal styles
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalProfilePicture: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-  },
-  modalText: {
+  noMatchesOrChatsText: {
     fontSize: 18,
-    marginVertical: 5,
+    marginBottom: 20,
+    marginTop: 20,
+    textAlign: 'center',
+    color: '#F44336', // Red color for "no matches" or "no chats" text
+  },
+  sectionHeader: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    marginLeft: 10,
+    color: '#2e2934',
   },
 });
 
