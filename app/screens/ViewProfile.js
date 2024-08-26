@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-  ScrollView,
-  Alert,
-  TextInput,
-} from 'react-native';
+import {View,Text,StyleSheet,Image,TouchableOpacity,ImageBackground,ScrollView,Alert,TextInput,} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get, set, onValue, update } from 'firebase/database';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
@@ -46,7 +36,6 @@ const ViewProfile = () => {
         newMatches: null,
         newMessages: null,
       });
-      console.log('Notifications cleared successfully');
     } catch (error) {
       console.error('Error clearing notifications: ', error);
     }

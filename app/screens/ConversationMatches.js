@@ -20,13 +20,6 @@ import Firebase from '../config/firebase';
 import { addMatchNotification } from '../context/notification';
 import HorizontalList from '../components/HorizontalList';
 
-// Add console logs to debug
-console.log('useSettings:', useSettings);
-console.log('SettingsButton:', SettingsButton);
-console.log('MatchItem:', MatchItem);
-console.log('UserDetailsModal:', UserDetailsModal);
-console.log('useFilteredMatches:', useFilteredMatches);
-console.log('useMatchSections:', useMatchSections);
 
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
