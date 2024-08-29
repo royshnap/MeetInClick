@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import CustomHeader from './CustomHeader';
 
 // Screens:
 import ViewProfile from '../screens/ViewProfile';
@@ -34,10 +35,10 @@ export default function AppTabs() {
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: 'navy',
-        tabBarInactiveTintColor: 'gray',
-        tabBarLabelStyle: { fontSize: 12 },
-        tabBarStyle: { paddingBottom: 5, height: 70 },
-        headerShown: false,
+        tabBarInactiveTintColor: 'black',
+        tabBarLabelStyle: { fontSize: 14 },
+        tabBarStyle: { backgroundColor: '#c8cccc', paddingBottom: 20, height: 80 },
+        header: (props) => <CustomHeader {...props} />,
       })}
     >
       <Tab.Screen name='Profile' component={ViewProfile} />

@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
-import ProfileHeader from '../components/ProfileHeader';
+//import ProfileHeader from '../components/ProfileHeader';
 import { getDatabase, ref, set } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
 
@@ -77,12 +77,12 @@ const PreferencesScreen = ({ navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.overlay}>
-        <ProfileHeader navigation={navigation} />
-        <SettingsButton
+        {/* <ProfileHeader navigation={navigation} /> */}
+        {/* <SettingsButton
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
           onSignOut={() => handleSignOut(navigation)}
-        />
+        /> */}
         <Text style={styles.title}>
           {t('What would you')}
           {'\n'}

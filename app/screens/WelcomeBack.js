@@ -25,21 +25,21 @@ const WelcomeBack = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.smallButton}
-          onPress={() => navigation.navigate('Preferences')}
+          onPress={() => navigation.navigate( 'AppTabs', { screen:'Preferences' })}
         >
           <Text style={styles.smallButtonText}>Change Main Category</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.smallButton}
-          onPress={() => navigation.navigate('Filter')}
+          onPress={() => navigation.navigate( 'AppTabs', { screen:'Filter' })}
         >
           <Text style={styles.smallButtonText}>Change Filters</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.largeButton}
-          onPress={() => navigation.navigate('Matches')}
+          onPress={() => navigation.navigate('AppTabs', { screen: 'Matches'})}
         >
           <Text style={styles.largeButtonText}>Go to Matches</Text>
         </TouchableOpacity>

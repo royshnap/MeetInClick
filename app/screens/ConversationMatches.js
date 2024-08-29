@@ -12,7 +12,6 @@ import { calculateDistance } from "../utils";
 import ConfettiCannon from 'react-native-confetti-cannon';
 import { addMatchNotification } from '../context/notification'; // Adjust the import path
 
-
 const MatchItem = ({ otherUser, navigation, onPress }) => {
   const { t } = useTranslation();
   const { startConversation, sendConversationRequest, isApproved, requests, isDeclined, isPending } = useConversationTopicMatches();
@@ -22,7 +21,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
     try {
       const conversationId = await startConversation(otherUser.id, requestId_1, requestId_2);
       if (conversationId) {
-        navigation.navigate("Conversation", { cid: conversationId });
+        navigation.navigate('AppTabs', { screen: 'Conversation', params: { cid: conversationId },});    
       } else {
         Alert.alert(t("There was a problem starting conversation with", { username: otherUser.username }));
       }
@@ -206,11 +205,11 @@ const ConversationMatches = ({ route, navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
-        <SettingsButton
+        {/* <SettingsButton
           onBackgroundChange={handleBackgroundChange}
           onLanguageChange={handleLanguageChange}
           onSignOut={() => handleSignOut(navigation)}
-        />
+        /> */}
         {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
         {filteredMatches.length === 0 && (
           <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
@@ -289,7 +288,7 @@ const styles = StyleSheet.create({
     color: "#2e2934",
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 50,
+    marginTop: 120,
   },
   matchItem: {
     backgroundColor: "transparent",

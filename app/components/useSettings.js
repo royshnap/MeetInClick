@@ -10,9 +10,7 @@ const SettingsContext = createContext();
 export const SettingsProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
   const { signOutUser, user } = useAuth(); // Get the current user
-  const [backgroundImage, setBackgroundImage] = useState(
-    require('../assets/b1.png')
-  );
+  const [backgroundImage, setBackgroundImage] = useState( require('../assets/b1.png'));
 
   const handleBackgroundChange = (background) => {
     setBackgroundImage(background);
@@ -29,11 +27,8 @@ export const SettingsProvider = ({ children }) => {
         const db = Firebase.Database;
         const userRef = ref(db, `users/${user.id}`);
 
-        // Remove main category and subcategories
-        // await remove(ref(db, `users/${user.id}/mainCategory`));
-        // await remove(ref(db, `users/${user.id}/conversationTopics`));
-
         await signOutUser(navigation);
+
       }
       navigation.navigate('Main');
     } catch (error) {

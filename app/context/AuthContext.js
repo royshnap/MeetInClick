@@ -42,20 +42,15 @@ export const AuthContextProvider = ({ children }) => {
         }
     };
 
-    // Function to sign out the current user
+    //Function to sign out the current user
     const signOutUser = async (navigation) => {
         try {
             await signOut(Firebase.Auth); // Sign out the user
             setUser(null); // Reset user state to null
-            if (navigation) {
-                navigation.navigate('Main'); // Navigate to the Main screen
-            }
         } catch (e) {
             setError(e); // Set error state if there's an error
         }
     };
-    
-    
 
     // Effect to handle authentication state changes
     useEffect(() => {

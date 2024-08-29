@@ -16,7 +16,6 @@ import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import Firebase from '../config/firebase';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton';
 import { useAuth } from '../context/AuthContext';
 
 const ViewProfile = () => {
@@ -25,53 +24,23 @@ const ViewProfile = () => {
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [hasNewNotification, setHasNewNotification] = useState(false); // State to track new notifications
-  const [notifications, setNotifications] = useState([]); // State to manage notification content
-  const [showNotification, setShowNotification] = useState(false); // State to control notification visibility
+  const [showMoreDetails, setShowMoreDetails] = useState(false);
   const route = useRoute();
-  const navigation = useNavigation();
-  const {
-    backgroundImage,
-    handleBackgroundChange,
-    handleLanguageChange,
-    handleSignOut,
-  } = useSettings();
+  const { backgroundImage} = useSettings();
 
   const userId = route.params?.userId || user?.id;
 
-  const markNotificationAsRead = async () => {
-    try {
-      const notificationsRef = ref(Firebase.Database, `notification/${userId}`);
-      await update(notificationsRef, {
-        newMatches: null,
-        newMessages: null,
-      });
-      console.log('Notifications cleared successfully');
-    } catch (error) {
-      console.error('Error clearing notifications: ', error);
-    }
-  };
-
-  // Handle notification button press
-  const handleNotificationPress = () => {
-    setShowNotification(!showNotification); // Toggle the notification container
-
-    if (!showNotification) {
-      setShowNotification(true); // Show the notification container
-    } else {
-      markNotificationAsRead(); // Mark as read and hide the container when closing
-    }
-  };
-
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) return; 
+
       try {
         const userRef = ref(Firebase.Database, `users/${userId}`);
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
           const data = snapshot.val();
           setUserData(data);
-          setFormData(data); // Initialize form data with fetched data
+          setFormData(data);
         } else {
           Alert.alert(t('User not found'));
         }
@@ -82,47 +51,6 @@ const ViewProfile = () => {
     fetchUserData();
   }, [userId]);
 
-  useEffect(() => {
-    const notificationsRef = ref(Firebase.Database, `notification/${userId}`);
-    const unsubscribe = onValue(notificationsRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const notificationsData = snapshot.val();
-        const allNotifications = [];
-
-        // Process new matches notifications
-        if (notificationsData.newMatches) {
-          Object.values(notificationsData.newMatches).forEach((match) => {
-            allNotifications.push({
-              type: 'newMatches',
-              content: `You have a new match with ${match.userName}`,
-              timestamp: match.timestamp,
-            });
-          });
-        }
-
-        if (notificationsData.newMessages) {
-          Object.values(notificationsData.newMessages).forEach((message) => {
-            allNotifications.push({
-              type: 'newMessages',
-              content: `You have a new message from ${message.userName}`,
-              timestamp: message.timestamp,
-            });
-          });
-        }
-
-        // Sort notifications by timestamp
-        allNotifications.sort((a, b) => b.timestamp - a.timestamp);
-
-        setNotifications(allNotifications);
-        setHasNewNotification(allNotifications.length > 0);
-      } else {
-        setHasNewNotification(false);
-        setNotifications([]);
-      }
-    });
-
-    return () => unsubscribe(); // Cleanup listener on unmount
-  }, [userId]);
 
   const handleInputChange = (field, value) => {
     setFormData((prevFormData) => ({
@@ -155,7 +83,6 @@ const ViewProfile = () => {
     );
   }
 
-  // Determine the default image based on gender
   const defaultProfileImage =
     userData?.gender === 'Female'
       ? require('../assets/defaultProfileImageWoman.png')
@@ -164,36 +91,11 @@ const ViewProfile = () => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <ScrollView contentContainerStyle={styles.container}>
-        <SettingsButton
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)} // Pass navigation here
-        />
         <View style={styles.iconsContainer}>
-          <TouchableOpacity
-            onPress={handleNotificationPress}
-            style={styles.notificationIconContainer}
-          >
-            <Ionicons
-              name={
-                hasNewNotification ? 'notifications' : 'notifications-outline'
-              }
-              size={24}
-              color={hasNewNotification ? 'orange' : 'black'}
-              style={styles.icon}
-            />
-            {hasNewNotification && (
-              <View style={styles.notificationBadge}>
-                <Text style={styles.notificationBadgeText}>
-                  {notifications.length}
-                </Text>
-              </View>
-            )}
-          </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
             <Ionicons
               name='create-outline'
-              size={24}
+              size={28}
               color='black'
               style={styles.icon}
             />
@@ -298,58 +200,63 @@ const ViewProfile = () => {
             </TouchableOpacity>
           </View>
         ) : (
+          
           <View style={styles.detailsContainer}>
+            <View style={styles.userInfoContainer}>
             <Text style={styles.detail}>
-              {t('Full Name')}: {userData.firstName} {userData.lastName}
+              <Text style={styles.mainText}>{t('Username')}:</Text> @{userData.username}
             </Text>
             <Text style={styles.detail}>
-              {t('Email')}: {userData.email}
+              <Text style={styles.mainText}>{t('                Age')}:</Text> {userData.age}
             </Text>
-            <Text style={styles.detail}>
-              {t('Username')}: @{userData.username}
-            </Text>
-            <Text style={styles.detail}>
-              {t('Age')}: {userData.age}
-            </Text>
-            <Text style={styles.detail}>
-              {t('Gender')}: {userData.gender}
-            </Text>
-            {userData.instagram && (
-              <Text style={styles.socialLink}>
-                Instagram: {userData.instagram}
-              </Text>
-            )}
-            {userData.facebook && (
-              <Text style={styles.socialLink}>
-                Facebook: {userData.facebook}
-              </Text>
-            )}
-            {userData.twitter && (
-              <Text style={styles.socialLink}>Twitter: {userData.twitter}</Text>
-            )}
-            {userData.linkedin && (
-              <Text style={styles.socialLink}>
-                LinkedIn: {userData.linkedin}
-              </Text>
-            )}
           </View>
-        )}
-        {/* Notification Container - Updated */}
-        {showNotification && notifications.length > 0 && (
-          <View style={styles.notificationDropdown}>
-            <ScrollView style={styles.notificationList}>
-              {notifications.map((notification, index) => (
-                <Text key={index} style={styles.notificationText}>
-                  {notification.content}
+          <TouchableOpacity onPress={() => setShowMoreDetails(!showMoreDetails)}>
+            <Text style={styles.showMoreText}>
+              {showMoreDetails ? t('Show Less') : t('See More Personal Details')}
+            </Text>
+          </TouchableOpacity>
+
+          {showMoreDetails && (
+            <View>
+              <Text style={styles.moreDetail}>
+                {t('Full Name')}: {userData.firstName} {userData.lastName}
+              </Text>
+              <Text style={styles.moreDetail}>
+                {t('Email')}: {userData.email}
+              </Text>
+              <Text style={styles.moreDetail}>
+                {t('Gender')}: {userData.gender}
+              </Text>
+              {userData.instagram && (
+                <Text style={styles.socialLink}>
+                  Instagram: {userData.instagram}
                 </Text>
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={handleNotificationPress}>
-              <Text style={styles.closeButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+              )}
+              {userData.facebook && (
+                <Text style={styles.socialLink}>
+                  Facebook: {userData.facebook}
+                </Text>
+              )}
+              {userData.twitter && (
+                <Text style={styles.socialLink}>Twitter: {userData.twitter}</Text>
+              )}
+              {userData.linkedin && (
+                <Text style={styles.socialLink}>
+                  LinkedIn: {userData.linkedin}
+                </Text>
+              )}
+            </View>
+          )}
+          <Text style={styles.mainCategoryText}>Your main category is:</Text>
+          <Text style={styles.highlight}>{userData.mainCategory}</Text>
+
+          <Text style={styles.subCategoryText}>Your subcategories are:</Text>
+          <Text style={styles.highlight}>
+            {userData.conversationTopics.join('\n')}
+          </Text>
+        </View>
+      )}
+    </ScrollView>
     </ImageBackground>
   );
 };
@@ -362,29 +269,73 @@ const styles = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-    paddingVertical: 20,
+    paddingVertical: 90,
     paddingHorizontal: 20,
-    alignItems: 'flex-start', // Align items to the left
+    alignItems: 'flex-start', 
   },
   profileContainer: {
-    alignItems: 'center', // Center the profile image horizontally
+    alignItems: 'center', 
     marginBottom: 20,
   },
   profileImage: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    marginBottom: 5,
-    marginTop: 20,
+  },
+  userInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  detail: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
+  inText: {
+    fontWeight: 'bold',
   },
   detailsContainer: {
     paddingHorizontal: 20,
-    alignSelf: 'flex-start', // Align details to the left by default
+    alignSelf: 'flex-start', 
+  },
+  moreDetail: {
+    fontSize: 18,
+    color: 'black',
+  },
+  mainText:{
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 20,
+    fontWeight: 'bold',
+  },
+  mainCategoryText: {
+    fontSize: 24,
+    color: 'black',
+    marginBottom: 10,
+    marginTop: 30,
+    fontWeight: 'bold',
+  },
+  subCategoryText: {
+    fontSize: 24,
+    color: 'black',
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  highlight: {
+    fontSize: 23,
+    color: 'blue', // Blue color for highlighting
+    fontWeight: 'bold',
+    marginBottom: 30,
   },
   detail: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 20,
-    textAlign: 'left', // Ensure text aligns left by default
+  },
+  showMoreText: {
+    fontSize: 16,
+    color: '#007AFF',
+    marginVertical: 10,
   },
   inputGroup: {
     marginBottom: 5, // Space between input fields
@@ -399,7 +350,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
-    width: '150%',
+    width: '100%',
     borderRadius: 5, // Added border radius for rounded corners
     backgroundColor: 'white', // Added background color for inputs
   },
@@ -417,56 +368,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   iconsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    width: '100%',
-    paddingRight: 30,
+    alignSelf: 'flex-end', // Align icons to the right
+    marginTop: 20,
   },
   icon: {
     marginHorizontal: 10,
   },
-  notificationIconContainer: {
-    position: 'relative',
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: -5,
-    right: -10,
-    backgroundColor: 'red',
-    borderRadius: 10,
-    width: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationBadgeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  notificationDropdown: {
-    position: 'absolute',
-    top: 50,
-    right: 30,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    width: 200,
-    maxHeight: 200,
-    overflow: 'hidden', // Ensure content overflow is hidden
-  },
-  notificationList: {
-    maxHeight: 130, // Slightly smaller to fit padding and make it scrollable
-  },
-  notificationText: {
-    fontSize: 16,
-    color: 'black',
-    marginBottom: 15,
-  },
-  closeButton: {
-    color: '#e74c3c',
-    fontSize: 15,
-  },
 });
 
 export default ViewProfile;
+

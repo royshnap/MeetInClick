@@ -4,6 +4,7 @@ import AppTabs from './AppTabs';
 
 // Screens:
 import MainScreen from '../screens/Main';
+import CustomHeader from './CustomHeader'; // Adjust the path accordingly
 import SignUpScreen from '../screens/SignUp';
 import WelcomeBack from '../screens/WelcomeBack';
 import ConversationMatches from '../screens/ConversationMatches';
@@ -28,7 +29,13 @@ export default function MainStack() {
         component={SignUpScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name='Matches' component={ConversationMatches} />
+      <Stack.Screen
+        name='Matches' 
+        component={ConversationMatches} 
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+      />
       <Stack.Screen
         name='AppTabs'
         component={AppTabs}
@@ -37,32 +44,49 @@ export default function MainStack() {
       <Stack.Screen
         name='Profile'
         component={ViewProfile}
-        options={{ headerShown: true }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
       />
       <Stack.Screen
         name='Conversation'
         component={Conversation}
-        options={{ headerShown: true }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+        //options={{ headerShown: true }}
       />
       <Stack.Screen
         name='Preferences'
         component={PreferencesScreen}
-        options={{ headerShown: true }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+        //options={{ headerShown: true }}
       />
       <Stack.Screen
         name='WelcomeBack'
         component={WelcomeBack}
-        options={{ headerShown: false }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+        //options={{ headerShown: false }}
       />
       <Stack.Screen
         name='SubCategories'
         component={SubCategoriesScreen}
-        options={{ headerShown: false }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+        //options={{ headerShown: false }}
       />
       <Stack.Screen
         name='Filter'
         component={Filter}
-        options={{ headerShown: true }}
+        options={{
+          header: (props) => <CustomHeader {...props} />,
+        }}
+        //options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );

@@ -14,7 +14,7 @@ import { useCurrentLocation } from '../context/LocationContext';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
-import ProfileHeader from '../components/ProfileHeader';
+//import ProfileHeader from '../components/ProfileHeader';
 
 const MAX_DISTANCE = 10000; // 10 km
 const DISTANCE_INTERVAL = 20; // 20 meters
@@ -106,13 +106,7 @@ const Filter = () => {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
-      <ProfileHeader navigation={navigation} />
       <View style={styles.overlay}>
-        <SettingsButton
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)}
-        />
         <Text style={styles.title}>{t('SELECT FILTERS')}</Text>
 
         <View style={styles.filterContainer}>

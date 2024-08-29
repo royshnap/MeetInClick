@@ -27,6 +27,12 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
     setShowBackgroundOptions(!showBackgroundOptions); // Toggle visibility
   };
 
+  const handleSignOutPress = () => {
+    onClose();
+    onSignOut(navigation)
+
+  };
+
   return (
     <Modal transparent={true} visible={visible} animationType="slide">
       <View style={styles.modalContainer}>
@@ -67,7 +73,7 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
           <View style={styles.separator} />
 
           <View style={styles.section}>
-            <TouchableOpacity style={styles.signOutButton} onPress={() => onSignOut(navigation)}>
+            <TouchableOpacity style={styles.signOutButton} onPress={handleSignOutPress}>
               <Text style={styles.signOutButtonText}>{t('Sign Out')}</Text>
             </TouchableOpacity>
           </View>
