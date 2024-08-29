@@ -1,16 +1,24 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground, Image, Modal, Button } from "react-native";
-import { useConversationTopicMatches } from "../context/ConversationContext";
-import { useAuth } from "../context/AuthContext";
-import { useTranslation } from "react-i18next";
-import useSettings from "../components/useSettings";
-import SettingsButton from "../components/SettingsButton";
-import { useCurrentLocation } from "../context/LocationContext";
-import { ref, onValue } from "firebase/database";
-import Firebase from "../config/firebase";
-import { calculateDistance } from "../utils";
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ImageBackground,
+} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
+import useSettings from '../components/useSettings';
+import SettingsButton from '../components/SettingsButton';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { addMatchNotification } from '../context/notification'; // Adjust the import path
+import MatchItem from '../components/MatchItem';
+import UserDetailsModal from '../components/UserDetailsModal';
+import { useFilteredMatches } from '../hooks/useFilteredMatches';
+import { useMatchSections } from '../hooks/useMatchSections';
+import { ref, onValue } from 'firebase/database';
+import Firebase from '../config/firebase';
+import { addMatchNotification } from '../context/notification';
+import HorizontalList from '../components/HorizontalList';
 
 const MatchItem = ({ otherUser, navigation, onPress }) => {
   const { t } = useTranslation();
@@ -118,16 +126,21 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { backgroundImage, handleBackgroundChange, handleLanguageChange, handleSignOut } = useSettings();
-  const { currentLocation, interestRadius } = useCurrentLocation();
+  const {
+    backgroundImage,
+    handleBackgroundChange,
+    handleLanguageChange,
+    handleSignOut,
+  } = useSettings();
+
   const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // State to manage selected user for modal
-  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  // Get the filters passed from the Filter screen
-  const { ageRange = [18, 120], genderPreference = 'Both' } = route.params || {};
+  const { ageRange, genderPreference } = route.params || {};
 
+  // Fetch and filter users from Firebase
   useEffect(() => {
     if (user) {
       const usersRef = ref(Firebase.Database, 'users');
@@ -139,11 +152,12 @@ const ConversationMatches = ({ route, navigation }) => {
             otherUser.id !== user.id && // Exclude the current user
             otherUser.conversationTopics &&
             user.conversationTopics &&
-            user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic))
+            user.conversationTopics.some((topic) =>
+              otherUser.conversationTopics.includes(topic)
+            )
           ) {
             results.push(otherUser);
           }
-      
         });
         setConversationTopicResults(results);
 
@@ -151,44 +165,25 @@ const ConversationMatches = ({ route, navigation }) => {
         results.forEach((matchedUser) => {
           addMatchNotification(matchedUser.id, user.username);
         });
-
       });
       return () => listener(); // Cleanup the listener on unmount
     }
   }, [user]);
 
-  const filteredMatches = useMemo(() => {
-    // Filter users based on topics, distance, age range, and gender preference
-    if (!user || !user.mainCategory || !user.conversationTopics /*|| !currentLocation*/) {
-      return [];
-    }
- 
-    const matches = conversationTopicResults.filter(otherUser => {
-      if (
-        !otherUser.mainCategory ||
-        !otherUser.conversationTopics ||
-        /*!otherUser.currentLocation ||*/
-        !otherUser.age ||
-        !otherUser.gender
-      ) {
-        return false;
-      }
+  // Prepare filters for the hook
+  const filters = {
+    ageRange: ageRange || [18, 120],
+    genderPreference: genderPreference || 'Both',
+  };
 
-      const sameMainCategory = user.mainCategory === otherUser.mainCategory;
-      const commonTopics = user.conversationTopics.some(topic => otherUser.conversationTopics.includes(topic));
-      const distance = calculateDistance(currentLocation.coords, otherUser.currentLocation.coords);
-
-      // Check age preference
-      const withinAgeRange = otherUser.age >= ageRange[0] && otherUser.age <= ageRange[1];
-
-      // Check gender preference
-      const genderMatch = genderPreference === 'Both' || otherUser.gender === genderPreference;
-
-      return sameMainCategory && commonTopics /*&& distance <= interestRadius*/ && withinAgeRange && genderMatch;
-    });
-
-    return matches;
-  }, [conversationTopicResults, currentLocation, interestRadius, user, ageRange, genderPreference]);
+  // Use hooks to filter and categorize matches
+  const filteredMatches = useFilteredMatches(
+    conversationTopicResults,
+    user,
+    filters
+  );
+  const { newMatches, ongoingConversations } =
+    useMatchSections(filteredMatches);
 
   const handleMatchPress = (user) => {
     setSelectedUser(user);
@@ -196,11 +191,11 @@ const ConversationMatches = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    if (filteredMatches.length > 0) {
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 5000);
+    if (newMatches.length > 0) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
     }
-}, [filteredMatches]);
+  }, [newMatches]);
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
@@ -214,46 +209,41 @@ const ConversationMatches = ({ route, navigation }) => {
         {filteredMatches.length === 0 && (
           <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
         )}
-        {filteredMatches.length > 0 && <Text style={styles.matchesText}>{t("Matches")}:</Text>}
-        <FlatList
-          data={filteredMatches}
+
+        {/* New Matches */}
+        <HorizontalList
+          data={newMatches}
           renderItem={({ item: otherUser }) => (
-            <MatchItem otherUser={otherUser} navigation={navigation} onPress={handleMatchPress} />
+            <MatchItem
+              otherUser={otherUser}
+              navigation={navigation}
+              onPress={handleMatchPress}
+            />
           )}
-          keyExtractor={(item) => item.id}
-          numColumns={2} // Two items per row
-          columnWrapperStyle={{ justifyContent: 'space-between' }} // Space between items
+          headerTitle={t('New Matches')}
+          emptyMessage={t('There are no matches')}
         />
-        {/* Modal to show user details */}
-        {selectedUser && (
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Image
-                  source={
-                    selectedUser.profileImage
-                      ? { uri: selectedUser.profileImage }
-                      : selectedUser.gender === "Female"
-                      ? require('../assets/defaultProfileImageWoman.png')
-                      : require('../assets/defaultProfileImageMan.png')
-                  }
-                  style={styles.modalProfilePicture}
-                />
-                <Text style={styles.modalText}>Name: {selectedUser.firstName} {selectedUser.lastName}</Text>
-                <Text style={styles.modalText}>Age: {selectedUser.age}</Text>
-                <Text style={styles.modalText}>Gender: {selectedUser.gender}</Text>
-                <Text style={styles.modalText}>Main Category: {selectedUser.mainCategory}</Text>
-                <Text style={styles.modalText}>Topics: {selectedUser.conversationTopics.join(', ')}</Text>
-                <Button title={t("Close")} onPress={() => setModalVisible(false)} />
-              </View>
-            </View>
-          </Modal>
-        )}
+
+        {/* Chats */}
+        <HorizontalList
+          data={ongoingConversations}
+          renderItem={({ item }) => (
+            <MatchItem
+              otherUser={item}
+              navigation={navigation}
+              onPress={handleMatchPress}
+            />
+          )}
+          headerTitle={t('Chats')}
+          emptyMessage={t('There are no chats')}
+        />
+
+        {/* User Details Modal */}
+        <UserDetailsModal
+          visible={modalVisible}
+          user={selectedUser}
+          onClose={() => setModalVisible(false)}
+        />
       </View>
     </ImageBackground>
   );
@@ -264,10 +254,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
-    position: 'relative',
   },
   confetti: {
     position: 'absolute',

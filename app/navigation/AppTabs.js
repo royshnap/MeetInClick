@@ -7,6 +7,7 @@ import CustomHeader from './CustomHeader';
 import ViewProfile from '../screens/ViewProfile';
 import ConversationMatches from '../screens/ConversationMatches';
 import PreferencesScreen from '../screens/MainCategories';
+import Filter from '../screens/Filter';  // Import the Filter screen
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +29,9 @@ export default function AppTabs() {
             case 'Matches':
               iconName = focused ? 'chatbox' : 'chatbox-outline';
               break;
+            case 'Filters':  // Icon for Filter screen
+              iconName = focused ? 'filter' : 'filter-outline';
+              break;
             default:
               iconName = 'alert-circle';
           }
@@ -43,6 +47,7 @@ export default function AppTabs() {
     >
       <Tab.Screen name='Profile' component={ViewProfile} />
       <Tab.Screen name='Preferences' component={PreferencesScreen} />
+      <Tab.Screen name='Filters' component={Filter} />
       <Tab.Screen name='Matches' component={ConversationMatches} />
     </Tab.Navigator>
   );
