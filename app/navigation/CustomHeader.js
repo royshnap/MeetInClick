@@ -84,6 +84,9 @@ const CustomHeader = ({ navigation }) => {
 
   return (
     <View style={styles.headerContainer}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <Text style={styles.headerTitle}>Meet In Click</Text>
       <View style={styles.iconsContainer}>
         <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationIconContainer}>
@@ -218,6 +221,10 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  backButton: {
+    marginTop: 50,
+    marginRight: 10,
   },
 });
 
