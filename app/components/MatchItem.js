@@ -31,7 +31,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
         requestId_2
       );
       if (conversationId) {
-        navigation.navigate('Conversation', { cid: conversationId });
+        navigation.navigate( 'AppTabs', { screen: 'Conversation', params: { cid: conversationId }});
       } else {
         Alert.alert(
           t('There was a problem starting conversation with', {
