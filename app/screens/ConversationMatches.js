@@ -90,11 +90,6 @@ const ConversationMatches = ({ route, navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
-        {/* <SettingsButton
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)}
-        /> */}
         {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
         {filteredMatches.length === 0 && (
           <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>

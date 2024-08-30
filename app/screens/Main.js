@@ -10,6 +10,7 @@ import {
   Modal,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import GoogleSignIn from '../context/GoogleSignIn';
@@ -23,6 +24,7 @@ const MainScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { user, login, error, setError } = useAuth();
+  const isFocused = useIsFocused(); // Check if the screen is focused
   const [settingsVisible, setSettingsVisible] = useState(false); // State for settings modal visibility
   //const { promptAsync } = useFacebookLogin();
 
@@ -35,15 +37,13 @@ const MainScreen = ({ navigation }) => {
     }
   };
 
-  //const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
   const handleSignUpPress = () => {
     navigation.navigate('SignUp');
   };
 
   useEffect(() => {
     const checkUserCategories = async () => {
-      if (user) {
+      if (user && isFocused) {
         const userRef = ref(Firebase.Database, `users/${user.id}`);
         const snapshot = await get(userRef);
         if (snapshot.exists()) {
@@ -58,7 +58,7 @@ const MainScreen = ({ navigation }) => {
     };
 
     checkUserCategories();
-  }, [user]);
+  }, [user, navigation, isFocused]);
 
 
   useEffect(() => {

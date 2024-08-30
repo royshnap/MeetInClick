@@ -14,7 +14,7 @@ const Tab = createBottomTabNavigator();
 export default function AppTabs() {
   return (
     <Tab.Navigator
-      initialRouteName='Profile'
+      //initialRouteName='Profile'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;

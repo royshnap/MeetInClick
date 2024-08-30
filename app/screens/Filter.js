@@ -13,8 +13,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useCurrentLocation } from '../context/LocationContext';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton';
-//import ProfileHeader from '../components/ProfileHeader';
 
 const MAX_DISTANCE = 10000; // 10 km
 const DISTANCE_INTERVAL = 20; // 20 meters

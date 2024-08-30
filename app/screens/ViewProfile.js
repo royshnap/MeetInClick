@@ -41,6 +41,23 @@ const ViewProfile = () => {
     fetchUserData();
   }, [userId]);
 
+  useEffect(() => {
+    const userRef = ref(Firebase.Database, `users/${userId}`);
+  
+    const unsubscribe = onValue(userRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        setUserData(data);
+        setFormData(data);
+      } else {
+        Alert.alert(t('User not found'));
+      }
+    });
+  
+    return () => unsubscribe();
+  }, [userId]);
+  
+
 
   const handleInputChange = (field, value) => {
     setFormData((prevFormData) => ({
