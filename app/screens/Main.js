@@ -17,8 +17,6 @@ import GoogleSignIn from '../context/GoogleSignIn';
 import CustomScrollView from '../components/CustomScrollView';
 import { ref, get } from "firebase/database";
 import Firebase from "../config/firebase";
-import WelcomeBack from './WelcomeBack';
-
 
 const MainScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -51,7 +49,6 @@ const MainScreen = ({ navigation }) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           if (userData.mainCategory && userData.conversationTopics) {
-            console.log("KKKKKKKKKKKK");
             navigation.navigate('AppTabs', { screen: 'Profile'});
           } else {
             navigation.replace('Preferences');

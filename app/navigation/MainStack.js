@@ -6,7 +6,6 @@ import AppTabs from './AppTabs';
 import MainScreen from '../screens/Main';
 import CustomHeader from './CustomHeader'; // Adjust the path accordingly
 import SignUpScreen from '../screens/SignUp';
-import WelcomeBack from '../screens/WelcomeBack';
 import ConversationMatches from '../screens/ConversationMatches';
 import ViewProfile from '../screens/ViewProfile';
 import PreferencesScreen from '../screens/MainCategories';
@@ -63,14 +62,6 @@ export default function MainStack() {
           header: (props) => <CustomHeader {...props} />,
         }}
         //options={{ headerShown: true }}
-      />
-      <Stack.Screen
-        name='WelcomeBack'
-        component={WelcomeBack}
-        options={{
-          header: (props) => <CustomHeader {...props} />,
-        }}
-        //options={{ headerShown: false }}
       />
       <Stack.Screen
         name='SubCategories'

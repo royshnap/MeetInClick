@@ -77,12 +77,6 @@ const PreferencesScreen = ({ navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.overlay}>
-        {/* <ProfileHeader navigation={navigation} /> */}
-        {/* <SettingsButton
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)}
-        /> */}
         <Text style={styles.title}>
           {t('What would you')}
           {'\n'}

@@ -55,8 +55,6 @@ export const addMessageNotification = async (userId, userName) => {
         userName,
         timestamp: Date.now(),
       });
-    } else {
-      console.log("Message notification already exists, not adding again.");
     }
   } catch (error) {
     console.error("Error adding message notification: ", error);
