@@ -12,8 +12,6 @@ import {
 import { useConversationTopicMatches } from '../context/ConversationContext';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton';
-//import ProfileHeader from '../components/ProfileHeader';
 
 const MAX_SUBCATEGORIES = 5;
 
@@ -22,18 +20,10 @@ const SubCategoriesScreen = ({ route, navigation }) => {
   const { category } = route.params;
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const {
-    backgroundImage,
-    handleBackgroundChange,
-    handleLanguageChange,
-    handleSignOut,
-  } = useSettings();
+  const { backgroundImage} = useSettings();
 
   const {
-    listUsersByConversationTopics,
-    loading,
-    error,
-    conversationTopicResults,
+    listUsersByConversationTopics
   } = useConversationTopicMatches();
 
   const categoriesMap = {
@@ -52,7 +42,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Relationships',
       'Culture',
       'Fashion',
-      'Goals',
       'Politics',
       'Psychology',
       'News',
@@ -60,25 +49,18 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Business',
       'Art',
       'Philosophy',
-      'Nature',
       'Social',
       'Education',
       'Funny',
-      'Achievements',
-      'Anime',
       'Netflix',
       'Languages',
       'Pets',
       'Science',
-      'Dreams',
       'Traditions',
       'Concerts',
-      'Inspiration',
       'Finance',
       'Vacations',
-      'Quotes',
       'Fitness',
-      'Adventure',
       'Creativity',
     ].sort((a, b) => a.localeCompare(b)),
     'Sport Activity': [
@@ -87,14 +69,11 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Swimming',
       'Cycling',
       'Yoga',
-      'Weightlifting',
       'Dancing',
       'Hiking',
       'Soccer',
       'Basketball',
       'Tennis',
-      'Badminton',
-      'Cricket',
       'Baseball',
       'Rugby',
       'Table Tennis',
@@ -102,7 +81,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Skiing',
       'Snowboarding',
       'Skating',
-      'Martial Arts',
       'Boxing',
       'Climbing',
       'Golf',
@@ -122,11 +100,8 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Camping',
       'Solo Travel',
       'Family Travel',
-      'Romantic Getaway',
       'Business Travel',
       'Group Travel',
-      'Eco Travel',
-      'Wildlife',
       'Urban Exploration',
       'Food and Drink',
       'Festival Travel',
@@ -138,7 +113,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Pubs',
       'Live Music',
       'Dance Clubs',
-      'Themed Parties',
       'Karaoke',
       'Lounge Bars',
       'Rooftop Bars',
@@ -146,7 +120,7 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Pool Parties',
       'Cocktail Bars',
       'Discos',
-      'After Hours Clubs',
+      'After Party Clubs',
       'Jazz Clubs',
       'Comedy Clubs',
     ].sort((a, b) => a.localeCompare(b)),
@@ -194,12 +168,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.overlay}>
-        {/* <ProfileHeader navigation={navigation} /> */}
-        {/* <SettingsButton
-          onBackgroundChange={handleBackgroundChange}
-          onLanguageChange={handleLanguageChange}
-          onSignOut={() => handleSignOut(navigation)}
-        /> */}
         <Text style={[styles.headline, { color: 'white' }]}>
           {getTitleForCategory(category)}
         </Text>

@@ -3,13 +3,14 @@ import Firebase from "../config/firebase";
 import { useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { mapFirebaseResults, mapFirebaseResultsDict } from "../../utils";
 
 const ConversationContext = React.createContext(null);
 
 export const ConversationContextProvider = ({ children }) => {
   const { user } = useAuth(); // Hook to get the current authenticated user
-
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false); // State to manage loading status
   const [error, setError] = useState(undefined); // State to manage error status
   const [requests, setRequests] = useState({ // State to manage conversation requests
@@ -315,6 +316,7 @@ export const useActiveConversation = ({ route, navigation }) => {
     useConversationTopicMatches();
   const [conversationLoading, setConversationLoading] = useState(true);
   const [conversationLoadingError, setConversationLoadingError] = useState();
+  const { t } = useTranslation();
 
   // Effect to listen for changes in the active conversation
   useEffect(() => {
@@ -326,7 +328,7 @@ export const useActiveConversation = ({ route, navigation }) => {
         setConversationLoadingError(e);
       });
     } else {
-      Alert.alert("No conversation ID provided");
+      Alert.alert(t("No conversation ID provided"));
     }
     return () => {
       if (unsub) unsub();

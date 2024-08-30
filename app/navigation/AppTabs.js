@@ -2,16 +2,19 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomHeader from './CustomHeader';
+import { useTranslation } from 'react-i18next';
 
 // Screens:
 import ViewProfile from '../screens/ViewProfile';
 import ConversationMatches from '../screens/ConversationMatches';
 import PreferencesScreen from '../screens/MainCategories';
-import Filter from '../screens/Filter';  // Import the Filter screen
+import Filter from '../screens/Filter'; 
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
+    const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       //initialRouteName='Profile'
@@ -29,7 +32,7 @@ export default function AppTabs() {
             case 'Matches':
               iconName = focused ? 'chatbox' : 'chatbox-outline';
               break;
-            case 'Filters':  // Icon for Filter screen
+            case 'Filters':
               iconName = focused ? 'filter' : 'filter-outline';
               break;
             default:
@@ -45,10 +48,11 @@ export default function AppTabs() {
         header: (props) => <CustomHeader {...props} />,
       })}
     >
-      <Tab.Screen name='Profile' component={ViewProfile} />
-      <Tab.Screen name='Preferences' component={PreferencesScreen} />
-      <Tab.Screen name='Filters' component={Filter} />
-      <Tab.Screen name='Matches' component={ConversationMatches} />
+      <Tab.Screen name="Profile" component={ViewProfile} options={{ title: t('Profile') }} />
+      <Tab.Screen name="Preferences" component={PreferencesScreen} options={{ title: t('Preferences') }} />
+      <Tab.Screen name="Filters" component={Filter} options={{ title: t('Filters') }} />
+      <Tab.Screen name="Matches" component={ConversationMatches} options={{ title: t('Matches') }} />
     </Tab.Navigator>
   );
 }
+

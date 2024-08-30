@@ -210,13 +210,14 @@ const ViewProfile = () => {
           
           <View style={styles.detailsContainer}>
             <View style={styles.userInfoContainer}>
-            <Text style={styles.detail}>
-              <Text style={styles.mainText}>{t('Username')}:</Text> @{userData.username}
-            </Text>
-            <Text style={styles.detail}>
-              <Text style={styles.mainText}>{t('                Age')}:</Text> {userData.age}
-            </Text>
-          </View>
+              <Text style={styles.detail}>
+                <Text style={styles.mainText}>{t('Username')}:</Text> @{userData.username}
+              </Text>
+              <Text style={styles.detail}>
+                <Text style={styles.mainText}>{t('Age')}:</Text> {userData.age}
+              </Text>
+            </View>
+
           <TouchableOpacity onPress={() => setShowMoreDetails(!showMoreDetails)}>
             <Text style={styles.showMoreText}>
               {showMoreDetails ? t('Show Less') : t('See More Personal Details')}
@@ -232,7 +233,7 @@ const ViewProfile = () => {
                 {t('Email')}: {userData.email}
               </Text>
               <Text style={styles.moreDetail}>
-                {t('Gender')}: {userData.gender}
+                {t('Gender')}: {t(userData.gender)}
               </Text>
               {userData.instagram && (
                 <Text style={styles.socialLink}>
@@ -254,13 +255,17 @@ const ViewProfile = () => {
               )}
             </View>
           )}
-          <Text style={styles.mainCategoryText}>Your main category is:</Text>
-          <Text style={styles.highlight}>{userData.mainCategory}</Text>
+          <Text style={styles.mainCategoryText}>{t('Your main category is:')}</Text>
+          <Text style={styles.highlight}>{t(userData.mainCategory)}</Text>
 
-          <Text style={styles.subCategoryText}>Your subcategories are:</Text>
-          <Text style={styles.highlight}>
-            {userData.conversationTopics.join('\n')}
-          </Text>
+          <Text style={styles.subCategoryText}>{t('Your subcategories are:')}</Text>
+          <View>
+            {userData.conversationTopics.map((topic, index) => (
+              <Text key={index} style={styles.highlight}>
+                {t(topic)}{index < userData.conversationTopics.length - 1 && ' '}
+              </Text>
+            ))}
+          </View>
         </View>
       )}
     </ScrollView>
@@ -278,7 +283,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 90,
     paddingHorizontal: 20,
-    alignItems: 'flex-start', 
+    alignItems: 'center', 
   },
   profileContainer: {
     alignItems: 'center', 
@@ -290,12 +295,15 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   userInfoContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
+    alignSelf: 'center',
+
     alignItems: 'center',
     width: '100%',
   },
   detail: {
     fontSize: 16,
+    alignSelf: 'center',
     color: '#333',
     flex: 1,
   },
@@ -304,10 +312,12 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     paddingHorizontal: 20,
-    alignSelf: 'flex-start', 
+    alignSelf: 'center',
+    //alignSelf: 'flex-start', 
   },
   moreDetail: {
     fontSize: 18,
+    alignSelf: 'center',
     color: 'black',
   },
   mainText:{
@@ -315,24 +325,29 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 20,
     fontWeight: 'bold',
+    marginRight: 40, // Adjust the margin as needed
+
   },
   mainCategoryText: {
     fontSize: 24,
     color: 'black',
     marginBottom: 10,
     marginTop: 30,
+    alignSelf: 'center',
     fontWeight: 'bold',
   },
   subCategoryText: {
     fontSize: 24,
     color: 'black',
     marginBottom: 10,
+    alignSelf: 'center',
     fontWeight: 'bold',
   },
   highlight: {
     fontSize: 23,
     color: 'blue', // Blue color for highlighting
     fontWeight: 'bold',
+    alignSelf: 'center',
     marginBottom: 30,
   },
   detail: {
@@ -342,6 +357,7 @@ const styles = StyleSheet.create({
   showMoreText: {
     fontSize: 16,
     color: '#007AFF',
+    alignSelf: 'center',
     marginVertical: 10,
   },
   inputGroup: {

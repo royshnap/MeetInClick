@@ -9,7 +9,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton';
 import ConfettiCannon from 'react-native-confetti-cannon';
 import MatchItem from '../components/MatchItem';
 import UserDetailsModal from '../components/UserDetailsModal';
@@ -106,9 +105,9 @@ const ConversationMatches = ({ route, navigation }) => {
             />
           )}
           headerTitle={t('New Matches')}
-          emptyMessage={t('There are no matches')}
+          emptyMessage={t('There are no new matches')}
         />
-
+       
         {/* Chats */}
         <HorizontalList
           data={ongoingConversations}

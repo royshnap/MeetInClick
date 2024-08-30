@@ -27,12 +27,7 @@ const Filter = () => {
   const [d, setDistance] = useState(interestRadius);
   const [ageRange, setAgeRange] = useState([MIN_AGE, MAX_AGE]);
   const [genderPreference, setGenderPreference] = useState('Both');
-  const {
-    backgroundImage,
-    handleBackgroundChange,
-    handleLanguageChange,
-    handleSignOut,
-  } = useSettings(navigation);
+  const { backgroundImage } = useSettings(navigation);
 
   useEffect(() => {
     setDistance(interestRadius);
@@ -188,7 +183,7 @@ const Filter = () => {
         </View>
 
         <View style={styles.filterContainer}>
-          <Text style={styles.label}>{t('Gender Preference:')}</Text>
+          <Text style={styles.label}>{t('Gender Preference')}</Text>
           <View style={styles.genderContainer}>
             <TouchableOpacity
               style={[

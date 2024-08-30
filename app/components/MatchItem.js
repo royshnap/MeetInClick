@@ -34,7 +34,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
         navigation.navigate('Conversation', { cid: conversationId });
       } else {
         Alert.alert(
-          t('There was a problem starting conversation with', {
+          t('There was a problem starting conversation with {{username}}', {
             username: otherUser.username,
           })
         );
@@ -48,16 +48,16 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
     try {
       const conversationId = await sendConversationRequest(otherUser.id);
       if (conversationId) {
-        Alert.alert(t(`Request has been sent to ${otherUser.username}`));
+        // Using interpolation to insert the username into the translated string
+        Alert.alert(t('Request has been sent to {{username}}', { username: otherUser.username }));
       } else {
+        // Using interpolation to insert the username into the translated string
         Alert.alert(
-          t(
-            `There was a problem sending conversation request to ${otherUser.username}`
-          )
+          t('There was a problem sending conversation request to {{username}}', { username: otherUser.username })
         );
       }
     } catch (e) {
-      Alert.alert(e.message);
+      Alert.alert(t('An error occurred: {{errorMessage}}', { errorMessage: e.message }));
     }
   };
 
@@ -170,9 +170,9 @@ const styles = StyleSheet.create({
   },
   matchText: {
     fontSize: 20,
-    color: '#333333',
+    color: 'black',
     fontWeight: 'bold',
-    marginTop: 10,
+    marginTop: 5,
   },
   button: {
     padding: 12,
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   startConversationButton: {
-    padding: 10,
+    padding: 7,
     borderRadius: 5,
     alignItems: 'center',
   },

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import useSettings from '../components/useSettings';
+import { useTranslation } from 'react-i18next';
 import SettingsButton from '../components/SettingsButton';
 import Firebase from '../config/firebase';
 import { ref, onValue, update } from 'firebase/database';
@@ -12,6 +13,7 @@ const { width } = Dimensions.get('window');
 const CustomHeader = ({ navigation }) => {
   const { user } = useAuth();
   const [hasNewNotification, setHasNewNotification] = useState(false);
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const {
@@ -34,7 +36,7 @@ const CustomHeader = ({ navigation }) => {
             Object.values(notificationsData.newMatches).forEach((match) => {
               allNotifications.push({
                 type: 'newMatches',
-                content: `You have a new match with ${match.userName}`,
+                content: t(`You have a new match with`, { userName: match.userName }),
                 timestamp: match.timestamp,
               });
             });
@@ -44,7 +46,7 @@ const CustomHeader = ({ navigation }) => {
             Object.values(notificationsData.newMessages).forEach((message) => {
               allNotifications.push({
                 type: 'newMessages',
-                content: `You have a new message from ${message.userName}`,
+                content: t(`You have a new message from`, { userName: message.userName }),
                 timestamp: message.timestamp,
               });
             });
@@ -121,11 +123,11 @@ const CustomHeader = ({ navigation }) => {
                   </Text>
                 ))
               ) : (
-                <Text style={styles.notificationText}>No notifications</Text>
+                <Text style={styles.notificationText}>{t("No notifications")}</Text>
               )}
             </ScrollView>
             <TouchableOpacity onPress={handleCloseModal} style={styles.closeButtonContainer}>
-              <Text style={styles.closeButton}>Close</Text>
+              <Text style={styles.closeButton}>{t("Close")}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -211,7 +213,9 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     marginVertical: 5,
-    fontSize: 14,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   closeButtonContainer: {
     alignItems: 'center',
@@ -219,7 +223,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     color: 'blue',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   backButton: {

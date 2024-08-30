@@ -4,9 +4,9 @@ import { FlatList, Text, StyleSheet, View } from 'react-native';
 const HorizontalList = ({ data, renderItem, headerTitle, emptyMessage }) => {
   return (
     <View style={styles.container}>
+      <Text style={styles.sectionHeader}>{headerTitle}</Text>
       {data.length > 0 ? (
         <>
-          <Text style={styles.sectionHeader}>{headerTitle}</Text>
           <FlatList
             data={data}
             renderItem={renderItem}
@@ -32,8 +32,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 5,
-    marginLeft: 2,
-    color: '#2e2934',
+    textAlign: 'center',
+    marginBottom: 15,
+    color: 'black',
   },
   horizontalMatches: {
     paddingHorizontal: 2,
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     textAlign: 'center',
-    color: '#F44336',
+    color: 'red',
   },
 });
 
