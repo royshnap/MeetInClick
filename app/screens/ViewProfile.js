@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,Image,TouchableOpacity,ImageBackground,ScrollView,Alert,TextInput,} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { ref, get, set, onValue, update } from 'firebase/database';
+import * as ImagePicker from 'expo-image-picker';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for icons
 import Firebase from '../config/firebase';
 import { useTranslation } from 'react-i18next';
@@ -90,6 +92,49 @@ const ViewProfile = () => {
     );
   }
 
+  const handlePickImage = async () => {
+    // Request permission to access the gallery
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'Sorry, we need camera roll permissions to make this work!');
+      return;
+    }
+  
+    // Open the image picker
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1], // Square aspect ratio
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      handleUploadImage(uri);
+    }
+  };
+  
+  const handleUploadImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+  
+      const storage = getStorage();
+      const imageRef = storageRef(storage, `profileImages/${userId}.jpg`);
+  
+      await uploadBytes(imageRef, blob);
+      const downloadURL = await getDownloadURL(imageRef);
+  
+      // Update the formData with the new profile image URL
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        profileImage: downloadURL,
+      }));
+    } catch (error) {
+      Alert.alert('Error uploading image', error.message);
+    }
+  };  
+
   const defaultProfileImage =
     userData?.gender === 'Female'
       ? require('../assets/defaultProfileImageWoman.png')
@@ -109,14 +154,21 @@ const ViewProfile = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.profileContainer}>
-          <Image
-            source={
-              userData.profileImage
-                ? { uri: userData.profileImage }
-                : defaultProfileImage
-            }
-            style={styles.profileImage}
-          />
+          <TouchableOpacity onPress={isEditing ? handlePickImage : undefined}>
+            <Image
+              source={
+                isEditing && formData.profileImage
+                  ? { uri: formData.profileImage }
+                  : userData.profileImage
+                  ? { uri: userData.profileImage }
+                  : defaultProfileImage
+              }
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+          {isEditing && (
+            <Text style={styles.editImageText}>{t('Edit Profile Picture')}</Text>
+          )}
         </View>
         {isEditing ? (
           <View style={styles.detailsContainer}>
@@ -349,6 +401,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
     marginBottom: 30,
+  },
+  editImageText: {
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 16,
+    color: '#007AFF',
   },
   detail: {
     fontSize: 20,
