@@ -365,7 +365,6 @@ const styles = StyleSheet.create({
   detailsContainer: {
     paddingHorizontal: 20,
     alignSelf: 'center',
-    //alignSelf: 'flex-start', 
   },
   moreDetail: {
     fontSize: 18,
@@ -377,7 +376,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 20,
     fontWeight: 'bold',
-    marginRight: 40, // Adjust the margin as needed
+    marginRight: 40,
 
   },
   mainCategoryText: {
@@ -397,15 +396,16 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontSize: 23,
-    color: 'blue', // Blue color for highlighting
+    color: 'blue', 
     fontWeight: 'bold',
     alignSelf: 'center',
     marginBottom: 30,
   },
   editImageText: {
     textAlign: 'center',
+    fontWeight: 'bold',
     marginTop: 10,
-    fontSize: 16,
+    fontSize: 20,
     color: '#007AFF',
   },
   detail: {
@@ -419,21 +419,24 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   inputGroup: {
-    marginBottom: 5, // Space between input fields
+    marginBottom: 5, 
   },
   inputLabel: {
-    fontSize: 14,
-    marginBottom: 5, // Space between label and input field
-    color: 'black', // Label color
+    fontSize: 18,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    marginBottom: 5, 
+    color: 'black', 
   },
   input: {
     height: 30,
     borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
-    width: '100%',
-    borderRadius: 5, // Added border radius for rounded corners
-    backgroundColor: 'white', // Added background color for inputs
+    alignSelf: 'center',
+    width: '150%',
+    borderRadius: 5, 
+    backgroundColor: 'white', 
   },
   saveButton: {
     backgroundColor: '#007AFF',
@@ -449,7 +452,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   iconsContainer: {
-    alignSelf: 'flex-end', // Align icons to the right
+    alignSelf: 'flex-end', 
     marginTop: 20,
   },
   icon: {

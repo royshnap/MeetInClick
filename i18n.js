@@ -354,6 +354,7 @@ const resources = {
             "Password": "סיסמה",
             "Confirm Password": "אשר סיסמה",
             "Add Social Network Link": "הוסף לינק לרשתות חברתיות",
+            "Edit Profile Picture": "ערוך תמונת פרופיל",
             //Filter screen:
             "Filters set": "הוגדר סינון",
             "SELECT FILTERS": "הגדר סינונים",
