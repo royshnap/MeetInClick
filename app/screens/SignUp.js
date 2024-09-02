@@ -54,7 +54,6 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   const handleSignUp = async () => {
-    // Check if any required field is empty
     if (
       !firstName ||
       !lastName ||
@@ -74,21 +73,24 @@ const SignUpScreen = ({ navigation }) => {
       Alert.alert('Not at the appropriate age', `You must be between ${minAge} and ${maxAge} to sign up`);
       return;
     }
-      // Check if passwords match and location permissions are granted
-      if (password !== confirmPassword) {
-        Alert.alert('Password problem', 'Passwords do not match');
-        return;
-      }
-      if (!hasLocationPermissions) {
-        Alert.alert('You must give location permissions to use the app');
-        await requestLocationPermissions();
-        return;
-      }
-      let profileImageUrl = '';
-      if (profileImage) {
-        profileImageUrl = await uploadImageAsync(profileImage);
-      }
   
+    if (password !== confirmPassword) {
+      Alert.alert('Password problem', 'Passwords do not match');
+      return;
+    }
+  
+    if (!hasLocationPermissions) {
+      Alert.alert('You must give location permissions to use the app');
+      await requestLocationPermissions();
+      return;
+    }
+  
+    let profileImageUrl = '';
+    if (profileImage) {
+      profileImageUrl = await uploadImageAsync(profileImage);
+    }
+  
+    try {
       await register({
         firstName,
         lastName,
@@ -97,15 +99,15 @@ const SignUpScreen = ({ navigation }) => {
         password,
         gender,
         age,
-        dateOfBirth: dateOfBirth.toISOString(), // Save date of birth in ISO format
+        dateOfBirth: dateOfBirth.toISOString(),
         currentLocation,
         profileImage: profileImageUrl,
       });
   
-      // Only navigate if registration is successful
-      if (user) {
-        navigation.navigate("Preferences");
-      } 
+      navigation.navigate("Preferences");
+    } catch (error) {
+      console.error("Sign up failed:", error);
+    }
   };
 
   useEffect(() => {
