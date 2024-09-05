@@ -16,8 +16,8 @@ import { Ionicons } from '@expo/vector-icons';
 import GoogleSignIn from '../context/GoogleSignIn';
 //import { useFacebookLogin } from '../context/FacebookLogin';
 import CustomScrollView from '../components/CustomScrollView';
-import { ref, get } from "firebase/database";
-import Firebase from "../config/firebase";
+import { ref, get } from 'firebase/database';
+import Firebase from '../config/firebase';
 
 const MainScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -28,12 +28,11 @@ const MainScreen = ({ navigation }) => {
   const [settingsVisible, setSettingsVisible] = useState(false); // State for settings modal visibility
   //const { promptAsync } = useFacebookLogin();
 
-
   const handleLoginPress = async () => {
     try {
       await login(email, password);
     } catch (e) {
-      console.error(e); 
+      console.error(e);
     }
   };
 
@@ -49,8 +48,10 @@ const MainScreen = ({ navigation }) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           if (userData.mainCategory && userData.conversationTopics) {
-            navigation.navigate('AppTabs', { screen: 'Profile'});
+            console.log('User has categories');
+            navigation.navigate('AppTabs', { screen: 'Profile' });
           } else {
+            console.log('User does not have categories');
             navigation.replace('Preferences');
           }
         }
@@ -59,7 +60,6 @@ const MainScreen = ({ navigation }) => {
 
     checkUserCategories();
   }, [user, navigation, isFocused]);
-
 
   useEffect(() => {
     if (error)
@@ -139,10 +139,6 @@ const MainScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>{t('Login')}</Text>
       </TouchableOpacity>
       <Text style={styles.orText}>{t('or Login with')}</Text>
-      {/* <FacebookLogin />  */}
-      {/* <View>
-        <Button title='Login with Facebook' onPress={() => promptAsync()} />
-      </View> */}
       <GoogleSignIn />
       <Text style={styles.orText}>{t("Don't have a User?")}</Text>
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUpPress}>
@@ -153,19 +149,6 @@ const MainScreen = ({ navigation }) => {
   );
 };
 const styles = StyleSheet.create({
-  //   background: {
-  //     flex: 1,
-  //     width: '100%',
-  //     height: '100%',
-  //   },
-  //   container: {
-  //     flex: 1,
-  //     justifyContent: 'flex-start',
-  //     alignItems: 'center',
-  //     backgroundColor: 'transparent',
-  //     paddingTop: 5,
-  //   },
-
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -189,6 +172,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 40,
     borderRadius: 30,
+  },
+  orText: {
+    fontSize: 16,
+    marginVertical: 5,
   },
   closeButton: {
     position: 'absolute',
@@ -215,7 +202,7 @@ const styles = StyleSheet.create({
   loginButton: {
     width: '30%',
     height: 45,
-    backgroundColor: '#2EE411', // Green color
+    backgroundColor: '#2EE411',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -243,6 +230,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#3b5998',
     borderRadius: 15,
     padding: 15,
+  },
+  buttonText: {
+    color: 'black',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   languageButtonText: {
     fontSize: 16,

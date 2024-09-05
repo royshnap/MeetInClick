@@ -26,14 +26,14 @@ const HorizontalList = ({ data, renderItem, headerTitle, emptyMessage }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   sectionHeader: {
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 5,
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 5,
     color: 'black',
   },
   horizontalMatches: {

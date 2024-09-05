@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, Modal, Button, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const UserDetailsModal = ({ visible, user, onClose }) => {
   if (!user) return null;
+  const { t } = useTranslation();
 
   const profileImage = user.profileImage
     ? { uri: user.profileImage }

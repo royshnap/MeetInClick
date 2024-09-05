@@ -22,7 +22,7 @@ import HorizontalList from '../components/HorizontalList';
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const {backgroundImage} = useSettings();
+  const { backgroundImage } = useSettings();
   const [conversationTopicResults, setConversationTopicResults] = useState([]);
   const [showConfetti, setShowConfetti] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -89,9 +89,19 @@ const ConversationMatches = ({ route, navigation }) => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <View style={styles.container}>
-        {showConfetti && <ConfettiCannon count={200} origin={{ x: -10, y: 0 }} style={styles.confetti} />}
+        {showConfetti && (
+          <ConfettiCannon
+            count={200}
+            origin={{ x: -10, y: 0 }}
+            style={styles.confetti}
+          />
+        )}
         {filteredMatches.length === 0 && (
-          <Text style={styles.noMatchesText}>{t("No matches found for the selected topics within the specified distance")}</Text>
+          <Text style={styles.noMatchesText}>
+            {t(
+              'No matches found for the selected topics within the specified distance'
+            )}
+          </Text>
         )}
 
         {/* New Matches */}
@@ -107,7 +117,7 @@ const ConversationMatches = ({ route, navigation }) => {
           headerTitle={t('New Matches')}
           emptyMessage={t('There are no new matches')}
         />
-       
+
         {/* Chats */}
         <HorizontalList
           data={ongoingConversations}
@@ -142,7 +152,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 140,
+    marginTop: 110,
   },
   confetti: {
     position: 'absolute',
@@ -154,26 +164,26 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     marginTop: 60,
-    textAlign: "center",
-    color: "#F44336",
+    textAlign: 'center',
+    color: '#F44336',
   },
   matchesText: {
     fontSize: 50,
     marginBottom: 20,
-    color: "#2e2934",
-    fontWeight: "bold",
-    textAlign: "center",
+    color: '#2e2934',
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginTop: 120,
   },
   matchItem: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderRadius: 25,
     padding: 20,
     marginBottom: 15,
     width: '48%',
-    flexDirection: "column",
-    alignItems: "center",
-    shadowColor: "transparent",
+    flexDirection: 'column',
+    alignItems: 'center',
+    shadowColor: 'transparent',
     shadowOffset: {
       width: 0,
       height: 0,
@@ -183,34 +193,34 @@ const styles = StyleSheet.create({
     elevation: 0,
   },
   matchItemTextContainer: {
-    alignItems: "center",
+    alignItems: 'center',
   },
   matchText: {
     fontSize: 20,
-    color: "#333333",
-    fontWeight: "bold",
+    color: '#333333',
+    fontWeight: 'bold',
     marginTop: 10,
   },
   button: {
     padding: 12,
     borderRadius: 5,
-    backgroundColor: "#2196F3",
-    alignItems: "center",
+    backgroundColor: '#2196F3',
+    alignItems: 'center',
     marginTop: 10,
   },
   startConversationButton: {
     padding: 10,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   statusText: {
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   profilePicture: {

@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
-import * as Location from "expo-location";
-import { ref, set, update } from "firebase/database";
-import Firebase from "../config/firebase";
-import { useAuth } from "./AuthContext";
+import React, { useEffect, useState } from 'react';
+import * as Location from 'expo-location';
+import { ref, set, update } from 'firebase/database';
+import Firebase from '../config/firebase';
+import { useAuth } from './AuthContext';
 const LocationContext = React.createContext(null);
 
 export const useCurrentLocation = () => {
   const context = React.useContext(LocationContext);
   if (!context) {
-    throw new Error("Cannot use LocationContext outside of LocationContextProvider");
+    throw new Error(
+      'Cannot use LocationContext outside of LocationContextProvider'
+    );
   }
   return context;
 };
@@ -45,10 +47,16 @@ export const LocationContextProvider = ({ children }) => {
     setSubscription(locationSubscription);
   };
 
+  // useEffect(() => {
+  //   if (currentLocation && user) {
+  //     const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
+  //     update(usersRef, { currentLocation }); // Save user data in the database
+  //   }
+  // }, [currentLocation, user]);
   useEffect(() => {
-    if (currentLocation && user) {
-      const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
-      update(usersRef, { currentLocation }); // Save user data in the database
+    if (currentLocation && user && user.uid) {
+      const usersRef = ref(Firebase.Database, `users/${user.uid}`); // Use uid here
+      update(usersRef, { currentLocation });
     }
   }, [currentLocation, user]);
 
@@ -65,13 +73,14 @@ export const LocationContextProvider = ({ children }) => {
 
   useEffect(() => {
     const requestLocationPermissions = async () => {
-      const { status: currentStatus } = await Location.getForegroundPermissionsAsync();
-      if (currentStatus === "granted") {
+      const { status: currentStatus } =
+        await Location.getForegroundPermissionsAsync();
+      if (currentStatus === 'granted') {
         setHasLocationPermissions(true);
         return;
       }
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === "granted") {
+      if (status === 'granted') {
         setHasLocationPermissions(true);
         return;
       }
@@ -81,7 +90,7 @@ export const LocationContextProvider = ({ children }) => {
 
   const requestLocationPermissions = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status === "granted") {
+    if (status === 'granted') {
       setHasLocationPermissions(true);
       return;
     } else {

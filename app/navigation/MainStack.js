@@ -12,6 +12,7 @@ import PreferencesScreen from '../screens/MainCategories';
 import SubCategoriesScreen from '../screens/SubCategories';
 import Filter from '../screens/Filter';
 import Conversation from '../screens/Conversation';
+import AdditionalUserInfo from '../screens/additionalUserInfo';
 
 const Stack = createStackNavigator();
 
@@ -29,8 +30,13 @@ export default function MainStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='Matches' 
-        component={ConversationMatches} 
+        name='AdditionalUserInfo'
+        component={AdditionalUserInfo}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='Matches'
+        component={ConversationMatches}
         options={{
           header: (props) => <CustomHeader {...props} />,
         }}

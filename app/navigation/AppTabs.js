@@ -8,16 +8,16 @@ import { useTranslation } from 'react-i18next';
 import ViewProfile from '../screens/ViewProfile';
 import ConversationMatches from '../screens/ConversationMatches';
 import PreferencesScreen from '../screens/MainCategories';
-import Filter from '../screens/Filter'; 
+import Filter from '../screens/Filter';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppTabs() {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <Tab.Navigator
-      //initialRouteName='Profile'
+      initialRouteName='Profile'
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -44,15 +44,34 @@ export default function AppTabs() {
         tabBarActiveTintColor: 'navy',
         tabBarInactiveTintColor: 'black',
         tabBarLabelStyle: { fontSize: 14 },
-        tabBarStyle: { backgroundColor: '#c8cccc', paddingBottom: 20, height: 80 },
+        tabBarStyle: {
+          backgroundColor: '#c8cccc',
+          paddingBottom: 20,
+          height: 80,
+        },
         header: (props) => <CustomHeader {...props} />,
       })}
     >
-      <Tab.Screen name="Profile" component={ViewProfile} options={{ title: t('Profile') }} />
-      <Tab.Screen name="Preferences" component={PreferencesScreen} options={{ title: t('Preferences') }} />
-      <Tab.Screen name="Filters" component={Filter} options={{ title: t('Filters') }} />
-      <Tab.Screen name="Matches" component={ConversationMatches} options={{ title: t('Matches') }} />
+      <Tab.Screen
+        name='Profile'
+        component={ViewProfile}
+        options={{ title: t('Profile') }}
+      />
+      <Tab.Screen
+        name='Preferences'
+        component={PreferencesScreen}
+        options={{ title: t('Preferences') }}
+      />
+      <Tab.Screen
+        name='Filters'
+        component={Filter}
+        options={{ title: t('Filters') }}
+      />
+      <Tab.Screen
+        name='Matches'
+        component={ConversationMatches}
+        options={{ title: t('Matches') }}
+      />
     </Tab.Navigator>
   );
 }
-

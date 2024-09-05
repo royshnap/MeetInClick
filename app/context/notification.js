@@ -1,11 +1,13 @@
-// 
-import { ref, set , push, get } from "firebase/database";
-import Firebase from "../config/firebase";
+import { ref, set, push, get } from 'firebase/database';
+import Firebase from '../config/firebase';
 
 export const addMatchNotification = async (userId, userName) => {
   try {
-    const matchRef = ref(Firebase.Database, `notification/${userId}/newMatches`);
-    
+    const matchRef = ref(
+      Firebase.Database,
+      `notification/${userId}/newMatches`
+    );
+
     // Check if a match with the same username already exists
     const snapshot = await get(matchRef);
     let exists = false;
@@ -25,16 +27,19 @@ export const addMatchNotification = async (userId, userName) => {
         userName,
         timestamp: Date.now(),
       });
-    } 
+    }
   } catch (error) {
-    console.error("Error adding match notification: ", error);
+    console.error('Error adding match notification: ', error);
   }
 };
 
 // Function to add a message notification
 export const addMessageNotification = async (userId, userName) => {
   try {
-    const messageRef = ref(Firebase.Database, `notification/${userId}/newMessages`);
+    const messageRef = ref(
+      Firebase.Database,
+      `notification/${userId}/newMessages`
+    );
 
     // Check if a message notification with the same username already exists
     const snapshot = await get(messageRef);
@@ -57,6 +62,6 @@ export const addMessageNotification = async (userId, userName) => {
       });
     }
   } catch (error) {
-    console.error("Error adding message notification: ", error);
+    console.error('Error adding message notification: ', error);
   }
 };

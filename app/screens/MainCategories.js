@@ -13,17 +13,13 @@ import useSettings from '../components/useSettings';
 import SettingsButton from '../components/SettingsButton';
 import { getDatabase, ref, set } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
+import Firebase from '../config/firebase';
 
 const PreferencesScreen = ({ navigation }) => {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isNavigating, setIsNavigating] = useState(false);
-  const {
-    backgroundImage,
-    handleBackgroundChange,
-    handleLanguageChange,
-    handleSignOut,
-  } = useSettings();
+  const { backgroundImage } = useSettings();
   const { user } = useAuth();
 
   const handleChooseCategory = (category) => {
@@ -63,9 +59,20 @@ const PreferencesScreen = ({ navigation }) => {
 
   const saveMainCategory = async (category) => {
     try {
+      // Ensure the user is authenticated and has a valid UID
+      const user = Firebase.Auth.currentUser;
+
+      if (!user || !user.uid) {
+        console.error('User is not authenticated or UID is undefined.');
+        return; // Exit the function if the user is not properly authenticated
+      }
+
       const db = getDatabase();
-      const userRef = ref(db, `users/${user.id}/mainCategory`);
+      const userRef = ref(db, `users/${user.uid}/mainCategory`);
+
+      // Set the main category for the authenticated user
       await set(userRef, category);
+      console.log('Main category saved successfully:', category);
     } catch (error) {
       console.error('Error saving main category to Firebase:', error);
     }
