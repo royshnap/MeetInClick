@@ -1,0 +1,65 @@
+# Use the default CocoaPods CDN source
+source 'https://cdn.cocoapods.org/'
+
+# Set the platform for iOS
+platform :ios, '13.4'
+
+# Autolinking for Expo and React Native modules
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
+require File.join(File.dirname(`node --print "require.resolve('react-native/package.json')"`), "scripts/react_native_pods")
+
+# Load optional Podfile properties
+require 'json'
+podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties.json'))) rescue {}
+
+# Set environment variables
+ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
+ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
+
+# Install CocoaPods with deterministic UUIDs for compatibility
+install! 'cocoapods',
+  :deterministic_uuids => false
+
+# Prepare the React Native project
+prepare_react_native_project!
+
+target 'MeetInClick' do
+  # Use Expo and React Native modules
+  use_expo_modules!
+  config = use_native_modules!
+
+  # Use frameworks if specified
+  use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
+  use_frameworks! :linkage => ENV['USE_FRAMEWORKS'].to_sym if ENV['USE_FRAMEWORKS']
+
+  # Link React Native with Hermes enabled by default
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :hermes_enabled => podfile_properties['expo.jsEngine'] == nil || podfile_properties['expo.jsEngine'] == 'hermes',
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  # Specify React Native Firebase pods
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+  pod 'RNFBStorage', :path => '../node_modules/@react-native-firebase/storage'
+
+  post_install do |installer|
+    react_native_post_install(installer)
+
+    # Workaround for Xcode 14 resource bundle code signing
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+      end
+    end
+  end
+
+  # Apply any patches needed by Expo
+  post_integrate do |installer|
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
+  end
+end

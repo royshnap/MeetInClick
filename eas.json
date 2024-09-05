@@ -6,19 +6,37 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true 
       }
     },
     "preview2": {
       "android": {
         "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "buildConfiguration": "Release"
       }
     },
     "preview3": {
-      "developmentClient": true
+      "developmentClient": true,
+      "ios": {
+        "developmentClient": true
+      }
     },
-    "production": {}
+    "production": {
+      "ios": {
+        "buildConfiguration": "Release"
+      }
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "<your-apple-id>",
+        "ascAppId": "<your-app-store-connect-app-id>"
+      }
+    }
   }
 }
