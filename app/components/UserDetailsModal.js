@@ -12,32 +12,33 @@ const UserDetailsModal = ({ visible, user, onClose }) => {
     ? require('../assets/defaultProfileImageWoman.png')
     : require('../assets/defaultProfileImageMan.png');
 
-  return (
-    <Modal
-      animationType='slide'
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Image source={profileImage} style={styles.modalProfilePicture} />
-          <Text style={styles.modalText}>
-            Name: {user.firstName} {user.lastName}
-          </Text>
-          <Text style={styles.modalText}>Age: {user.age}</Text>
-          <Text style={styles.modalText}>Gender: {user.gender}</Text>
-          <Text style={styles.modalText}>
-            Main Category: {user.mainCategory}
-          </Text>
-          <Text style={styles.modalText}>
-            Topics: {user.conversationTopics.join(', ')}
-          </Text>
-          <Button title='Close' onPress={onClose} />
+    return (
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={visible}
+        onRequestClose={onClose}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Image source={profileImage} style={styles.modalProfilePicture} />
+            <Text style={styles.modalText}>
+              {t('Name')}: {user.firstName} {user.lastName}
+            </Text>
+            <Text style={styles.modalText}>{t('Age')}: {user.age}</Text>
+            <Text style={styles.modalText}>{t('Gender')}: {t(user.gender)}</Text>
+            <Text style={styles.modalText}>
+              {t('Main Category')}: {t(user.mainCategory)}
+
+            </Text>
+            <Text style={styles.modalText}>
+              {t('Topics')}: {user.conversationTopics.map(topic => t(`${topic}`)).join(', ')}
+            </Text>
+            <Button title={t('Close')} onPress={onClose} />
+          </View>
         </View>
-      </View>
-    </Modal>
-  );
+      </Modal>
+    );
 };
 
 const styles = StyleSheet.create({
@@ -54,14 +55,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalProfilePicture: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 200,
+    height: 200,
+    borderRadius: 90,
     marginBottom: 20,
   },
   modalText: {
     fontSize: 18,
     marginVertical: 5,
+    alignSelf: 'center',
   },
 });
 
