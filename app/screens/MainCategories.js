@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
-import SettingsButton from '../components/SettingsButton';
 import { getDatabase, ref, set } from 'firebase/database';
 import { useAuth } from '../context/AuthContext';
 import Firebase from '../config/firebase';

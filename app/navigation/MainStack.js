@@ -4,7 +4,7 @@ import AppTabs from './AppTabs';
 
 // Screens:
 import MainScreen from '../screens/Main';
-import CustomHeader from './CustomHeader'; // Adjust the path accordingly
+import CustomHeader from './CustomHeader'; 
 import SignUpScreen from '../screens/SignUp';
 import ConversationMatches from '../screens/ConversationMatches';
 import ViewProfile from '../screens/ViewProfile';
@@ -59,7 +59,6 @@ export default function MainStack() {
         options={{
           header: (props) => <CustomHeader {...props} />,
         }}
-        //options={{ headerShown: true }}
       />
       <Stack.Screen
         name='Preferences'
@@ -67,7 +66,6 @@ export default function MainStack() {
         options={{
           header: (props) => <CustomHeader {...props} />,
         }}
-        //options={{ headerShown: true }}
       />
       <Stack.Screen
         name='SubCategories'
@@ -75,7 +73,6 @@ export default function MainStack() {
         options={{
           header: (props) => <CustomHeader {...props} />,
         }}
-        //options={{ headerShown: false }}
       />
       <Stack.Screen
         name='Filter'
@@ -83,7 +80,6 @@ export default function MainStack() {
         options={{
           header: (props) => <CustomHeader {...props} />,
         }}
-        //options={{ headerShown: true }}
       />
     </Stack.Navigator>
   );

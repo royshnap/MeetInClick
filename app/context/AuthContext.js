@@ -6,76 +6,75 @@ import { onValue, ref, set } from "firebase/database";
 const AuthContext = React.createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState(undefined); // string user = undifinnd,State to manage the authenticated user
-    const [loading, setLoading] = useState(false); // State to manage loading status
-    const [error, setError] = useState(false); // State to manage error status
+    const [user, setUser] = useState(undefined); 
+    const [loading, setLoading] = useState(false); 
+    const [error, setError] = useState(false); 
 
     // Function to register a new user
     const register = async (user) => {
-        setLoading(true); // Set loading state to true
-        setError(undefined); // Reset error state
+        setLoading(true); 
+        setError(undefined); 
         try {
             // Create user with email and password
             const authResult = await createUserWithEmailAndPassword(Firebase.Auth, user.email, user.password);
             user.id = authResult.user.uid; // Set user ID from authentication result
             delete user["password"]; // Remove password from user object
             const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
-            set(usersRef, user); // Save user data in the database
-            setUser(user); // Set user state
+            set(usersRef, user); 
+            setUser(user); 
         } catch (e) {
-            setError(e); // Set error state if there's an error
+            setError(e);
         } finally {
-            setLoading(false); // Set loading state to false
+            setLoading(false); 
         }
     };
 
     // Function to log in an existing user
     const login = async (email, password) => {
-        setLoading(true); // Set loading state to true
-        setError(undefined); // Reset error state
+        setLoading(true); 
+        setError(undefined); 
         try {
-            await signInWithEmailAndPassword(Firebase.Auth, email, password); // Sign in with email and password
+            await signInWithEmailAndPassword(Firebase.Auth, email, password); 
         } catch (e) {
-            setError(e); // Set error state if there's an error
+            setError(e); 
         } finally {
-            setLoading(false); // Set loading state to false
+            setLoading(false); 
         }
     };
 
     //Function to sign out the current user
     const signOutUser = async (navigation) => {
         try {
-            await signOut(Firebase.Auth); // Sign out the user
-            setUser(null); // Reset user state to null
+            await signOut(Firebase.Auth); 
+            setUser(null); 
         } catch (e) {
-            setError(e); // Set error state if there's an error
+            setError(e); 
         }
     };
 
     // Effect to handle authentication state changes
     useEffect(() => {
-        let userDocListener = undefined; // Listener for user data changes
+        let userDocListener = undefined; 
         const unsub = onAuthStateChanged(Firebase.Auth, (userState) => {
             if (userState) {
-                const usersRef = ref(Firebase.Database, `users/${userState.uid}`); // Reference to user's data in the database
+                const usersRef = ref(Firebase.Database, `users/${userState.uid}`);
                 userDocListener = onValue(usersRef, (doc) => {
-                    const userASJson = doc.val(); // Get user data as JSON
-                    setUser(userASJson); // Set user state
+                    const userASJson = doc.val(); 
+                    setUser(userASJson);
                 });
             } else {
-                setUser(undefined); // Reset user state if not authenticated
+                setUser(undefined);
             }
         });
 
         return () => {
-            unsub(); // Unsubscribe from authentication state changes
+            unsub(); 
             if (userDocListener) {
-                userDocListener(); // Unsubscribe from user data changes
+                userDocListener(); 
             }
         };
     }, []);
 
-    // Provide authentication context to children components
     return (
         <AuthContext.Provider value={{ user, loading, error, register, login, signOutUser, setError }}>
             {children}

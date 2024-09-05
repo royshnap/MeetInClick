@@ -26,7 +26,7 @@ const GoogleSignIn = () => {
       '1010390116818-e75jsc1fa7m0b4ko02e05dvasmpobbe7.apps.googleusercontent.com',
   });
 
-  const navigation = useNavigation(); // For navigation
+  const navigation = useNavigation(); 
 
   const checkLocalUser = async () => {
     try {

@@ -65,4 +65,3 @@ const styles = StyleSheet.create({
 });
 
 export default NotificationHandler;
-// This component listens for incoming notifications and increments a counter when a new notification is received. When the user interacts with a notification, the counter is reset and the user is navigated to a notifications screen. The badge component is displayed when there are unread notifications.

@@ -18,10 +18,10 @@ import { mapFirebaseResults, mapFirebaseResultsDict } from '../../utils';
 const ConversationContext = React.createContext(null);
 
 export const ConversationContextProvider = ({ children }) => {
-  const { user } = useAuth(); // Hook to get the current authenticated user
+  const { user } = useAuth(); 
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false); // State to manage loading status
-  const [error, setError] = useState(undefined); // State to manage error status
+  const [error, setError] = useState(undefined); 
   const [requests, setRequests] = useState({
     // State to manage conversation requests
     pending: {},
