@@ -49,7 +49,7 @@ const MatchItem = ({ otherUser, navigation, onPress }) => {
       const conversationId = await sendConversationRequest(otherUser.id);
       if (conversationId) {
         // Using interpolation to insert the username into the translated string
-        Alert.alert(t('Request has been sent to {{username}}', { username: otherUser.username }));
+        //Alert.alert(t('Request has been sent to {{username}}', { username: otherUser.username }));
       } else {
         // Using interpolation to insert the username into the translated string
         Alert.alert(

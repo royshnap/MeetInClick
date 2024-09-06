@@ -71,7 +71,7 @@ const PreferencesScreen = ({ navigation }) => {
 
       // Set the main category for the authenticated user
       await set(userRef, category);
-      console.log('Main category saved successfully:', category);
+      //console.log('Main category saved successfully:', category);
     } catch (error) {
       console.error('Error saving main category to Firebase:', error);
     }

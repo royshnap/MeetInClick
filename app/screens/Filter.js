@@ -34,19 +34,13 @@ const Filter = () => {
   }, [interestRadius]);
 
   const handleSetFilters = () => {
-    Alert.alert(`${t('Filters set')}`, '', [
-      {
-        text: t('OK'),
-        onPress: () =>
-          navigation.navigate('AppTabs', {
-            screen: 'Matches',
-            params: {
-              ageRange,
-              genderPreference,
-            },
-          }),
+    navigation.navigate('AppTabs', {
+      screen: 'Matches',
+      params: {
+        ageRange,
+        genderPreference,
       },
-    ]);
+    });
   };
 
   const incrementDistance = () => {

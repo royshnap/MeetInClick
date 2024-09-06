@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  ImageBackground,
-} from 'react-native';
+import {View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert, ImageBackground,} from 'react-native';
 import { useConversationTopicMatches } from '../context/ConversationContext';
 import { useTranslation } from 'react-i18next';
 import useSettings from '../components/useSettings';
@@ -28,7 +19,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
 
   const categoriesMap = {
     Conversation: [
-      'AAATest',
       'Travel',
       'Books',
       'Music',
@@ -64,7 +54,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Creativity',
     ].sort((a, b) => a.localeCompare(b)),
     'Sport Activity': [
-      'AAATest',
       'Running',
       'Swimming',
       'Cycling',
@@ -87,7 +76,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Horse Riding',
     ].sort((a, b) => a.localeCompare(b)),
     Travel: [
-      'AAATest',
       'Adventure',
       'Beach',
       'Historical',
@@ -107,7 +95,6 @@ const SubCategoriesScreen = ({ route, navigation }) => {
       'Festival Travel',
     ].sort((a, b) => a.localeCompare(b)),
     Clubbing: [
-      'AAATest',
       'Nightclubs',
       'Bars',
       'Pubs',
@@ -230,7 +217,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: 'gray',
+    color: 'white',
     textAlign: 'center',
     marginBottom: 20,
   },

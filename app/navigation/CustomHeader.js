@@ -86,10 +86,12 @@ const CustomHeader = ({ navigation }) => {
 
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      {/* Remove the back button */}
+      {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.headerTitle}>Meet In Click</Text>
+      </TouchableOpacity> */}
+      
+      <Text style={styles.headerTitle}>MeetInClick</Text>
       <View style={styles.iconsContainer}>
         <TouchableOpacity onPress={handleNotificationPress} style={styles.notificationIconContainer}>
           <Ionicons
@@ -226,11 +228,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  backButton: {
-    marginTop: 50,
-    marginRight: 10,
-  },
+  // Remove backButton style if not needed
 });
 
 export default CustomHeader;
-

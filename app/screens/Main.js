@@ -48,10 +48,10 @@ const MainScreen = ({ navigation }) => {
         if (snapshot.exists()) {
           const userData = snapshot.val();
           if (userData.mainCategory && userData.conversationTopics) {
-            console.log('User has categories');
+            //console.log('User has categories');
             navigation.navigate('AppTabs', { screen: 'Profile' });
           } else {
-            console.log('User does not have categories');
+            //console.log('User does not have categories');
             navigation.replace('Preferences');
           }
         }

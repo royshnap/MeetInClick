@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { Alert } from 'react-native';
 import Firebase from '../config/firebase'; // Import the configured Firebase
-import { ref, remove } from 'firebase/database';
+import { ref, update } from 'firebase/database'; // Import update function to modify database
 
 const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
   const { t, i18n } = useTranslation();
   const { signOutUser, user } = useAuth(); // Get the current user
-  const [backgroundImage, setBackgroundImage] = useState( require('../assets/b1.png'));
+  const [backgroundImage, setBackgroundImage] = useState(require('../assets/b1.png'));
 
   const handleBackgroundChange = (background) => {
     setBackgroundImage(background);
@@ -27,8 +27,14 @@ export const SettingsProvider = ({ children }) => {
         const db = Firebase.Database;
         const userRef = ref(db, `users/${user.id}`);
 
-        await signOutUser(navigation);
+        // Remove conversationTopics and mainCategory from the user's data
+        await update(userRef, {
+          conversationTopics: null, // Set to null to remove the field
+          mainCategory: null,       // Set to null to remove the field
+        });
 
+        // Proceed to sign out the user
+        await signOutUser(navigation);
       }
       navigation.navigate('Main');
     } catch (error) {

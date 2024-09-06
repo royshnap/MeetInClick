@@ -33,7 +33,7 @@ const GoogleSignIn = () => {
       setLoading(true);
       const userJSON = await AsyncStorage.getItem('@user');
       const userData = userJSON ? JSON.parse(userJSON) : null;
-      console.log('local user data', userData);
+      //console.log('local user data', userData);
       setUserInfo(userData);
     } catch (e) {
       alert(e.message);
@@ -78,7 +78,7 @@ const GoogleSignIn = () => {
           }
         }
       } else {
-        console.log('user is not authenticated');
+        //console.log('user is not authenticated');
       }
     });
 

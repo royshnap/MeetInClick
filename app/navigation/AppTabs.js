@@ -26,7 +26,7 @@ export default function AppTabs() {
             case 'Profile':
               iconName = focused ? 'person' : 'person-outline';
               break;
-            case 'Preferences':
+            case 'Categories':
               iconName = focused ? 'grid' : 'grid-outline';
               break;
             case 'Matches':
@@ -58,9 +58,9 @@ export default function AppTabs() {
         options={{ title: t('Profile') }}
       />
       <Tab.Screen
-        name='Preferences'
+        name='Categories'
         component={PreferencesScreen}
-        options={{ title: t('Preferences') }}
+        options={{ title: t('Categories') }}
       />
       <Tab.Screen
         name='Filters'

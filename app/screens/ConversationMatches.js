@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  ImageBackground,
-} from 'react-native';
+import { View, Text, FlatList, StyleSheet, ImageBackground } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import useSettings from '../components/useSettings';
@@ -18,6 +12,7 @@ import { ref, onValue } from 'firebase/database';
 import Firebase from '../config/firebase';
 import { addMatchNotification } from '../context/notification';
 import HorizontalList from '../components/HorizontalList';
+import { calculateDistance } from '../utils'; // Import calculateDistance from utils.js
 
 const ConversationMatches = ({ route, navigation }) => {
   const { t } = useTranslation();
@@ -28,6 +23,7 @@ const ConversationMatches = ({ route, navigation }) => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const { ageRange, genderPreference } = route.params || {};
+  const interestRadius = route.params?.interestRadius || 10000; // Get interestRadius from route params or use default
 
   // Fetch and filter users from Firebase
   useEffect(() => {
@@ -37,13 +33,18 @@ const ConversationMatches = ({ route, navigation }) => {
         const results = [];
         snapshot.forEach((childSnapshot) => {
           const otherUser = childSnapshot.val();
+
+          // Check if the user is within the selected radius
+          const userDistance = calculateDistance(user.currentLocation.coords, otherUser.currentLocation.coords);
+
           if (
             otherUser.id !== user.id && // Exclude the current user
             otherUser.conversationTopics &&
             user.conversationTopics &&
             user.conversationTopics.some((topic) =>
               otherUser.conversationTopics.includes(topic)
-            )
+            ) &&
+            userDistance <= interestRadius // Check if within radius
           ) {
             results.push(otherUser);
           }
@@ -57,7 +58,7 @@ const ConversationMatches = ({ route, navigation }) => {
       });
       return () => listener(); // Cleanup the listener on unmount
     }
-  }, [user]);
+  }, [user, interestRadius]);
 
   // Prepare filters for the hook
   const filters = {
@@ -82,7 +83,6 @@ const ConversationMatches = ({ route, navigation }) => {
   useEffect(() => {
     if (newMatches.length > 0) {
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000);
     }
   }, [newMatches]);
 
@@ -98,9 +98,9 @@ const ConversationMatches = ({ route, navigation }) => {
         )}
         {filteredMatches.length === 0 && (
           <Text style={styles.noMatchesText}>
-            {t(
+            {/* {t(
               'No matches found for the selected topics within the specified distance'
-            )}
+            )} */}
           </Text>
         )}
 
