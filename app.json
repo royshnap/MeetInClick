@@ -4,12 +4,8 @@
     "slug": "meetinclick",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/LOGO7.png",
+    "icon": "./app/assets/LOGO7_resized_512x512.png",
     "userInterfaceStyle": "light",
-    "facebookAppId": "468740272218826",
-    "facebookDisplayName": "MeetInClickApp",
-    "facebookAutoLogAppEventsEnabled": true,
-    "facebookScheme": "fb468740272218826", 
     "splash": {
       "image": "./app/assets/splash.png",
       "resizeMode": "contain",
@@ -20,8 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.YandR.MeetInClick",
-      "scheme": "meetinclick"  
+      "bundleIdentifier": "com.YandR.MeetInClick"
     },
     "android": {
       "package": "com.YandR.MeetInClick",
@@ -29,8 +24,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "scheme": "meetinclick" 
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,7 +33,6 @@
       "eas": {
         "projectId": "c2efac3c-c482-4574-9987-5a8f7d523ca3"
       }
-    },
-    "scheme": "meetinclick"
+    }
   }
 }

@@ -3,11 +3,9 @@ module.exports = ({ config }) => ({
   slug: "meetinclick",  // Ensure this matches the EAS project slug
   android: {
     package: "com.YandR.MeetInClick",
-    scheme: "meetinclick"  // Added scheme property
   },
   ios: {
     bundleIdentifier: "com.YandR.MeetInClick",
-    scheme: "meetinclick"  // Added scheme property
   },
   extra: {
     ...config.extra,

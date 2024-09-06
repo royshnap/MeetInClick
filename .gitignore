@@ -8,7 +8,11 @@ node_modules/
 dist/
 web-build/
 
-# Native
+# Native directories (ignored if using managed workflow)
+android/
+ios/
+
+# Native files
 *.orig.*
 *.jks
 *.p8

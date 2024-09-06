@@ -86,7 +86,7 @@ const MainScreen = ({ navigation }) => {
 
   return (
     <CustomScrollView>
-      <Image source={require('../assets/LOGO7.png')} style={styles.logo} />
+      <Image source={require('../assets/LOGO7_resized_512x512.png')} style={styles.logo} />
       <TextInput
         style={styles.input}
         placeholder={t('Email address')}

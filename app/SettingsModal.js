@@ -6,7 +6,7 @@ const SettingsModal = ({ visible, onClose, onBackgroundChange, onLanguageChange,
   const { t } = useTranslation();
   const [showBackgroundOptions, setShowBackgroundOptions] = useState(false); // State to control visibility
   const backgrounds = [
-    require('./assets/b1.png'),
+    //require('./assets/b1.png'),
     require('./assets/b2.jpg'),
     require('./assets/b3.jpg'),
     require('./assets/b4.jpg'),

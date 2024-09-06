@@ -1,33 +1,37 @@
 {
   "cli": {
-    "version": ">= 9.2.0"
+    "version": ">= 9.2.0",
+    "appVersionSource": "remote"
   },
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk"  
       },
       "ios": {
-        "simulator": true 
+        "simulator": true  
       }
     },
     "preview2": {
       "android": {
-        "gradleCommand": ":app:assembleRelease"
+        "gradleCommand": ":app:assembleRelease"  
       },
       "ios": {
-        "buildConfiguration": "Release"
+        "buildConfiguration": "Release"  
       }
     },
     "preview3": {
-      "developmentClient": true,
+      "developmentClient": true,  
       "ios": {
-        "developmentClient": true
+        "developmentClient": true  
       }
     },
     "production": {
+      "android": {
+        "buildType": "app-bundle"  
+      },
       "ios": {
-        "buildConfiguration": "Release"
+        "buildConfiguration": "Release"  
       }
     }
   },
