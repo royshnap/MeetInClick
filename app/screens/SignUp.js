@@ -164,7 +164,7 @@ const SignUpScreen = ({ navigation }) => {
             onLanguageChange={handleLanguageChange}
             onSignOut={() => handleSignOut(navigation)} // Pass navigation here
           />
-          <Text style={styles.title}>{t("Welcome To ")}MeetInClick</Text>
+          <Text style={styles.title}>{t("")}MeetInClick</Text>
           <TouchableOpacity onPress={pickImage}>
             {profileImage ? (
               <Image source={{ uri: profileImage }} style={styles.profileImage} />

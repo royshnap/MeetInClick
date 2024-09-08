@@ -307,6 +307,7 @@ const resources = {
       //App Tabs:
       Profile: 'פרופיל',
       Preferences: 'העדפות',
+      Categories: 'קטגוריות',
       Filters: 'מסננים',
       //conversation screen:
       'User name': 'שם משתמש',

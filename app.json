@@ -3,6 +3,7 @@
     "name": "MeetInClick",
     "slug": "meetinclick",
     "version": "1.0.0",
+    "scheme": "MeetInClick",
     "orientation": "portrait",
     "icon": "./app/assets/LOGO7_resized_512x512.png",
     "userInterfaceStyle": "light",
