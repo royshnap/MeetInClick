@@ -37,7 +37,6 @@ export const LocationContextProvider = ({ children }) => {
     let locationSubscription = await Location.watchPositionAsync(
       {
         accuracy: Location.Accuracy.High,
-        timeInterval: 10000, // 10 seconds
         distanceInterval: 20, // 20 meter
       },
       (location) => {
@@ -47,12 +46,12 @@ export const LocationContextProvider = ({ children }) => {
     setSubscription(locationSubscription);
   };
 
-  // useEffect(() => {
-  //   if (currentLocation && user) {
-  //     const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
-  //     update(usersRef, { currentLocation }); // Save user data in the database
-  //   }
-  // }, [currentLocation, user]);
+  useEffect(() => {
+    if (currentLocation && user) {
+      const usersRef = ref(Firebase.Database, `users/${user.id}`); // Reference to user's data in the database
+      update(usersRef, { currentLocation }); // Save user data in the database
+    }
+  }, [currentLocation, user]);
   useEffect(() => {
     if (currentLocation && user && user.uid) {
       const usersRef = ref(Firebase.Database, `users/${user.uid}`); // Use uid here

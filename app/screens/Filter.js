@@ -39,9 +39,11 @@ const Filter = () => {
       params: {
         ageRange,
         genderPreference,
+        interestRadius: d,  
       },
     });
   };
+  
 
   const incrementDistance = () => {
     setDistance((prevDistance) => {

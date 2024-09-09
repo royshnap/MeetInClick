@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "scheme": "MeetInClick",
     "orientation": "portrait",
-    "icon": "./app/assets/LOGO7_resized_512x512.png",
+    "icon": "./app/assets/resized_logo_512.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./app/assets/splash.png",
