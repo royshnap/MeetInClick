@@ -10,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
-const CustomHeader = ({ navigation }) => {
+const CustomHeader = ({ navigation, route  }) => {
   const { user } = useAuth();
   const [hasNewNotification, setHasNewNotification] = useState(false);
   const { t } = useTranslation();
@@ -84,12 +84,15 @@ const CustomHeader = ({ navigation }) => {
     }
   };
 
+  const shouldShowBackButton = route.name !== 'Profile';
+
   return (
     <View style={styles.headerContainer}>
-      {/* Remove the back button */}
-      {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity> */}
+      {shouldShowBackButton && (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+      )}
       
       <Text style={styles.headerTitle}>MeetInClick</Text>
       <View style={styles.iconsContainer}>
@@ -228,7 +231,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  // Remove backButton style if not needed
+  backButton: {
+    marginTop: 50,
+    marginRight: 10,
+  },
 });
 
 export default CustomHeader;

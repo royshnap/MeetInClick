@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginBottom: 10,
-    marginTop: 20,
+    marginTop: 40,
   },
   subtitle: {
     fontSize: 18,

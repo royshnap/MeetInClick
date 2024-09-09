@@ -104,7 +104,7 @@ const SignUpScreen = ({ navigation }) => {
         profileImage: profileImageUrl,
       });
   
-      navigation.navigate("Preferences");
+      navigation.replace("Preferences");
     } catch (error) {
       console.error("Sign up failed:", error);
     }
@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 27,
     fontWeight: "bold",
-    marginBottom: 7,
-    marginTop: 30,
+    marginBottom: 30,
+    marginTop: 55,
   },
   genderContainer: {
     flexDirection: 'row',
@@ -347,15 +347,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileImage: {
-    width: 130,
-    height: 130,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     marginBottom: 10,
   },
   imagePlaceholder: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "gray",
